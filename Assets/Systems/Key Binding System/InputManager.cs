@@ -53,16 +53,6 @@ public class InputManager : Singleton<InputManager>
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.P))
-        //{
-        //    foreach(var kvp in keys)
-        //    {
-        //        Debug.Log(kvp.Value);
-        //    }
-        //}
-    }
     private string ExportKeyBinds()
     {
         //Intialize string with headers
@@ -96,7 +86,7 @@ public class InputManager : Singleton<InputManager>
     /// </summary>
     /// <param name="keyInputSelector">KeyInputSelector class reference</param>
     public void GetSelectorReference(KeyInputSelector keyInputSelector) => keyInputSelectors.Add(keyInputSelector);
-    public KeyCode GetKey(KeyInput key) => keys[key];
+    public KeyCode GetKey(KeyInput key) => keys[key]; 
 
     /// <summary>
     /// Goes through the list of key input selectors and sets the key bindings to the new keycodes

@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
         movement = Vector3.zero; // Resets the movement value
 
         // Gets each axis input
-        if (Input.GetKey(inputManager.GetKey(KeyInput.Forward))) movement.z += 1f;
+        if (Input.GetKey(inputManager.GetKey(KeyInput.Forward))) movement.z += 1f; 
         else if (Input.GetKey(inputManager.GetKey(KeyInput.Backward))) movement.z -= 1f;
 
         if (Input.GetKey(inputManager.GetKey(KeyInput.Right))) movement.x += 1f;
@@ -64,6 +64,8 @@ public class PlayerController : MonoBehaviour
         }
 
         movement = (transform.right * movement.x + transform.forward * movement.z).normalized; // Calculates the movement of each axis and normalizes it 
+
+        rb.MovePosition(rb.position + movement * Time.deltaTime);
 
         if (Input.GetKeyDown(inputManager.GetKey(KeyInput.Jump)) && isGrounded) Jump(jumpHeight);
     }
