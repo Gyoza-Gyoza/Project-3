@@ -7,7 +7,13 @@ public class PayloadBehaviour : Entity
     [SerializeField] private Transform[] locations;
     [SerializeField] private float rotationSpeed;
     private int currentLocationIndex;
+    public static PayloadBehaviour Instance;
 
+    private void Awake()
+    {
+        if (Instance != null ) Instance = this;
+        else Destroy(Instance);
+    }
     private void Update()
     {
         Movement();

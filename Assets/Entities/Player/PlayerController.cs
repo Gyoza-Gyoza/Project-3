@@ -2,13 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Entity
 {
     [SerializeField]
     private float jumpHeight = 5f;
-    [SerializeField]
-    private float sprintMultiplier = 2f;
-    private bool isSprinting = false;
 
     [Header("Ground check variables")]
     [SerializeField]
@@ -30,8 +27,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-    protected void Start()
+    protected override void Start()
     {
+        base.Start();
         inputManager = InputManager.Instance;
     }
     private void Update()
@@ -52,17 +50,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(inputManager.GetKey(KeyInput.Right))) movement.x += 1f;
         else if (Input.GetKey(inputManager.GetKey(KeyInput.Left))) movement.x -= 1f;
 
-        if (Input.GetKey(inputManager.GetKey(KeyInput.Sprint)))
-        {
-            isSprinting = true;
-            PlayerState = PlayerState.Sprinting;
-        }
-        else
-        {
-            isSprinting = false;
-            PlayerState = PlayerState.Walking;
-        }
-
         movement = (transform.right * movement.x + transform.forward * movement.z).normalized; // Calculates the movement of each axis and normalizes it 
 
         rb.MovePosition(rb.position + movement * Time.deltaTime);
@@ -77,6 +64,18 @@ public class PlayerController : MonoBehaviour
     {
         PlayerState = PlayerState.Jumping;
         rb.AddForce(Vector3.up * amount, ForceMode.Impulse);
+    }
+
+    protected override void OnHeal()
+    {
+    }
+
+    protected override void OnDamage()
+    {
+    }
+
+    public override void OnDeath()
+    {
     }
 }
 public enum PlayerState
