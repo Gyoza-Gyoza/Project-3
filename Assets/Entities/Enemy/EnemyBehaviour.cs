@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyBehaviour : Entity
 {
-    public NavMeshAgent agent;
+    [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
 
     public float attackRange = 1f;
@@ -13,6 +13,7 @@ public class EnemyBehaviour : Entity
     {
         base.Start();
         state = new EnemyChaseState(this);
+        agent = GetComponent<NavMeshAgent>();
     }
     private void Update()
     {

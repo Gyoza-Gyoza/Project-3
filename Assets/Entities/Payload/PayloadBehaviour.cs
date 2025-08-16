@@ -11,7 +11,7 @@ public class PayloadBehaviour : Entity
 
     private void Awake()
     {
-        if (Instance != null ) Instance = this;
+        if (Instance == null) Instance = this;
         else Destroy(Instance);
     }
     private void Update()
