@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38112346b475e5249a68cb3f5185b014, type: 3}
+  m_Name: Level1
+  m_EditorClassIdentifier: 
+  stages:
+  - checkpoint: {x: 35.9, y: -0.3372865, z: -26.18}
+    payloadSpeed: 5
+    spawnFrequency: 0.3
+    spawnAmount: 3
+  - checkpoint: {x: -17.73, y: -0.3372865, z: -18.9}
+    payloadSpeed: 5
+    spawnFrequency: 0.3
+    spawnAmount: 50
+  - checkpoint: {x: -39, y: -0.3372865, z: 29.9}
+    payloadSpeed: 5
+    spawnFrequency: 0.3
+    spawnAmount: 100
