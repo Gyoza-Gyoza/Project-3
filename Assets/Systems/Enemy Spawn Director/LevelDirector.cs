@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnDirector : MonoBehaviour
+public class LevelDirector : MonoBehaviour
 {
     [SerializeField] private Level currentLevel;
     public Level CurrentLevel
@@ -15,8 +15,8 @@ public class SpawnDirector : MonoBehaviour
 
     private float timer;
 
-    private static SpawnDirector instance;
-    public static SpawnDirector Instance
+    private static LevelDirector instance;
+    public static LevelDirector Instance
     {
         get
         {
@@ -24,12 +24,12 @@ public class SpawnDirector : MonoBehaviour
             // This finds and returns the script if it is in the scene and creates one if it is not.
             if (instance == null)
             {
-                instance = FindObjectOfType<SpawnDirector>();
+                instance = FindObjectOfType<LevelDirector>();
                 if (instance == null)
                 {
                     GameObject singletonObject = new GameObject();
-                    instance = singletonObject.AddComponent<SpawnDirector>();
-                    singletonObject.name = typeof(SpawnDirector).Name + " (Singleton)";
+                    instance = singletonObject.AddComponent<LevelDirector>();
+                    singletonObject.name = typeof(LevelDirector).Name + " (Singleton)";
                 }
             }
             return instance;

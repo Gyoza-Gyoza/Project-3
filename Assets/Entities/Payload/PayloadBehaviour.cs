@@ -23,11 +23,11 @@ public class PayloadBehaviour : Entity
     protected override void Start()
     {
         base.Start();
-        stages = SpawnDirector.Instance.CurrentLevel.Stages;
+        stages = LevelDirector.Instance.CurrentLevel.Stages;
         agent.speed = MovementSpeed;
         agent.angularSpeed = turnSpeed;
         //agent.Warp(stages[SpawnDirector.Instance.CurrentStage].Checkpoint);
-        agent.SetDestination(stages[SpawnDirector.Instance.CurrentStage].Checkpoint);
+        agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
     }
     private void Update()
     {
@@ -37,8 +37,8 @@ public class PayloadBehaviour : Entity
     {
         if (agent.remainingDistance <= 0.05f)
         {
-            SpawnDirector.Instance.ReachedCheckpoint();
-            agent.SetDestination(stages[SpawnDirector.Instance.CurrentStage].Checkpoint);
+            LevelDirector.Instance.ReachedCheckpoint();
+            agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
         }
     }
     protected override void OnHeal()
