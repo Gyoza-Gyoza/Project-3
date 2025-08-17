@@ -7,9 +7,15 @@ public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
 
+    public float CheckpointProgress
+    { 
+        get { return Mathf.Clamp01((checkpointDistance - agent.remainingDistance) / checkpointDistance); } 
+    }
+
     private List<Stage> stages;
     private NavMeshAgent agent;
-    private bool reachedCheckpoint;
+    private float checkpointDistance;
+    private bool isMoving;
 
     public static PayloadBehaviour Instance;
 
@@ -24,22 +30,38 @@ public class PayloadBehaviour : Entity
     {
         base.Start();
         stages = LevelDirector.Instance.CurrentLevel.Stages;
-        agent.speed = MovementSpeed;
-        agent.angularSpeed = turnSpeed;
-        //agent.Warp(stages[SpawnDirector.Instance.CurrentStage].Checkpoint);
-        agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
+
+        InitializeAgent();
     }
     private void Update()
     {
-        Movement();
+        ReachedDestination();
     }
-    private void Movement()
+    private void InitializeAgent()
     {
-        if (agent.remainingDistance <= 0.05f)
-        {
-            LevelDirector.Instance.ReachedCheckpoint();
-            agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
-        }
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        agent.speed = MovementSpeed;
+        agent.angularSpeed = turnSpeed;
+        agent.Warp(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
+        GetNextCheckpoint();
+        agent.isStopped = true;
+    }
+    private void GetNextCheckpoint()
+    {
+        LevelDirector.Instance.ReachedCheckpoint();
+        if (LevelDirector.Instance.CurrentStage < stages.Count) agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
+        StartCoroutine(GetPath());
+    }
+    private IEnumerator GetPath()
+    {
+        while (agent.pathPending) yield return null;
+
+        checkpointDistance = agent.remainingDistance;
+        Debug.Log($"Checkpoint distance is {checkpointDistance}, remaining distance is {agent.remainingDistance}");
+    }
+    private void ReachedDestination()
+    {
+        if (agent.remainingDistance <= 0.05f) GetNextCheckpoint();
     }
     protected override void OnHeal()
     {
@@ -49,5 +71,23 @@ public class PayloadBehaviour : Entity
     }
     public override void OnDeath()
     {
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            isMoving = true;
+            agent.isStopped = false;
+            Debug.Log("Payload moving");
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            isMoving = false;
+            agent.isStopped = true;
+            Debug.Log("Payload stopped");
+        }
     }
 }

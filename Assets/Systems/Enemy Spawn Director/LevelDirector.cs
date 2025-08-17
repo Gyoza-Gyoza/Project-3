@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelDirector : MonoBehaviour
+public class LevelDirector : Singleton<LevelDirector>
 {
     [SerializeField] private Level currentLevel;
     public Level CurrentLevel
@@ -12,43 +12,33 @@ public class LevelDirector : MonoBehaviour
 
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private bool spawnEnemies = true;
+
+    public float StageProgress
+    { 
+        get 
+        {
+            // Minus ones are to ignore the first checkpoint as it's the starting point
+            float result;
+            float progressionPerStage = 1f / (currentLevel.Stages.Count - 1);
+            result = progressionPerStage * (currentStage - 1) + PayloadBehaviour.Instance.CheckpointProgress * progressionPerStage;
+
+            if (CurrentStage == currentLevel.Stages.Count) result = 1f;
+
+            return Mathf.Clamp01(result); 
+        } 
+    }
 
     private float timer;
 
-    private static LevelDirector instance;
-    public static LevelDirector Instance
-    {
-        get
-        {
-            // Ensures that there's always a reference to the singleton instance. 
-            // This finds and returns the script if it is in the scene and creates one if it is not.
-            if (instance == null)
-            {
-                instance = FindObjectOfType<LevelDirector>();
-                if (instance == null)
-                {
-                    GameObject singletonObject = new GameObject();
-                    instance = singletonObject.AddComponent<LevelDirector>();
-                    singletonObject.name = typeof(LevelDirector).Name + " (Singleton)";
-                }
-            }
-            return instance;
-        }
-    }
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
     private void Update()
     {
-        timer += Time.deltaTime * currentLevel.Stages[currentStage].SpawnFrequency;
+        if (spawnEnemies) Spawning();
+        Debug.Log($"Current Stage is {currentStage} \n Checkpoint progress is {PayloadBehaviour.Instance.CheckpointProgress * 100}% \n Total progress is {StageProgress * 100}%");
+    }
+    private void Spawning()
+    {
+        timer += currentLevel.Stages[currentStage].SpawnFrequency * Time.deltaTime; 
 
         if (timer >= 1f)
         {
@@ -63,13 +53,12 @@ public class LevelDirector : MonoBehaviour
     public void ReachedCheckpoint()
     {
         currentStage++;
-        currentStage = Mathf.Clamp(currentStage, 0, currentLevel.Stages.Count - 1);
-        Debug.Log($"Reached checkpoint, stage count is {currentStage}");
+        currentStage = Mathf.Clamp(currentStage, 0, currentLevel.Stages.Count);
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.red;
         foreach(Stage stage in currentLevel.Stages)
         {
             Gizmos.DrawSphere(stage.Checkpoint, 1f);
