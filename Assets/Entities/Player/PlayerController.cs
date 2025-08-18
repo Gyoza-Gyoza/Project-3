@@ -59,7 +59,11 @@ public class PlayerController : Entity
         if (Input.GetKey(inputManager.GetKey(KeyInput.Right))) movement.x += 1f;
         else if (Input.GetKey(inputManager.GetKey(KeyInput.Left))) movement.x -= 1f;
 
-        movement = (transform.right * movement.x + transform.forward * movement.z).normalized; // Calculates the movement of each axis and normalizes it 
+        movement = (transform.right * movement.x + transform.forward * movement.z).normalized; // Calculates the movement of each axis and normalizes it
+
+        // Get attack input
+        if (Input.GetKey(inputManager.GetKey(KeyInput.Attack_Basic))) BasicAttack();
+        if (Input.GetKey(inputManager.GetKey(KeyInput.Attack_Basic))) SpecialAttack();
     }
     private void Movement()
     {
@@ -111,6 +115,16 @@ public class PlayerController : Entity
 
     public override void OnDeath()
     {
+    }
+
+    private void BasicAttack()
+    {
+
+    }
+
+    private void SpecialAttack()
+    {
+
     }
 }
 public enum PlayerState

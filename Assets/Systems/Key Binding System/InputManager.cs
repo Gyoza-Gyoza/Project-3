@@ -18,7 +18,9 @@ public enum KeyInput //Contains all available inputs
     Left,
     Right, 
     Dash,
-    Jump
+    Jump,
+    Attack_Basic,
+    Attack_Special
 }
 public class InputManager : Singleton<InputManager>
 {
@@ -36,7 +38,9 @@ public class InputManager : Singleton<InputManager>
         { KeyInput.Left, KeyCode.A },
         { KeyInput.Right, KeyCode.D },
         { KeyInput.Dash, KeyCode.LeftShift},
-        { KeyInput.Jump, KeyCode.Space }
+        { KeyInput.Jump, KeyCode.Space },
+        { KeyInput.Attack_Basic, KeyCode.Mouse0},
+        { KeyInput.Attack_Special, KeyCode.Mouse1 }
     };
     public Dictionary<KeyInput, KeyCode> Keys
     { get { return keys; } }
