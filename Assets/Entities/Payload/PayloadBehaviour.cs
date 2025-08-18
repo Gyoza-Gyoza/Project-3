@@ -7,16 +7,27 @@ public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
 
-    public float CheckpointProgress
-    { 
-        get { return Mathf.Clamp01((checkpointDistance - agent.remainingDistance) / checkpointDistance); } 
-    }
+    //public float CheckpointProgress
+    //{ 
+    //    get { return Mathf.Clamp01((checkpointDistance - agent.remainingDistance) / checkpointDistance); } 
+    //}
 
-    private List<Stage> stages;
+    private Stage[] stages;
     private NavMeshAgent agent;
-    private float checkpointDistance;
-    private bool isMoving;
-
+    public NavMeshAgent Agent
+    {
+        get { return agent; }
+    }
+    //private float checkpointDistance;
+    //public float CheckpointDistance
+    //{
+    //    get { return checkpointDistance; }
+    //    set { checkpointDistance = value; }
+    //}
+    private float interactRadius;
+    public float InteractRadius
+    { get { return interactRadius * transform.localScale.z; } } // Hard coding :(
+    private bool playerInRange = false;
     public static PayloadBehaviour Instance;
 
     private void Awake()
@@ -25,43 +36,47 @@ public class PayloadBehaviour : Entity
         else Destroy(Instance);
 
         agent = GetComponent<NavMeshAgent>();
+        interactRadius = GetComponent<SphereCollider>().radius;
     }
     protected override void Start()
     {
         base.Start();
-        stages = LevelDirector.Instance.CurrentLevel.Stages;
+        stages = LevelDirector.Instance.Stages;
 
         InitializeAgent();
     }
     private void Update()
     {
-        ReachedDestination();
+        if (LevelDirector.Instance.CurrentStage < stages.Length) stages[LevelDirector.Instance.CurrentStage].DoPayloadBehaviour();
     }
     private void InitializeAgent()
     {
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         agent.speed = MovementSpeed;
         agent.angularSpeed = turnSpeed;
-        agent.Warp(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
-        GetNextCheckpoint();
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.Checkpoint);
+        CompleteStage();
         agent.isStopped = true;
     }
-    private void GetNextCheckpoint()
+    public void CompleteStage()
     {
-        LevelDirector.Instance.ReachedCheckpoint();
-        if (LevelDirector.Instance.CurrentStage < stages.Count) agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].Checkpoint);
-        StartCoroutine(GetPath());
+        LevelDirector.Instance.CompletedStage();
+        if (LevelDirector.Instance.CurrentStage < stages.Length)
+        {
+            stages[LevelDirector.Instance.CurrentStage].StartStage();
+            // Ensures that the player in range behaviour stays the same when changing stages
+            if (playerInRange) stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
+            else stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
+
+            if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) StartCoroutine(GetPath(escort));
+        }
+        else LevelDirector.Instance.CompleteLevel();
     }
-    private IEnumerator GetPath()
+    private IEnumerator GetPath(Escort escort)
     {
         while (agent.pathPending) yield return null;
 
-        checkpointDistance = agent.remainingDistance;
-        Debug.Log($"Checkpoint distance is {checkpointDistance}, remaining distance is {agent.remainingDistance}");
-    }
-    private void ReachedDestination()
-    {
-        if (agent.remainingDistance <= 0.05f) GetNextCheckpoint();
+        escort.EscortDistance = agent.remainingDistance;
     }
     protected override void OnHeal()
     {
@@ -71,23 +86,22 @@ public class PayloadBehaviour : Entity
     }
     public override void OnDeath()
     {
+
     }
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")
         {
-            isMoving = true;
-            agent.isStopped = false;
-            Debug.Log("Payload moving");
+            playerInRange = true;
+            stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if(other.gameObject.tag == "Player")
         {
-            isMoving = false;
-            agent.isStopped = true;
-            Debug.Log("Payload stopped");
+            playerInRange = false;
+            stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
         }
     }
 }

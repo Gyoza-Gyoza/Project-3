@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ace2e4014a04daa409f5375ab84a6c8b, type: 3}
+  m_Name: Stage6
+  m_EditorClassIdentifier: 
+  spawnFrequency: 3
+  maxSpawnAmount: 5
+  itemToCollect: {fileID: 8840465649485089741, guid: b862b912792def546b7d61b6ee086a99, type: 3}
+  amountToCollect: 10
+  amountToSpawn: 15
+  maxDistanceToSpawn: 10
