@@ -38,11 +38,8 @@ public class Collect : Stage
             Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
             float randomDistance = Random.Range(interactRadius, interactRadius + maxDistanceToSpawn);
             Vector3 randomOffset = randomDirection * randomDistance;
-            Debug.Log($"{randomOffset.x}, {randomOffset.y}, {randomOffset.z}");
             Vector3 spawnPosition = PayloadBehaviour.Instance.transform.position + randomOffset;
             GameObject item = GameObjectPool.GetObject(itemToCollect);
-            item.name = item.name + i; // Ensures that each item has a unique name
-            Debug.Log(item.name);
             item.transform.position = spawnPosition;
             itemsToCollect.Add(item);
         }
