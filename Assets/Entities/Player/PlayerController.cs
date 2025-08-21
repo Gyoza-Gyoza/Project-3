@@ -31,6 +31,8 @@ public class PlayerController : Entity
     {
         base.Start();
         inputManager = InputManager.Instance;
+        basicHB.SetOwner(this.gameObject);
+
     }
     private void Update()
     {
@@ -117,9 +119,33 @@ public class PlayerController : Entity
     {
     }
 
+    [Header("AttackFields")]
+    [SerializeField] private HitBox basicHB;
+    [SerializeField] private float basicTiming = .2f;
+    [SerializeField] private int basicDamage = 1;
+    private bool isAttacking = false;
+
     private void BasicAttack()
     {
+        if (isAttacking == false)
+        {
+            StartCoroutine(BasicAttackSequence());
+        }
+    }
 
+    IEnumerator BasicAttackSequence()
+    {
+        isAttacking = true;
+        basicHB.gameObject.SetActive(true);
+        yield return new WaitForSeconds(basicTiming);
+        basicHB.gameObject.SetActive(false);
+        isAttacking = false;
+        yield break;
+    }
+
+    public void BasicDamage(EnemyBehaviour toDamage)
+    {
+        toDamage.Health -= basicDamage;
     }
 
     private void SpecialAttack()

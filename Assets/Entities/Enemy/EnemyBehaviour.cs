@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyBehaviour : Entity
 {
+    [SerializeField] private GameObject flickerSign;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
 
@@ -21,10 +22,20 @@ public class EnemyBehaviour : Entity
     }
     public override void OnDeath()
     {
+        GameObject.Destroy(this.gameObject);
     }
 
     protected override void OnDamage()
     {
+        StartCoroutine(DamageFlicker());
+    }
+
+    IEnumerator DamageFlicker()
+    {
+        flickerSign.SetActive(true);
+        yield return new WaitForSeconds(.1f);
+        flickerSign.SetActive(false);
+        yield break;
     }
 
     protected override void OnHeal()
