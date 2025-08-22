@@ -253,6 +253,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2570438096180963117, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2570438096180963117, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4913840623237818373, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
@@ -261,7 +269,15 @@ PrefabInstance:
       value: HUD
       objectReference: {fileID: 0}
     - target: {fileID: 6641411439411187866, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6641411439411187866, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6641411439411187866, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
+      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7738607822746389849, guid: 0ca12b7d481bef049a9432d8e7bbaeaf, type: 3}
@@ -552,7 +568,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3b4fd940b3e07404894a20836e9b2e58, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

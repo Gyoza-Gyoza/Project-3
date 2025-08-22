@@ -9,6 +9,11 @@ public abstract class Entity : MonoBehaviour
     [Header("Basic Stats")]
     [SerializeField] 
     private int maxHealth = 100;
+    // Property used by other scripts to interact with the Entity's Max Health value
+    public virtual int MaxHealth
+    {
+        get { return maxHealth; }
+    }
     private int health;
 
     // Property used by other scripts to interact with the Entity's Health value

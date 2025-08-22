@@ -113,6 +113,7 @@ public class PlayerController : Entity
 
     protected override void OnDamage()
     {
+        HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
     }
 
     public override void OnDeath()
@@ -145,7 +146,7 @@ public class PlayerController : Entity
 
     public void BasicDamage(EnemyBehaviour toDamage)
     {
-        toDamage.Health -= basicDamage;
+        toDamage.TakeDamage(basicDamage);
     }
 
     private void SpecialAttack()
