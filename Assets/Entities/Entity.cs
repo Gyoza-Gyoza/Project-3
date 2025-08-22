@@ -15,27 +15,6 @@ public abstract class Entity : MonoBehaviour
     public virtual int Health
     { 
         get { return health; }
-        set
-        { 
-            if (value > health)
-            {
-                if (value > maxHealth) health = maxHealth;
-                else
-                {
-                    health = value;
-                    OnHeal();
-                }
-            }
-            else if (value < health)
-            {
-                if (health > 0)
-                {
-                    health = value;
-                    OnDamage();
-                }
-                else OnDeath();
-            }
-        }
     }
 
     [SerializeField] 
@@ -64,9 +43,24 @@ public abstract class Entity : MonoBehaviour
     {
         // Initialize stats for interaction with other scripts
         // Remember to call base.Start() when inheriting from this class
-        Health = maxHealth;
+        health = maxHealth;
         Damage = initialDamage;
         MovementSpeed = initialMovementSpeed;
+    }
+    public virtual void Heal(int amount)
+    {
+        health = Mathf.Clamp(health + amount, 0, maxHealth);
+        OnHeal();
+    }
+    public virtual void TakeDamage(int amount)
+    {
+        health -= amount;
+        if (health > 0) OnDamage();
+        if (health <= 0)
+        {
+            health = 0; // Ensure health doesn't go below zero
+            OnDeath();
+        }
     }
     protected abstract void OnHeal();
     protected abstract void OnDamage();
