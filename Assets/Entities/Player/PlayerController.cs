@@ -14,6 +14,10 @@ public class PlayerController : Entity
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded = false;
 
+    private int itemsCollected = 0;
+    public int ItemsCollected
+    { get { return itemsCollected; } }
+
     private InputManager inputManager;
     private Rigidbody rb;
     private PlayerState playerState = PlayerState.Idle;
@@ -23,9 +27,12 @@ public class PlayerController : Entity
         set { playerState = value; }
     }
     private Vector3 movement;
+    public static PlayerController Instance;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        if (Instance == null) Instance = this;
+        else Destroy(Instance);
     }
     protected override void Start()
     {
@@ -111,6 +118,18 @@ public class PlayerController : Entity
 
     public override void OnDeath()
     {
+    }
+    public void OnCollect()
+    {
+        itemsCollected++;
+        // Add any additional logic for collecting items, such as updating UI or playing sound effects
+    }
+    public int DropOffItems()
+    {
+        int amount = itemsCollected; // Returns the amount of items dropped off
+        itemsCollected -= itemsCollected;
+        return amount;
+        // Add any additional logic for dropping off items, such as updating UI or playing sound effects
     }
 }
 public enum PlayerState

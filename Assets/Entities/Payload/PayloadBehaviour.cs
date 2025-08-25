@@ -1,40 +1,82 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PayloadBehaviour : Entity
 {
-    [SerializeField] private Transform[] locations;
-    [SerializeField] private float rotationSpeed;
-    private int currentLocationIndex;
+    [SerializeField] private float turnSpeed;
+
+    //public float CheckpointProgress
+    //{ 
+    //    get { return Mathf.Clamp01((checkpointDistance - agent.remainingDistance) / checkpointDistance); } 
+    //}
+
+    private Stage[] stages;
+    private NavMeshAgent agent;
+    public NavMeshAgent Agent
+    {
+        get { return agent; }
+    }
+    //private float checkpointDistance;
+    //public float CheckpointDistance
+    //{
+    //    get { return checkpointDistance; }
+    //    set { checkpointDistance = value; }
+    //}
+    private float interactRadius;
+    public float InteractRadius
+    { get { return interactRadius * transform.localScale.z; } } // Hard coding :(
+    private bool playerInRange = false;
     public static PayloadBehaviour Instance;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(Instance);
+
+        agent = GetComponent<NavMeshAgent>();
+        interactRadius = GetComponent<SphereCollider>().radius;
+    }
+    protected override void Start()
+    {
+        base.Start();
+        stages = LevelDirector.Instance.Stages;
+
+        InitializeAgent();
     }
     private void Update()
     {
-        Movement();
+        if (LevelDirector.Instance.CurrentStage < stages.Length) stages[LevelDirector.Instance.CurrentStage].DoPayloadBehaviour();
     }
-    private void Movement()
+    private void InitializeAgent()
     {
-        if (currentLocationIndex == locations.Length) return; // Stops movement when the payload reaches the last point
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        agent.speed = MovementSpeed;
+        agent.angularSpeed = turnSpeed;
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.Checkpoint);
+        CompleteStage();
+        agent.isStopped = true;
+    }
+    public void CompleteStage()
+    {
+        LevelDirector.Instance.CompletedStage();
+        if (LevelDirector.Instance.CurrentStage < stages.Length)
+        {
+            stages[LevelDirector.Instance.CurrentStage].StartStage();
+            // Ensures that the player in range behaviour stays the same when changing stages
+            if (playerInRange) stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
+            else stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
 
-        Vector3 targetDirection = locations[currentLocationIndex].position - transform.position;
-        targetDirection.y = 0f; // Flattens the y direction so it only rotates left and right
-        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, rotationSpeed * Time.deltaTime, 0f);
-        transform.rotation = Quaternion.LookRotation(newDirection);
+            if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) StartCoroutine(GetPath(escort));
+        }
+        else LevelDirector.Instance.CompleteLevel();
+    }
+    private IEnumerator GetPath(Escort escort)
+    {
+        while (agent.pathPending) yield return null;
 
-        transform.position = Vector3.MoveTowards(transform.position, 
-            new Vector3(locations[currentLocationIndex].position.x, 
-            transform.position.y, locations[currentLocationIndex].position.z), 
-            MovementSpeed * Time.deltaTime); // Moves the payload 
-
-        if (Vector3.Distance(new Vector3(transform.position.x, 0f, transform.position.z), 
-            new Vector3(locations[currentLocationIndex].position.x, 0f, locations[currentLocationIndex].position.z)) <= 0.05f) 
-            currentLocationIndex++; // Gets the next point when the payload reaches the current point 
+        escort.EscortDistance = agent.remainingDistance;
     }
     protected override void OnHeal()
     {
@@ -44,5 +86,22 @@ public class PayloadBehaviour : Entity
     }
     public override void OnDeath()
     {
+
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            playerInRange = true;
+            stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            playerInRange = false;
+            stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
+        }
     }
 }

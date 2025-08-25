@@ -9,7 +9,7 @@ using System.IO;
 public static class DatabaseIO
 {
     //Use to define the export destination
-    private static string folderPath = Application.dataPath + "/Exports";
+    private static string folderPath = Application.dataPath + "Data/Exports";
 
     /// <summary>
     /// Attempts to create a CSV file
