@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public class LevelDirector : Singleton<LevelDirector>
 {
@@ -19,6 +21,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private bool spawnEnemies = true;
 
     private Vector3 currentPosition; // Used for drawing gizmos
+    private PayloadBehaviour payload;
 
     public float StageProgress
     { 
@@ -35,11 +38,16 @@ public class LevelDirector : Singleton<LevelDirector>
 
     private float timer;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        payload = PayloadBehaviour.Instance;
+    }
     private void Update()
     {
-        if (spawnEnemies) Spawning();
+        if (spawnEnemies) SpawnEnemies();
     }
-    private void Spawning()
+    private void SpawnEnemies()
     {
         timer += Stages[currentStage].SpawnFrequency * Time.deltaTime; 
 
@@ -48,10 +56,17 @@ public class LevelDirector : Singleton<LevelDirector>
             for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
             {
                 GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-                enemy.transform.position = transform.position;
+                enemy.transform.position = GetSpawnLocation();
             }
             timer = 0;
         }
+    }
+    private Vector3 GetSpawnLocation()
+    {
+        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+        Vector3 randomPosition = payload.transform.position + randomDirection * Random.Range(payload.InteractRadius + 5f, payload.InteractRadius + 15f);
+        NavMesh.SamplePosition
+        return Vector3.zero; // Placeholder
     }
     public void CompletedStage()
     {

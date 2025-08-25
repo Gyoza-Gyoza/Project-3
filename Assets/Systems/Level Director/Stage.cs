@@ -9,12 +9,15 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float spawnFrequency;
     [Tooltip("Amount of enemies that the director will spawn each time")]
     [SerializeField] private float maxSpawnAmount;
+    [SerializeField] private float maxSpawnDistance;
     private float progress = 0f;
 
     public float SpawnFrequency
     { get { return spawnFrequency; } }
     public float MaxSpawnAmount
     { get { return maxSpawnAmount; } }
+    public float MaxSpawnDistance
+    { get { return maxSpawnDistance; } }
     public virtual float Progress
     { get { return progress; } private set { progress = Mathf.Clamp01(value); } } // Default progression, can be overridden by specific stages
     public abstract void StartStage();
