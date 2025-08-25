@@ -77,7 +77,7 @@ public class LevelDirector : Singleton<LevelDirector>
                     break;
                 case Defend defend:
                     Gizmos.color = Color.blue;
-                    Gizmos.DrawWireSphere(currentPosition, 5f);
+                    Gizmos.DrawWireSphere(currentPosition, 3f);
                     break;
                 case Collect collect:
                     Gizmos.color = Color.yellow;

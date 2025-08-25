@@ -31,18 +31,21 @@ public class Collect : Stage
     }
     private void SpawnItems(int amount)
     {
-        float interactRadius = PayloadBehaviour.Instance.InteractRadius;
-
         for (int i = 0; i < amountToSpawn; i++)
         {
-            Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-            float randomDistance = Random.Range(interactRadius, interactRadius + maxDistanceToSpawn);
-            Vector3 randomOffset = randomDirection * randomDistance;
-            Vector3 spawnPosition = PayloadBehaviour.Instance.transform.position + randomOffset;
             GameObject item = GameObjectPool.GetObject(itemToCollect);
-            item.transform.position = spawnPosition;
+            item.transform.position = GetLocation();
             itemsToCollect.Add(item);
         }
+    }
+    private Vector3 GetLocation()
+    {
+        float interactRadius = PayloadBehaviour.Instance.InteractRadius;
+
+        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+        float randomDistance = Random.Range(interactRadius, interactRadius + maxDistanceToSpawn);
+        Vector3 randomOffset = randomDirection * randomDistance;
+        return PayloadBehaviour.Instance.transform.position + randomOffset;
     }
     public void Collected(int amount)
     {
