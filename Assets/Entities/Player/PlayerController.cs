@@ -159,6 +159,7 @@ public class PlayerController : Entity
     private void SpecialAttack()
     {
 
+    }
     public void OnCollect()
     {
         itemsCollected++;
@@ -174,10 +175,10 @@ public class PlayerController : Entity
 }
 public enum PlayerState
 {
-    Idle,
-    Walking,
-    Sprinting,
-    Jumping,
-    Falling, 
-    Dashing
+        Idle,
+        Walking,
+        Sprinting,
+        Jumping,
+        Falling,
+        Dashing
 }
