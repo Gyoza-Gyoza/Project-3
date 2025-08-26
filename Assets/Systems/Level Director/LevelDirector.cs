@@ -65,7 +65,6 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
         Vector3 randomPosition = payload.transform.position + randomDirection * Random.Range(payload.InteractRadius + 5f, payload.InteractRadius + 15f);
-        NavMesh.SamplePosition
         return Vector3.zero; // Placeholder
     }
     public void CompletedStage()
