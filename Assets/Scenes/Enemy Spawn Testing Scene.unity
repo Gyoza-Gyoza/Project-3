@@ -218,8 +218,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4fe0edfde9cbe5c4fbb11bcebed263bc, type: 2}
   - {fileID: 11400000, guid: 2dfcd1cab23a65c4fafb4302d0a8f829, type: 2}
   testText: {fileID: 2053534030}
+  test: {fileID: 8226323431328364184, guid: 7c1927d6ea7a28244ba62107a9f900b2, type: 3}
+  spawnSpread: 2
+  environmentMask:
+    serializedVersion: 2
+    m_Bits: 128
   enemyPrefab: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
-  spawnEnemies: 0
+  spawnEnemies: 1
 --- !u!1 &582583780
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +370,7 @@ GameObject:
   - component: {fileID: 939902225}
   - component: {fileID: 939902224}
   - component: {fileID: 939902227}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}

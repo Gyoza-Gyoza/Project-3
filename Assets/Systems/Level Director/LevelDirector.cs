@@ -9,6 +9,9 @@ public class LevelDirector : Singleton<LevelDirector>
 {
     [SerializeField] private Stage[] stages;
     [SerializeField] public TextMeshProUGUI testText;
+    [SerializeField] private GameObject test;
+    [SerializeField] private float spawnSpread;
+    [SerializeField] private LayerMask environmentMask;
     public Stage[] Stages
     {
         get { return stages; }
@@ -53,19 +56,48 @@ public class LevelDirector : Singleton<LevelDirector>
 
         if (timer >= 1f)
         {
-            for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+            if (GetSpawnLocation(out Vector3 spawnPosition))
             {
-                GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-                enemy.transform.position = GetSpawnLocation();
+                for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+                {
+                    GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
+                    enemy.transform.position = spawnPosition + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
+                }
+            }
+            else
+            {
+                Debug.Log("Failed to find a location, spawn cancelled");
             }
             timer = 0;
         }
     }
-    private Vector3 GetSpawnLocation()
+    private bool GetSpawnLocation(out Vector3 randomPosition)
     {
-        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-        Vector3 randomPosition = payload.transform.position + randomDirection * Random.Range(payload.InteractRadius + 5f, payload.InteractRadius + 15f);
-        return Vector3.zero; // Placeholder
+        RaycastHit hit = new RaycastHit();
+        Vector3 randomDirection = Vector3.zero;
+        randomPosition = Vector3.zero;
+
+        for(int i = 0; i < 100; i++)
+        {
+            randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+            randomPosition = payload.transform.position + randomDirection * (stages[currentStage].MinSpawnDistance + Random.Range(0f, stages[currentStage].MaxSpawnDistance));
+            
+            Vector3 vectorToPlayer = PlayerController.Instance.transform.position - randomPosition;
+            float distanceToPlayer = vectorToPlayer.magnitude;
+            Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.red, 1f);
+
+            if (Physics.Linecast(randomPosition, PlayerController.Instance.transform.position, environmentMask))
+            {
+                Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.green, 1f);
+                return true;
+            }
+            else
+            {
+                Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.red, 1f);
+                continue;
+            }
+        }
+        return false;
     }
     public void CompletedStage()
     {
