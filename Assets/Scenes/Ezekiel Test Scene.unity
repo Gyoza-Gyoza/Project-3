@@ -195,9 +195,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40fd1be7919a57a4699dbeb44b8b0d57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
-  spawnAmount: 3
-  spawnInterval: 5
 --- !u!4 &354849554
 Transform:
   m_ObjectHideFlags: 0
@@ -890,6 +887,10 @@ PrefabInstance:
     - target: {fileID: 7659994822730759179, guid: c805d7616b9d5f943a7a52646c12b0fc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8701312174061187180, guid: c805d7616b9d5f943a7a52646c12b0fc, type: 3}
+      propertyPath: attackSpeed
+      value: 0.07
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -7,9 +7,9 @@ public class TwoJawScript : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject leftJaw;
-    private Transform leftJawIni;
+    private GameObject leftJawIni;
     [SerializeField] private GameObject rightJaw;
-    private Transform rightJawIni;
+    private GameObject rightJawIni;
     [SerializeField] private GameObject leftJawAttackEnd;
     [SerializeField] private GameObject rightJawAttackEnd;
 
@@ -22,42 +22,106 @@ public class TwoJawScript : MonoBehaviour
     private bool leftJawThrown = false;
     private bool rightJawThrown = false;
     private bool rightSideCurrently = true;
+    private bool meleeAttacking = false;
 
     public void Attack()
     {
         //Basic Attack but they will always attack with whichever is free
 
+        if (meleeAttacking == true || rightJawThrown == true && leftJawThrown == true)
+        {
+            return ;
+        }
+
+
+        if (rightSideCurrently ==  true)
+        {
+            if (rightJawThrown == false)
+            {
+                rightJawThrown = true;
+                StartCoroutine(AttackCoroutine(rightJaw));
+            }
+            else
+            {
+                rightJawThrown = false;
+                StartCoroutine(AttackCoroutine(leftJaw));
+            }
+        }
+        else
+        {
+            if (leftJawThrown == false)
+            {
+                rightJawThrown = false;
+                StartCoroutine(AttackCoroutine(leftJaw));
+            }
+            else
+            {
+                rightJawThrown = true;
+                StartCoroutine(AttackCoroutine(rightJaw));
+            }
+        }
     }
 
     IEnumerator AttackCoroutine(GameObject toAttack)
     {
+        meleeAttacking = true;
         float count = 0f;
-        //bool forward = true;
-        while (leftJawThrown == true || rightJawThrown == true)
+        bool forward = true;
+        Transform iniTransform;
+        Transform finalTransform;
+
+        //Assign Left/Right coords
+        if (rightSideCurrently == true)
         {
-            if (count > attackSpeed)
-            {
-                break;
-            }
-
-            count += Time.deltaTime;
-            if (rightSideCurrently == true)
-            {
-                toAttack.transform.position = Vector3.Lerp(rightJawIni.position, rightJawAttackEnd.transform.position, count / attackSpeed);
-                toAttack.transform.rotation = Quaternion.Lerp(rightJawIni.rotation, rightJawAttackEnd.transform.rotation, count / attackSpeed);
-            }
-            else
-            {
-                toAttack.transform.position = Vector3.Lerp(leftJawIni.position, leftJawAttackEnd.transform.position, count / attackSpeed);
-                toAttack.transform.rotation = Quaternion.Lerp(leftJawIni.rotation, leftJawAttackEnd.transform.rotation, count / attackSpeed);
-            }
-            yield return new WaitForSeconds(Time.deltaTime);
-
-
+            iniTransform = rightJawIni.transform;
+            finalTransform = rightJawAttackEnd.transform;
+        }
+        else
+        {
+            iniTransform = leftJawIni.transform;
+            finalTransform = leftJawAttackEnd.transform;
         }
 
-        
-        //Flips the side
+        //forward loop
+        while (forward ==  true)
+        {
+            count += Time.deltaTime;
+
+            if (count >= attackSpeed)
+            {
+                count = attackSpeed;
+                forward = false;
+            }
+
+            toAttack.transform.position = Vector3.Lerp(iniTransform.position, finalTransform.transform.position, count / attackSpeed);
+            toAttack.transform.rotation = Quaternion.Lerp(iniTransform.rotation, finalTransform.transform.rotation, count / attackSpeed);
+
+            yield return new WaitForSeconds(Time.deltaTime);
+            
+        }
+        Debug.Log("Forward Loop done");
+        //backward loop
+        while (forward == false)
+        {
+            count -= Time.deltaTime;
+
+            if (count <= 0)
+            {
+                count = 0;
+                forward = true;
+                Debug.Log("Back exit");
+            }
+
+            toAttack.transform.position = Vector3.Lerp(iniTransform.position, finalTransform.transform.position, count / attackSpeed);
+            toAttack.transform.rotation = Quaternion.Lerp(iniTransform.rotation, finalTransform.transform.rotation, count / attackSpeed);
+
+            yield return new WaitForSeconds(Time.deltaTime);
+            Debug.Log("Back Looping");
+
+        }
+        Debug.Log("Back Loop done");
+
+        //flip sides
         if (rightSideCurrently == true)
         {
             rightSideCurrently = false;
@@ -66,6 +130,8 @@ public class TwoJawScript : MonoBehaviour
         {
             rightSideCurrently = true;
         }
+
+        meleeAttacking = false;
 
         yield break;
     }
@@ -107,8 +173,8 @@ public class TwoJawScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        leftJawIni = leftJaw.transform;
-        rightJawIni = rightJaw.transform;
+        leftJawIni = GameObject.Instantiate(leftJawAttackEnd,leftJaw.transform.position , leftJaw.transform.rotation, leftJaw.transform.parent);
+        rightJawIni = GameObject.Instantiate(rightJawAttackEnd, rightJaw.transform.position, rightJaw.transform.rotation, rightJaw.transform.parent);
     }
 
     // Update is called once per frame

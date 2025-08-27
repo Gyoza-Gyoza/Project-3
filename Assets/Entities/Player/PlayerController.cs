@@ -128,6 +128,7 @@ public class PlayerController : Entity
     }
 
     [Header("AttackFields")]
+    [SerializeField] private TwoJawScript jawScript;
     [SerializeField] private HitBox basicHB;
     [SerializeField] private float basicTiming = .2f;
     [SerializeField] private int basicDamage = 1;
@@ -135,10 +136,13 @@ public class PlayerController : Entity
 
     private void BasicAttack()
     {
+        /*
         if (isAttacking == false)
         {
             StartCoroutine(BasicAttackSequence());
         }
+        */
+        jawScript.Attack();
     }
 
     IEnumerator BasicAttackSequence()
