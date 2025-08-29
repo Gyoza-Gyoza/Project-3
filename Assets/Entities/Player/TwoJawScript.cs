@@ -18,7 +18,13 @@ public class TwoJawScript : MonoBehaviour
     [SerializeField] private float attackSpeed;
     [SerializeField] private float maxThrowRange;
     [SerializeField] private float throwSpeed;
+    [SerializeField] private int basicDamage = 1;
     
+    [Header("Hitbox")]
+    [SerializeField] private HitBox leftHitBox;
+    [SerializeField] private HitBox rightHitBox;
+
+
     private bool leftJawThrown = false;
     private bool rightJawThrown = false;
     private bool rightSideCurrently = true;
@@ -69,17 +75,20 @@ public class TwoJawScript : MonoBehaviour
         bool forward = true;
         Transform iniTransform;
         Transform finalTransform;
+        HitBox hitBox;
 
         //Assign Left/Right coords
         if (rightSideCurrently == true)
         {
             iniTransform = rightJawIni.transform;
             finalTransform = rightJawAttackEnd.transform;
+            hitBox = rightHitBox;
         }
         else
         {
             iniTransform = leftJawIni.transform;
             finalTransform = leftJawAttackEnd.transform;
+            hitBox = leftHitBox;
         }
 
         //forward loop
@@ -100,6 +109,11 @@ public class TwoJawScript : MonoBehaviour
             
         }
         Debug.Log("Forward Loop done");
+
+        hitBox.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.02f);
+        hitBox.gameObject.SetActive(false);
+
         //backward loop
         while (forward == false)
         {
@@ -175,6 +189,9 @@ public class TwoJawScript : MonoBehaviour
     {
         leftJawIni = GameObject.Instantiate(leftJawAttackEnd,leftJaw.transform.position , leftJaw.transform.rotation, leftJaw.transform.parent);
         rightJawIni = GameObject.Instantiate(rightJawAttackEnd, rightJaw.transform.position, rightJaw.transform.rotation, rightJaw.transform.parent);
+
+        leftHitBox.HitBoxListeners += BasicDamage;
+        rightHitBox.HitBoxListeners += BasicDamage;
     }
 
     // Update is called once per frame
@@ -182,4 +199,35 @@ public class TwoJawScript : MonoBehaviour
     {
         
     }
+
+    public void BasicDamage(GameObject toDamage)
+    {
+        if ( toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage);
+        }
+    }
+
+    /*
+    public void DamageEnemy(EnemyBehaviour toDamage, HitBox hitbox)
+    {
+        toDamage.TakeDamage(HitBoxCheckDamage(hitbox));
+        //throw new System.NotImplementedException();
+    }
+
+    public void DamagePlayer(EnemyBehaviour toDamage, HitBox hitbox)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public int HitBoxCheckDamage(HitBox tocheck)
+    {
+        if (tocheck == leftHitBox || tocheck == rightHitBox)
+        {
+            return basicDamage;
+        }
+        //throw new System.NotImplementedException();
+        return 0;
+    }
+    */
 }

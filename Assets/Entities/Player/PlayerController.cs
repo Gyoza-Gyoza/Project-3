@@ -38,7 +38,6 @@ public class PlayerController : Entity
     {
         base.Start();
         inputManager = InputManager.Instance;
-        basicHB.SetOwner(this.gameObject);
 
     }
     private void Update()

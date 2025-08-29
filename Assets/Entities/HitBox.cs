@@ -4,27 +4,36 @@ using UnityEngine;
 
 public class HitBox : MonoBehaviour
 {
-    [SerializeField] private bool hurtsPlayer = false;
-    [SerializeField] private bool hurtsEnemy = false;
-    private GameObject owner;
+    //[SerializeField] private bool hurtsPlayer = false;
+    //[SerializeField] private bool hurtsEnemy = false;
+    //private GameObject playerOwner;
+
+    public delegate void HitBoxTriggerEvent(GameObject hit);
+    public event HitBoxTriggerEvent HitBoxListeners;
+    private Entity owner;
     private BoxCollider boxCollider;
-    
-    public void SetOwner(GameObject input)
+    /*
+    public void SetPlayerOwner(GameObject input)
     {
-        owner = input;
+        playerOwner = input;
+
     }
+    */
 
     private void OnTriggerEnter(Collider other)
     {
-            if (other.gameObject.tag == "Player" && hurtsPlayer)
-            {
-                
-            }
-            if (other.gameObject.tag == "Enemy" && hurtsEnemy)
-            {
-            owner.GetComponent<PlayerController>().BasicDamage(other.gameObject.GetComponent<EnemyBehaviour>());
-            }
+        /*
+        if (other.gameObject.tag == "Player" && hurtsPlayer)
+        {
 
+        }
+        if (other.gameObject.tag == "Enemy" && hurtsEnemy)
+        {
+            //playerOwner.GetComponent<PlayerController>().
+            //owner.GetComponent<PlayerController>().BasicDamage(other.gameObject.GetComponent<EnemyBehaviour>());
+        }
+        */
+        HitBoxListeners(other.gameObject);
     }
 
     // Start is called before the first frame update
@@ -39,3 +48,14 @@ public class HitBox : MonoBehaviour
         
     }
 }
+
+/*
+public interface IHitBoxOwner
+{
+    abstract public void DamageEnemy(EnemyBehaviour toDamage, HitBox hitbox);
+
+    abstract public void DamagePlayer(EnemyBehaviour toDamage, HitBox hitbox);
+
+    abstract public int HitBoxCheckDamage(HitBox tocheck);
+}
+*/
