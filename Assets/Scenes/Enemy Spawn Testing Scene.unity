@@ -224,7 +224,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enemyPrefab: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
-  spawnEnemies: 1
+  spawnEnemies: 0
 --- !u!1001 &459506956
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -233,6 +233,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1537188941}
     m_Modifications:
+    - target: {fileID: 108807598201624654, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 450
+      objectReference: {fileID: 0}
     - target: {fileID: 675214498603560521, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -326,8 +330,24 @@ PrefabInstance:
       value: Screen Effects Example
       objectReference: {fileID: 0}
     - target: {fileID: 8428188226071961589, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
+      propertyPath: m_Name
+      value: Title Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 8428188226071961589, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833920333488631048, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
+      propertyPath: m_fontSize
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833920333488631048, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8833920333488631048, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

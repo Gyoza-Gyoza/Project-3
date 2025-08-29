@@ -15,7 +15,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     private Transform quickNotifications;
     [SerializeField]
     private GameObject quickNotificationPrefab;
-
+    [SerializeField] private Sprite test;
     //Title queue system
     private Queue<IEnumerator> titleTextQueue = new Queue<IEnumerator>(); //Holds the queue of title text sequences
     private bool isTitleActive = false;
@@ -24,6 +24,12 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     {
         screenCover.gameObject.SetActive(false);
         notification.gameObject.SetActive(false);
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I)) CreateQuickTextNotification(test, "Level 1 Start");
+        if (Input.GetKeyDown(KeyCode.U)) CreateTitleTextNotification("Level 1 Start");
+        if (Input.GetKeyDown(KeyCode.Y)) ScreenFade(0.5f, 0.5f, 1f, Color.black);
     }
     /// <summary>
     /// Performs a full screen fade in and out
@@ -52,7 +58,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
 
         titleTextQueue.Enqueue(FadeSequence(notification, fadeInDuration, fadeOutDuration, holdDuration)); //Adds the sequence to the queue
 
-        TryRunNextNotification();
+        StartCoroutine(TryRunNextNotification());
     }
     private IEnumerator TryRunNextNotification()
     {
@@ -60,6 +66,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
 
         isTitleActive = true;
         yield return StartCoroutine(titleTextQueue.Dequeue()); //Get the next notification in the queue
+        isTitleActive = false;
 
         StartCoroutine(TryRunNextNotification()); //Recursively call the next notification
     }
@@ -84,14 +91,15 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
         CanvasGroup canvasGroup = textNotification.GetComponent<CanvasGroup>();
 
         StartCoroutine(FadeSequence(textNotification.GetComponent<CanvasGroup>(), fadeInDuration, fadeOutDuration, holdDuration));
-    } /// <summary>
-      /// Used to fade a UI element in or out
-      /// </summary>
-      /// <param name="target">Target to fade</param>
-      /// <param name="fadeInDuration">Duration of the fade in</param>
-      /// <param name="fadeOutDuration">Duration of the fade out</param>
-      /// <param name="holdDuration">How long to hold the fade in state</param>
-      /// <returns></returns>
+    }
+    /// <summary>
+    /// Used to fade a UI element in or out
+    /// </summary>
+    /// <param name="target">Target to fade</param>
+    /// <param name="fadeInDuration">Duration of the fade in</param>
+    /// <param name="fadeOutDuration">Duration of the fade out</param>
+    /// <param name="holdDuration">How long to hold the fade in state</param>
+    /// <returns></returns>
     private IEnumerator FadeSequence(Graphic target, float fadeInDuration, float fadeOutDuration, float holdDuration)
     {
         target.gameObject.SetActive(true);
