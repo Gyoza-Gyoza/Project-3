@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public class LevelDirector : Singleton<LevelDirector>
 {
     [SerializeField] private Stage[] stages;
     [SerializeField] public TextMeshProUGUI testText;
+    [SerializeField] private GameObject test;
+    [SerializeField] private float spawnSpread;
+    [SerializeField] private LayerMask environmentMask;
     public Stage[] Stages
     {
         get { return stages; }
@@ -19,6 +24,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private bool spawnEnemies = true;
 
     private Vector3 currentPosition; // Used for drawing gizmos
+    private PayloadBehaviour payload;
 
     public float StageProgress
     { 
@@ -35,23 +41,63 @@ public class LevelDirector : Singleton<LevelDirector>
 
     private float timer;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        payload = PayloadBehaviour.Instance;
+    }
     private void Update()
     {
-        if (spawnEnemies) Spawning();
+        if (spawnEnemies) SpawnEnemies();
     }
-    private void Spawning()
+    private void SpawnEnemies()
     {
         timer += Stages[currentStage].SpawnFrequency * Time.deltaTime; 
 
         if (timer >= 1f)
         {
-            for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+            if (GetSpawnLocation(out Vector3 spawnPosition))
             {
-                GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-                enemy.transform.position = transform.position;
+                for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+                {
+                    GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
+                    enemy.transform.position = spawnPosition + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
+                }
+            }
+            else
+            {
+                Debug.Log("Failed to find a location, spawn cancelled");
             }
             timer = 0;
         }
+    }
+    private bool GetSpawnLocation(out Vector3 randomPosition)
+    {
+        RaycastHit hit = new RaycastHit();
+        Vector3 randomDirection = Vector3.zero;
+        randomPosition = Vector3.zero;
+
+        for(int i = 0; i < 100; i++)
+        {
+            randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
+            randomPosition = payload.transform.position + randomDirection * (stages[currentStage].MinSpawnDistance + Random.Range(0f, stages[currentStage].MaxSpawnDistance));
+            
+            Vector3 vectorToPlayer = PlayerController.Instance.transform.position - randomPosition;
+            float distanceToPlayer = vectorToPlayer.magnitude;
+            Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.red, 1f);
+
+            if (Physics.Linecast(randomPosition, PlayerController.Instance.transform.position, environmentMask))
+            {
+                Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.green, 1f);
+                return true;
+            }
+            else
+            {
+                Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.red, 1f);
+                continue;
+            }
+        }
+        return false;
     }
     public void CompletedStage()
     {

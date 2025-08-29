@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace2e4014a04daa409f5375ab84a6c8b, type: 3}
   m_Name: Stage6
   m_EditorClassIdentifier: 
-  spawnFrequency: 3
+  spawnFrequency: 0.5
   maxSpawnAmount: 5
+  minSpawnDistance: 5
+  maxSpawnDistance: 10
   itemToCollect: {fileID: 8840465649485089741, guid: b862b912792def546b7d61b6ee086a99, type: 3}
   amountToCollect: 10
   amountToSpawn: 15

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c2112972750e474fbe24e77312e28fc, type: 3}
   m_Name: Stage4
   m_EditorClassIdentifier: 
-  spawnFrequency: 3
+  spawnFrequency: 0.5
   maxSpawnAmount: 5
+  minSpawnDistance: 5
+  maxSpawnDistance: 10
   defendDuration: 10
