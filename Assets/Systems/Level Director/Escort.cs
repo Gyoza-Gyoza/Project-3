@@ -39,10 +39,12 @@ public class Escort : Stage
     }
     public override void PlayerInRange()
     {
-        PayloadBehaviour.Instance.Agent.isStopped = false;
+        PayloadBehaviour.Instance.StartFillingGas();
     }
     public override void PlayerOutOfRange()
     {
-        PayloadBehaviour.Instance.Agent.isStopped = true;
+        PayloadBehaviour.Instance.StopFillingGas();
     }
+
+    
 }

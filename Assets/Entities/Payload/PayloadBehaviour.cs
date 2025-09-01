@@ -1,11 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
+
+    [SerializeField] private float burningRate = 0.5f;
+    [SerializeField] private float fillingRate = 1f;
+    [SerializeField] private int maxGas = 100;
+    private bool fillingGas = false;
+    private bool burningGas = false;
+    private int currentGas;
 
     //public float CheckpointProgress
     //{ 
@@ -26,7 +34,7 @@ public class PayloadBehaviour : Entity
     //}
     private float interactRadius;
     public float InteractRadius
-    { get { return interactRadius * transform.localScale.z; } } // Hard coding :(
+    { get { return interactRadius * transform.localScale.z; } } // Hard coding :( //Its okay Hard coding is fine
     private bool playerInRange = false;
     public static PayloadBehaviour Instance;
 
@@ -48,7 +56,79 @@ public class PayloadBehaviour : Entity
     private void Update()
     {
         if (LevelDirector.Instance.CurrentStage < stages.Length) stages[LevelDirector.Instance.CurrentStage].DoPayloadBehaviour();
+
+        if (currentGas < 0 && !burningGas)
+        {
+            StartBurningGas();
+        }
     }
+
+
+    public void StartFillingGas()
+    { fillingGas = true; StartCoroutine(fillGas());}
+
+    public void StopFillingGas()
+    { fillingGas = false; }
+
+    IEnumerator fillGas()
+    {
+        float count = 0f;
+
+        while (fillingGas)
+        {
+            count += Time.deltaTime;
+            if (count > 1f / fillingRate) 
+            {
+                count -= (1f / fillingRate);
+                currentGas += 1;
+                PlayerController.Instance.RemoveGas(1);
+            }
+
+            if (currentGas >= maxGas)
+            {
+                currentGas = maxGas;
+                StopFillingGas();
+            }
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        yield break;
+    }
+
+    public void StartBurningGas()
+    { burningGas = true; StartCoroutine(burnGas());}
+
+    public void StopBurningGas()
+    { burningGas = false; }
+    
+    IEnumerator burnGas()
+    {
+        float count = 0f;
+
+        PayloadBehaviour.Instance.agent.isStopped = false;
+
+        while (burningGas)
+        {
+            count += Time.deltaTime;
+            if (count > 1f / burningRate)
+            {
+                count -= (1f / burningRate);
+                currentGas -= 1;
+            }
+
+            if (currentGas >= maxGas)
+            {
+                currentGas = 0;
+                StopBurningGas();
+            }
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        PayloadBehaviour.Instance.agent.isStopped = true;
+
+        yield break;
+    }
+
     private void InitializeAgent()
     {
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;

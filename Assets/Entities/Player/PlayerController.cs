@@ -38,6 +38,7 @@ public class PlayerController : Entity
     {
         base.Start();
         inputManager = InputManager.Instance;
+        currentGas = startingGas;
 
     }
     private void Update()
@@ -135,34 +136,14 @@ public class PlayerController : Entity
 
     private void BasicAttack()
     {
-        /*
-        if (isAttacking == false)
-        {
-            StartCoroutine(BasicAttackSequence());
-        }
-        */
         jawScript.Attack();
-    }
-
-    IEnumerator BasicAttackSequence()
-    {
-        isAttacking = true;
-        basicHB.gameObject.SetActive(true);
-        yield return new WaitForSeconds(basicTiming);
-        basicHB.gameObject.SetActive(false);
-        isAttacking = false;
-        yield break;
-    }
-
-    public void BasicDamage(EnemyBehaviour toDamage)
-    {
-        toDamage.TakeDamage(basicDamage);
     }
 
     private void SpecialAttack()
     {
-
+        //Prepare special
     }
+
     public void OnCollect()
     {
         itemsCollected++;
@@ -175,6 +156,41 @@ public class PlayerController : Entity
         return amount;
         // Add any additional logic for dropping off items, such as updating UI or playing sound effects
     }
+
+    [Header("Gas")]
+    [SerializeField] private int maxGas = 50;
+    [SerializeField] private int startingGas = 0;
+    private int currentGas;
+
+    public bool AddGas(int amount)
+    {
+        if (currentGas > maxGas)
+        {
+            currentGas = maxGas;
+            return false;
+        }
+        else
+        {
+            currentGas += amount;
+            return true;
+        }
+        //Add the rest of effects that relies on this
+    }
+
+    public bool RemoveGas(int amount)
+    {
+        if (currentGas < 0)
+        {
+            currentGas = 0;
+            return false;
+        }
+        else
+        {
+            currentGas -= amount;
+            return true;
+        }
+    }
+
 }
 public enum PlayerState
 {
