@@ -73,7 +73,6 @@ public class LevelDirector : Singleton<LevelDirector>
     }
     private bool GetSpawnLocation(out Vector3 randomPosition)
     {
-        RaycastHit hit = new RaycastHit();
         Vector3 randomDirection = Vector3.zero;
         randomPosition = Vector3.zero;
 
