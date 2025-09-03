@@ -244,25 +244,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   addRate: 20
---- !u!114 &121573796
-MonoBehaviour:
+--- !u!208 &121573796
+NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 121573790}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 0
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &256634550
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,7 +847,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1137446280396461333, guid: c805d7616b9d5f943a7a52646c12b0fc, type: 3}
       propertyPath: m_Name
-      value: Player (1)
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 6887351404238405032, guid: c805d7616b9d5f943a7a52646c12b0fc, type: 3}
       propertyPath: maxGas
@@ -858,7 +855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6887351404238405032, guid: c805d7616b9d5f943a7a52646c12b0fc, type: 3}
       propertyPath: startingGas
-      value: 10
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7659994822730759179, guid: c805d7616b9d5f943a7a52646c12b0fc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1572,6 +1569,14 @@ PrefabInstance:
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: turnSpeed
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: burningRate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: fillingRate
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: locations.Array.data[0]

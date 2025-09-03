@@ -57,8 +57,9 @@ public class PayloadBehaviour : Entity
     {
         if (LevelDirector.Instance.CurrentStage < stages.Length) stages[LevelDirector.Instance.CurrentStage].DoPayloadBehaviour();
 
-        if (currentGas < 0 && !burningGas)
+        if (currentGas > 0 && !burningGas)
         {
+            Debug.Log("Burning conditions triggered");
             StartBurningGas();
         }
     }
@@ -81,7 +82,10 @@ public class PayloadBehaviour : Entity
             {
                 count -= (1f / fillingRate);
                 currentGas += 1;
-                PlayerController.Instance.RemoveGas(1);
+                if (PlayerController.Instance.RemoveGas(1) == false)
+                {
+                    StopFillingGas();
+                }
             }
 
             if (currentGas >= maxGas)
@@ -107,6 +111,7 @@ public class PayloadBehaviour : Entity
 
         PayloadBehaviour.Instance.agent.isStopped = false;
 
+        Debug.Log("Payload Moving");
         while (burningGas)
         {
             count += Time.deltaTime;
@@ -125,7 +130,7 @@ public class PayloadBehaviour : Entity
         }
 
         PayloadBehaviour.Instance.agent.isStopped = true;
-
+        Debug.Log("Payload Stopped");
         yield break;
     }
 

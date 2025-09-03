@@ -181,6 +181,7 @@ public class PlayerController : Entity
 
     public bool RemoveGas(int amount)
     {
+        Debug.Log("Remove Gas called");
         if (currentGas < 0)
         {
             currentGas = 0;
