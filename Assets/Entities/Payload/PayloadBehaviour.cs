@@ -116,7 +116,7 @@ public class PayloadBehaviour : Entity
                 currentGas -= 1;
             }
 
-            if (currentGas >= maxGas)
+            if (currentGas <= 0)
             {
                 currentGas = 0;
                 StopBurningGas();
