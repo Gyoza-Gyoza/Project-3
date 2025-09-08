@@ -27,7 +27,10 @@ public class CameraController : MonoBehaviour
         set { canControl = value; }
     }
     private bool cameraMoving;
-
+    private void Awake()
+    {
+        CameraSystem.Instance.AddCamera("main", gameObject);
+    }
     private void Start()
     {
         timerManager = TimerManager.Instance;
