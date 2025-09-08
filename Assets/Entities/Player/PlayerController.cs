@@ -20,6 +20,7 @@ public class PlayerController : Entity
 
     private InputManager inputManager;
     private Rigidbody rb;
+    private Animator animator;
     private PlayerState playerState = PlayerState.Idle;
     public PlayerState PlayerState
     {
@@ -31,6 +32,7 @@ public class PlayerController : Entity
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
         if (Instance == null) Instance = this;
         else Destroy(Instance);
     }
@@ -126,18 +128,68 @@ public class PlayerController : Entity
 
     public override void OnDeath()
     {
+
     }
 
     [Header("AttackFields")]
     [SerializeField] private TwoJawScript jawScript;
-    [SerializeField] private HitBox basicHB;
-    [SerializeField] private float basicTiming = .2f;
-    [SerializeField] private int basicDamage = 1;
-    private bool isAttacking = false;
+    [SerializeField] private HitBox basicHB_1;
+    [SerializeField] private HitBox basicHB_2;
+    [SerializeField] private HitBox basicHB_3;
+    [SerializeField] private int basicDamage_1 = 1;
+    [SerializeField] private int basicDamage_2 = 1;
+    [SerializeField] private int basicDamage_3 = 1;
+
+    private void InitializeHitboxs()
+    {
+        basicHB_1.HitBoxListeners += BasicDamage1;
+        basicHB_2.HitBoxListeners += BasicDamage2;
+        basicHB_3.HitBoxListeners += BasicDamage3;
+    }
+
+    public void BasicDamage1(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_1);
+        }
+    }
+
+    public void BasicDamage2(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_2);
+        }
+    }
+
+    public void BasicDamage3(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_3);
+        }
+    }
 
     private void BasicAttack()
     {
-        jawScript.Attack();
+        if (jawScript != null)
+        { jawScript.Attack(); }
+        else
+        {
+            StartCoroutine(attackingBuffer());
+        }
+    }
+
+    IEnumerator attackingBuffer()
+    {
+        animator.SetBool("Attacking", true);
+
+        yield return new WaitForSeconds(.8f);
+
+        animator.SetBool("Attacking", false);
+
+        yield break;
     }
 
     private void SpecialAttack()

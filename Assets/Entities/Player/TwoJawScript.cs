@@ -207,27 +207,4 @@ public class TwoJawScript : MonoBehaviour
             toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage);
         }
     }
-
-    /*
-    public void DamageEnemy(EnemyBehaviour toDamage, HitBox hitbox)
-    {
-        toDamage.TakeDamage(HitBoxCheckDamage(hitbox));
-        //throw new System.NotImplementedException();
-    }
-
-    public void DamagePlayer(EnemyBehaviour toDamage, HitBox hitbox)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public int HitBoxCheckDamage(HitBox tocheck)
-    {
-        if (tocheck == leftHitBox || tocheck == rightHitBox)
-        {
-            return basicDamage;
-        }
-        //throw new System.NotImplementedException();
-        return 0;
-    }
-    */
 }
