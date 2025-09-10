@@ -7,6 +7,8 @@ using UnityEngine.AI;
 public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
+    [SerializeField] private float returnSpeed;
+
 
     [SerializeField] private float burningRate = 0.5f;
     [SerializeField] private float fillingRate = 1f;

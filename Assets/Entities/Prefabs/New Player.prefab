@@ -52,7 +52,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3752353486078679840
 Transform:
   m_ObjectHideFlags: 0
@@ -63,7 +63,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2.07}
-  m_LocalScale: {x: 4.1410713, y: 1.6429278, z: 3.6416333}
+  m_LocalScale: {x: 4.1410713, y: 2.5286303, z: 3.6416333}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2056832325651692367}
@@ -91,9 +91,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -309,12 +309,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   jawScript: {fileID: 0}
+  attackBuffer: 1
   basicHB_1: {fileID: 3843280657165947952}
   basicHB_2: {fileID: 4865277019843570511}
   basicHB_3: {fileID: 4352942014616108942}
-  basicDamage_1: 1
-  basicDamage_2: 1
-  basicDamage_3: 1
+  basicDamage_1: 20
+  basicDamage_2: 20
+  basicDamage_3: 100
   maxGas: 50
   startingGas: 0
 --- !u!95 &1788774236931569489
@@ -406,7 +407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4329631154118660523
 Transform:
   m_ObjectHideFlags: 0
@@ -417,7 +418,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2.07}
-  m_LocalScale: {x: 4.1410713, y: 1.6429278, z: 3.6416333}
+  m_LocalScale: {x: 4.1410713, y: 2.5286303, z: 3.6416333}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2056832325651692367}
@@ -445,9 +446,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -629,7 +630,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4989598724637755416}
   - component: {fileID: 6945712826086260073}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground Check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -645,7 +646,7 @@ Transform:
   m_GameObject: {fileID: 6977262183276319970}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.47, z: 0}
+  m_LocalPosition: {x: 0, y: -1.566, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -677,7 +678,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8704657631873590039
 Transform:
   m_ObjectHideFlags: 0
@@ -688,7 +689,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2.55}
-  m_LocalScale: {x: 3.0675397, y: 1.642928, z: 5.4102674}
+  m_LocalScale: {x: 3.0675397, y: 2.5286305, z: 5.4102674}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2056832325651692367}
@@ -716,9 +717,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}

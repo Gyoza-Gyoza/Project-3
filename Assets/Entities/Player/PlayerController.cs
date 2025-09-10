@@ -40,6 +40,7 @@ public class PlayerController : Entity
     {
         base.Start();
         inputManager = InputManager.Instance;
+        InitializeHitboxs();
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
@@ -55,6 +56,12 @@ public class PlayerController : Entity
         GetInput();
         GroundCheck();
         Movement();
+
+        if (attackBuffering && !animator.GetBool("Attacking"))
+        {
+            attackBuffering = false;
+            animator.SetBool("Attacking", true);
+        }
     }
     private void GetInput()
     {
@@ -89,14 +96,18 @@ public class PlayerController : Entity
             }
         }
 
+        if (Input.GetKeyDown(inputManager.GetKey(KeyInput.Jump))) Debug.Log($"Jump pressed. Groundcheck is {isGrounded}");
+
+
         if (Input.GetKeyDown(inputManager.GetKey(KeyInput.Jump)) && isGrounded) Jump(jumpHeight);
     }
     private void GroundCheck()
     {
-        isGrounded = Physics.CheckBox(groundCheck.position, transform.localScale / 2, Quaternion.identity, groundLayer);
+        isGrounded = Physics.CheckBox(groundCheck.position, groundCheck.transform.localScale / 2, Quaternion.identity, groundLayer);
     }
     private void Jump(float amount)
     {
+        Debug.Log("Jumping");
         PlayerState = PlayerState.Jumping;
         rb.AddForce(Vector3.up * amount, ForceMode.Impulse);
     }
@@ -133,12 +144,15 @@ public class PlayerController : Entity
 
     [Header("AttackFields")]
     [SerializeField] private TwoJawScript jawScript;
+    [SerializeField] private float attackBuffer;
     [SerializeField] private HitBox basicHB_1;
     [SerializeField] private HitBox basicHB_2;
     [SerializeField] private HitBox basicHB_3;
     [SerializeField] private int basicDamage_1 = 1;
     [SerializeField] private int basicDamage_2 = 1;
     [SerializeField] private int basicDamage_3 = 1;
+    private bool attackBuffering = false;
+    private float bufferCount = 0f;
 
     private void InitializeHitboxs()
     {
@@ -177,17 +191,28 @@ public class PlayerController : Entity
         { jawScript.Attack(); }
         else
         {
-            StartCoroutine(attackingBuffer());
+            if (attackBuffering)
+            {
+                bufferCount = attackBuffer;
+            }
+            else
+            {
+                StartCoroutine(attackingBuffer());
+            }
         }
     }
 
     IEnumerator attackingBuffer()
     {
-        animator.SetBool("Attacking", true);
+        attackBuffering = true;
+        bufferCount = attackBuffer;
 
-        yield return new WaitForSeconds(.8f);
-
-        animator.SetBool("Attacking", false);
+        while (bufferCount > 0f)
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        attackBuffering = false;
+        bufferCount = attackBuffer;
 
         yield break;
     }
