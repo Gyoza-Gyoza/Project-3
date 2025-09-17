@@ -45,6 +45,7 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         base.Awake();
         payload = PayloadBehaviour.Instance;
+        AssignEscortStages();
     }
     private void Update()
     {
@@ -107,6 +108,28 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         // Handle level completion logic here
         testText.text = $"Level Completed! Total Progress: 100%";
+    }
+
+    private void AssignEscortStages()
+    {
+        //Debug.Log("Assign Escorts called");
+        for(int i = 1; i < stages.Length; i++)
+        {
+            if (stages[i] is Escort escort1)
+            {
+                if (stages[i -1 ] is Escort escort2)
+                {
+                    escort1.PreviousCheckpoint = escort2.Checkpoint;
+                }
+                else
+                {
+                    escort1.PreviousCheckpoint = escort1.Checkpoint;
+
+                }
+
+                //Debug.Log($"Escorts point {i}, Previous: {escort1.PreviousCheckpoint}, Current: {escort1.Checkpoint}");
+            }
+        }
     }
 
     private void OnDrawGizmos()

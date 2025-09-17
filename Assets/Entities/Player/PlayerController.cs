@@ -96,7 +96,7 @@ public class PlayerController : Entity
             }
         }
 
-        if (Input.GetKeyDown(inputManager.GetKey(KeyInput.Jump))) Debug.Log($"Jump pressed. Groundcheck is {isGrounded}");
+        //if (Input.GetKeyDown(inputManager.GetKey(KeyInput.Jump))) Debug.Log($"Jump pressed. Groundcheck is {isGrounded}");
 
 
         if (Input.GetKeyDown(inputManager.GetKey(KeyInput.Jump)) && isGrounded) Jump(jumpHeight);
@@ -242,7 +242,7 @@ public class PlayerController : Entity
 
     public bool AddGas(int amount)
     {
-        if (currentGas > maxGas)
+        if (currentGas >= maxGas)
         {
             currentGas = maxGas;
             return false;
@@ -258,8 +258,8 @@ public class PlayerController : Entity
 
     public bool RemoveGas(int amount)
     {
-        Debug.Log("Remove Gas called");
-        if (currentGas < 0)
+        //Debug.Log("Remove Gas called");
+        if (currentGas <= 0)
         {
             currentGas = 0;
             return false;

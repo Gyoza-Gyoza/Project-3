@@ -10,7 +10,12 @@ public class Escort : Stage
     [Tooltip("Speed of the payload")]
     [SerializeField] private float payloadSpeed;
     private float escortDistance;
-
+    private Vector3 previousCheckpoint;
+    public Vector3 PreviousCheckpoint
+    {
+        get { return previousCheckpoint; }
+        set { previousCheckpoint = value; }
+    }
     public Vector3 Checkpoint
     { get { return checkpoint; } }
     public float PayloadSpeed
@@ -24,7 +29,7 @@ public class Escort : Stage
     { get { return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; } }
     public override void StartStage()
     {
-        PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
+        FaceForward();
     }
     public override void DoPayloadBehaviour()
     {
@@ -37,6 +42,7 @@ public class Escort : Stage
             PayloadBehaviour.Instance.CompleteStage();
         }
     }
+
     public override void PlayerInRange()
     {
         PayloadBehaviour.Instance.StartFillingGas();
@@ -46,5 +52,20 @@ public class Escort : Stage
         PayloadBehaviour.Instance.StopFillingGas();
     }
 
-    
+
+    private void Update()
+    {
+
+    }
+
+    public void FaceForward()
+    {
+        PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
+    }
+
+    public void FaceBackwards()
+    {
+        PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
+    }
+
 }

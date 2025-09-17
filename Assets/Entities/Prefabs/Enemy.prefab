@@ -147,7 +147,8 @@ MonoBehaviour:
   initialDamage: 5
   initialMovementSpeed: 5
   flickerSign: {fileID: 2775048984678454219}
-  damageAmount: 5
+  hitUpforce: 10
+  hitHorforce: 10
   agent: {fileID: 0}
   attackRange: 1
 --- !u!54 &9097011396309068352

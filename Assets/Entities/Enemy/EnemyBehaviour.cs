@@ -7,7 +7,8 @@ using UnityEngine.AI;
 public class EnemyBehaviour : Entity
 {
     [SerializeField] private GameObject flickerSign;
-    [SerializeField] private float damageAmount = 1f;
+    [SerializeField] private float hitUpforce = 1f;
+    [SerializeField] private float hitHorforce = 1f;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;
@@ -24,9 +25,10 @@ public class EnemyBehaviour : Entity
     }
     private void Update()
     {
-        agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+
         if (agent.isOnNavMesh)
         {
+            agent.SetDestination(PayloadBehaviour.Instance.transform.position);
             agent.enabled = true;
         }
     }
@@ -45,9 +47,11 @@ public class EnemyBehaviour : Entity
     private void Stunned()
     {
         agent.enabled = false;
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f , this.transform.position.z);    
-        rb.AddForce(Vector3.up * damageAmount, ForceMode.Impulse);
-        agent.height
+        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f , this.transform.position.z);
+        Vector3 difference = this.transform.position -  PlayerController.Instance.transform.position;
+        Vector3 horNormed = new Vector3(difference.x, 0, difference.z).normalized;
+        Vector3 force = Vector3.up * hitUpforce + horNormed * hitHorforce;
+        rb.AddForce(force, ForceMode.Impulse);
     }
 
     IEnumerator DamageFlicker()

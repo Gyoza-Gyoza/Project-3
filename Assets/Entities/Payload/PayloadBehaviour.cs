@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
 
+    [SerializeField] private Slider gasSlider;
 
     [SerializeField] private float burningRate = 0.5f;
     [SerializeField] private float fillingRate = 1f;
@@ -61,11 +63,18 @@ public class PayloadBehaviour : Entity
 
         if (currentGas > 0 && !burningGas)
         {
-            Debug.Log("Burning conditions triggered");
+            //Debug.Log("Burning conditions triggered");
             StartBurningGas();
         }
+
+        gasSlider.transform.parent.transform.LookAt(PlayerController.Instance.transform, Vector3.up);
     }
 
+
+    private void UpdateGasSlider()
+    {
+        gasSlider.value = (float)currentGas/(float)maxGas;
+    }
 
     public void StartFillingGas()
     { fillingGas = true; StartCoroutine(fillGas());}
@@ -77,16 +86,21 @@ public class PayloadBehaviour : Entity
     {
         float count = 0f;
 
+        //Debug.Log("Starting to fill gas");
         while (fillingGas)
         {
+            UpdateGasSlider();
             count += Time.deltaTime;
             if (count > 1f / fillingRate) 
             {
                 count -= (1f / fillingRate);
-                currentGas += 1;
                 if (PlayerController.Instance.RemoveGas(1) == false)
                 {
                     StopFillingGas();
+                }
+                else
+                {
+                    currentGas += 1;
                 }
             }
 
@@ -95,27 +109,61 @@ public class PayloadBehaviour : Entity
                 currentGas = maxGas;
                 StopFillingGas();
             }
+
+
             yield return new WaitForSeconds(Time.deltaTime);
         }
-
+        //Debug.Log("Stop to fill gas");
         yield break;
     }
 
     public void StartBurningGas()
-    { burningGas = true; StartCoroutine(burnGas());}
+    { 
+        burningGas = true;
+        ForwardFacing();
+        agent.speed = MovementSpeed;
+        StartCoroutine(burnGas());
+    }
 
     public void StopBurningGas()
-    { burningGas = false; }
+    {
+        Debug.Log("Stop Burning");
+        burningGas = false;
+        BackwardFacing();
+        agent.speed = returnSpeed;
+    }
     
+    public void ForwardFacing()
+    {
+        Debug.Log("Front Facing");
+        //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
+        {
+            Debug.Log("Front Facing Success");
+            agent.SetDestination(stage.Checkpoint);
+        }
+    }
+    public void BackwardFacing()
+    {
+        Debug.Log("Back Facing");
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
+        {
+            Debug.Log("Back Success");
+            agent.SetDestination(stage.PreviousCheckpoint);
+        }
+    }
+
+
     IEnumerator burnGas()
     {
         float count = 0f;
 
-        PayloadBehaviour.Instance.agent.isStopped = false;
 
-        Debug.Log("Payload Moving");
-        while (burningGas)
+        while (currentGas > 0)
         {
+            PayloadBehaviour.Instance.agent.isStopped = false;
+            //Debug.Log($"Payload Moving, current Gas {currentGas}");
+            UpdateGasSlider();
             count += Time.deltaTime;
             if (count > 1f / burningRate)
             {
@@ -123,16 +171,14 @@ public class PayloadBehaviour : Entity
                 currentGas -= 1;
             }
 
-            if (currentGas <= 0)
-            {
-                currentGas = 0;
-                StopBurningGas();
-            }
+            //Debug.Log("Gas still burning");
             yield return new WaitForSeconds(Time.deltaTime);
         }
+        currentGas = 0;
+        StopBurningGas();
 
-        PayloadBehaviour.Instance.agent.isStopped = true;
-        Debug.Log("Payload Stopped");
+        //PayloadBehaviour.Instance.agent.isStopped = true;
+        //Debug.Log($"Payload Stopped, current Gas is {currentGas}");
         yield break;
     }
 
