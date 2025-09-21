@@ -9,28 +9,39 @@ public class EnemyBehaviour : Entity
     [SerializeField] private GameObject flickerSign;
     [SerializeField] private float hitUpforce = 1f;
     [SerializeField] private float hitHorforce = 1f;
+    [SerializeField] private int damageAmount = 1;
+    [SerializeField] private HitBox hb;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;
     private bool flying = false;
+    private bool isAttacking = false;
+    public bool IsAttacking
+    { get { return isAttacking; } }
 
+    public float payloadRange = 1f;
+    public float aggroRange = 1f;
     public float attackRange = 1f;
+
+    private GameObject target;
+
+    public GameObject Target
+    {
+        get { return target; }
+        set { target = value; }
+    }
+
     protected override void Start()
     {
         base.Start();
         state = new EnemyChaseState(this);
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
-
+        hb.HitBoxListeners += DamagePlayer;
     }
     private void Update()
     {
-
-        if (agent.isOnNavMesh)
-        {
-            agent.SetDestination(PayloadBehaviour.Instance.transform.position);
-            agent.enabled = true;
-        }
+        state.DoEnemyAction();
     }
     public override void OnDeath()
     {
@@ -66,6 +77,31 @@ public class EnemyBehaviour : Entity
     {
     }
 
+
+    public void DamagePlayer(GameObject toDamage)
+    {
+        if (toDamage.tag == "Player")
+        {
+            toDamage.GetComponent<PlayerController>().TakeDamage(damageAmount);
+        }
+    }
+    public void Attack()
+    {
+        StartCoroutine(AttackSequence());
+    }
+    IEnumerator AttackSequence()
+    {
+        isAttacking = true;
+        agent.isStopped = true;
+        yield return new WaitForSeconds(1f);
+        hb.gameObject.GetComponent<BoxCollider>().enabled = true;
+        yield return new WaitForSeconds(.1f);
+        hb.gameObject.GetComponent<BoxCollider>().enabled = false;
+        yield return new WaitForSeconds(.5f);
+        agent.isStopped = false;
+        isAttacking = false;
+        yield break;
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") && flying == false)
