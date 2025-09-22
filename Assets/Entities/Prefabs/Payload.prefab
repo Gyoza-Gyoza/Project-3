@@ -146,10 +146,10 @@ MonoBehaviour:
   initialDamage: 5
   initialMovementSpeed: 5
   turnSpeed: 80
-  returnSpeed: 0
+  returnSpeed: 2
   gasSlider: {fileID: 8114945958036792584}
-  burningRate: 1
-  fillingRate: 10
+  burningRate: 4
+  fillingRate: 20
   maxGas: 100
 --- !u!195 &6056036887826652567
 NavMeshAgent:

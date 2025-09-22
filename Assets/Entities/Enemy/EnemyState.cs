@@ -34,14 +34,18 @@ public class EnemyChaseState : EnemyState
     public override void DoEnemyAction()
     {
         //Debug.Log("Chase Do Enemy Action being called");
-        enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+        if (enemy.agent.isActiveAndEnabled)
+        {
+            enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+        }
+
 
         if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
         {
             ReachTargetAction();
         }
 
-        if (Vector3.Distance(enemy.transform.position, PlayerController.Instance.transform.position) <= enemy.aggroRange)
+        if (Vector3.Distance(enemy.transform.position, Discon_PlayerController.Instance.transform.position) <= enemy.aggroRange)
         {
             Debug.Log("Player in Aggro range");
             enemy.state = new EnemyAttackState(enemy);
@@ -69,13 +73,16 @@ public class EnemyAttackState : EnemyState
 
     public override void DoEnemyAction()
     {
-        enemy.agent.SetDestination(PlayerController.Instance.transform.position);
+        if (enemy.agent.isActiveAndEnabled)
+        {
+            enemy.agent.SetDestination(Discon_PlayerController.Instance.transform.position);
+        }
 
-        if (Vector3.Distance(enemy.transform.position, PlayerController.Instance.transform.position) > enemy.aggroRange)
+        if (Vector3.Distance(enemy.transform.position, Discon_PlayerController.Instance.transform.position) > enemy.aggroRange)
         {
             enemy.state = new EnemyChaseState(enemy);
         }
-        else if (Vector3.Distance(enemy.transform.position, PlayerController.Instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
+        else if (Vector3.Distance(enemy.transform.position, Discon_PlayerController.Instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
         {
             ReachTargetAction();
         }

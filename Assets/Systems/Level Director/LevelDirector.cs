@@ -82,18 +82,18 @@ public class LevelDirector : Singleton<LevelDirector>
             randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
             randomPosition = payload.transform.position + randomDirection * (stages[currentStage].MinSpawnDistance + Random.Range(0f, stages[currentStage].MaxSpawnDistance));
             
-            Vector3 vectorToPlayer = PlayerController.Instance.transform.position - randomPosition;
+            Vector3 vectorToPlayer = Discon_PlayerController.Instance.transform.position - randomPosition;
             float distanceToPlayer = vectorToPlayer.magnitude;
-            Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.red, 1f);
+            Debug.DrawLine(randomPosition, Discon_PlayerController.Instance.transform.position, Color.red, 1f);
 
-            if (Physics.Linecast(randomPosition, PlayerController.Instance.transform.position, environmentMask))
+            if (Physics.Linecast(randomPosition, Discon_PlayerController.Instance.transform.position, environmentMask))
             {
-                Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.green, 1f);
+                Debug.DrawLine(randomPosition, Discon_PlayerController.Instance.transform.position, Color.green, 1f);
                 return true;
             }
             else
             {
-                Debug.DrawLine(randomPosition, PlayerController.Instance.transform.position, Color.red, 1f);
+                Debug.DrawLine(randomPosition, Discon_PlayerController.Instance.transform.position, Color.red, 1f);
                 continue;
             }
         }

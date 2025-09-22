@@ -70,7 +70,7 @@ public class PayloadBehaviour : Entity
             StartBurningGas();
         }
 
-        gasSlider.transform.parent.transform.LookAt(PlayerController.Instance.transform, Vector3.up);
+        gasSlider.transform.parent.transform.LookAt(Discon_PlayerController.Instance.transform, Vector3.up);
     }
 
 
@@ -97,7 +97,7 @@ public class PayloadBehaviour : Entity
             if (count > 1f / fillingRate) 
             {
                 count -= (1f / fillingRate);
-                if (PlayerController.Instance.RemoveGas(1) == false)
+                if (Discon_PlayerController.Instance.RemoveGas(1) == false)
                 {
                     StopFillingGas();
                 }

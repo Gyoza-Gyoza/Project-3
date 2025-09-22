@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,11 +24,25 @@ public class HUDController : Singleton<HUDController>
     private float gasTarget;
     private bool updatingGas = false;
 
+    [Header("Progress Bar")]
+    [SerializeField] private Slider progress;
+    [SerializeField] private TextMeshProUGUI progressText;
+    //[SerializeField] private Slider gasCatchUp;
+    //[SerializeField] private float gasCatchUpTiming;
+    //private float gasOrigin;
+    //private float gasTemp;
+    //private float gasTarget;
+    //private bool updatingGas = false;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
+
+    #region Health
 
     public void SetHealth(float input)
     {
@@ -72,6 +87,9 @@ public class HUDController : Singleton<HUDController>
         yield break;
     }
 
+    #endregion
+
+    #region Gas
     public void SetGas(float input)
     {
         if (updatingGas == false)
@@ -112,6 +130,18 @@ public class HUDController : Singleton<HUDController>
         }
         yield break;
     }
+    #endregion
+
+
+    #region Progress Bar
+    public void SetProgressBar(float input)
+    {
+        Debug.Log($"Setting progress to {input}");
+        float clamped = Mathf.Clamp(input, 0f, 1f);
+        progressText.text = $"{Mathf.Round(clamped * 10000)/100}%";
+        progress.value = clamped;
+    }
+    #endregion
     // Update is called once per frame
     void Update()
     {

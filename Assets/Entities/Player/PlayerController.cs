@@ -14,9 +14,6 @@ public class PlayerController : Entity
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded = false;
 
-    private int itemsCollected = 0;
-    public int ItemsCollected
-    { get { return itemsCollected; } }
 
     private InputManager inputManager;
     private Rigidbody rb;
@@ -29,12 +26,16 @@ public class PlayerController : Entity
     }
     private Vector3 movement;
     public static PlayerController Instance;
+    //public static Discon_PlayerController Instance;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+
         if (Instance == null) Instance = this;
         else Destroy(Instance);
+
     }
     protected override void Start()
     {
@@ -44,6 +45,7 @@ public class PlayerController : Entity
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+        //if (Instance == null) Instance = Discon_PlayerController.Instance;
     }
     private void Update()
     {
@@ -111,7 +113,7 @@ public class PlayerController : Entity
         PlayerState = PlayerState.Jumping;
         rb.AddForce(Vector3.up * amount, ForceMode.Impulse);
     }
-    private IEnumerator Dash()
+    private IEnumerator Dash() //dashing with lerp will teleport players which is a problem
     {
         PlayerState = PlayerState.Dashing;
         float timer = 0f;
@@ -142,8 +144,9 @@ public class PlayerController : Entity
 
     }
 
+    #region -----------------Attacks--------------------
     [Header("AttackFields")]
-    [SerializeField] private TwoJawScript jawScript;
+    //[SerializeField] private TwoJawScript jawScript;
     [SerializeField] private float attackBuffer;
     [SerializeField] private HitBox basicHB_1;
     [SerializeField] private HitBox basicHB_2;
@@ -185,12 +188,13 @@ public class PlayerController : Entity
         }
     }
 
+    
     private void BasicAttack()
     {
-        if (jawScript != null)
-        { jawScript.Attack(); }
-        else
-        {
+        //if (jawScript != null)
+        //{ jawScript.Attack(); }
+        //else
+        //{
             if (attackBuffering)
             {
                 bufferCount = attackBuffer;
@@ -199,7 +203,7 @@ public class PlayerController : Entity
             {
                 StartCoroutine(attackingBuffer());
             }
-        }
+        //}
     }
 
     IEnumerator attackingBuffer()
@@ -216,11 +220,19 @@ public class PlayerController : Entity
 
         yield break;
     }
-
+    
     private void SpecialAttack()
     {
         //Prepare special
     }
+
+    #endregion
+
+    #region --------------Item------------------
+
+    private int itemsCollected = 0;
+    public int ItemsCollected
+    { get { return itemsCollected; } }
 
     public void OnCollect()
     {
@@ -234,7 +246,9 @@ public class PlayerController : Entity
         return amount;
         // Add any additional logic for dropping off items, such as updating UI or playing sound effects
     }
+    #endregion
 
+    #region ----------------Gas--------------------------
     [Header("Gas")]
     [SerializeField] private int maxGas = 50;
     [SerializeField] private int startingGas = 0;
@@ -271,7 +285,7 @@ public class PlayerController : Entity
             return true;
         }
     }
-
+    #endregion
 }
 public enum PlayerState
 {
