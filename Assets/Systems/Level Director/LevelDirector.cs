@@ -71,11 +71,11 @@ public class LevelDirector : Singleton<LevelDirector>
             //    Debug.Log("Failed to find a location, spawn cancelled");
             //}
 
-            Vector3 pos = GetSpawnMarkerLocations().ElementAt(Random.Range(0, GetSpawnMarkerLocations().Count));
+            Vector3 pos = GetSpawnMarkerLocation();
             for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
             {
                 GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-                enemy.transform.position = pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
+                enemy.transform.position = pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), pos.y + 5, Random.Range(-spawnSpread, spawnSpread));
             }
 
             timer = 0;
@@ -108,20 +108,21 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         return false;
     }
-    private List<Vector3> GetSpawnMarkerLocations()
+    private Vector3 GetSpawnMarkerLocation()
     {
-        List<Vector3> positions = new List<Vector3>();
+        Vector3 pos = Vector3.zero;
 
         foreach (Transform position in spawnMarker)
         {
             // Checks if position is within range
-            if (!(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) <= Stages[currentStage].MaxSpawnDistance) || 
-                !(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) >= Stages[currentStage].MinSpawnDistance)) continue; 
+            if (!(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) <= Stages[currentStage].MaxSpawnDistance) ||
+                !(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) >= Stages[currentStage].MinSpawnDistance)) continue;
 
             if (Physics.Linecast(position.position, Discon_PlayerController.Instance.transform.position, environmentMask))
             {
                 Debug.DrawLine(position.position, Discon_PlayerController.Instance.transform.position, Color.green, 1f);
-                positions.Add(position.position);
+                pos = position.position;
+                break;
             }
             else
             {
@@ -129,8 +130,8 @@ public class LevelDirector : Singleton<LevelDirector>
                 continue;
             }
         }
-
-        return positions;
+        Debug.Log($"{pos.x}, {pos.y}, {pos.z}");
+        return pos;
     }
     public void MarkLocation(Transform pos) => spawnMarker.Add(pos);
     public void CompletedStage()

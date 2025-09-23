@@ -3421,6 +3421,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpawnMarker (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4470495786841495115, guid: d1dcfc55c6ff94d4cb1e18ceb7f18cca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4509,15 +4513,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2494537136192194781, guid: d1dcfc55c6ff94d4cb1e18ceb7f18cca, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -40.95639
+      value: -43.6
       objectReference: {fileID: 0}
     - target: {fileID: 2494537136192194781, guid: d1dcfc55c6ff94d4cb1e18ceb7f18cca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 14.196503
+      value: 18.17
       objectReference: {fileID: 0}
     - target: {fileID: 2494537136192194781, guid: d1dcfc55c6ff94d4cb1e18ceb7f18cca, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.3067262
+      value: 17.35
       objectReference: {fileID: 0}
     - target: {fileID: 2494537136192194781, guid: d1dcfc55c6ff94d4cb1e18ceb7f18cca, type: 3}
       propertyPath: m_LocalRotation.w
