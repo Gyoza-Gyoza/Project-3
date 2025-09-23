@@ -8,14 +8,14 @@ public abstract class Stage : ScriptableObject
     [Tooltip("How many enemies the director will spawn per second")]
     [SerializeField] private float spawnFrequency;
     [Tooltip("Amount of enemies that the director will spawn each time")]
-    [SerializeField] private float maxSpawnAmount;
+    [SerializeField] private int maxSpawnAmount;
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
     private float progress = 0f;
 
     public float SpawnFrequency
     { get { return spawnFrequency; } }
-    public float MaxSpawnAmount
+    public int MaxSpawnAmount
     { get { return maxSpawnAmount; } }
     public float MaxSpawnDistance
     { get { return maxSpawnDistance; } }
