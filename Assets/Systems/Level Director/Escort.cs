@@ -33,10 +33,9 @@ public class Escort : Stage
     }
     public override void DoPayloadBehaviour()
     {
-        HUDController.Instance.SetProgressBar(Progress);
+        HUDController.Instance.SetProgressBar(LevelDirector.Instance.StageProgress);
         //### BUG ALERT###
         //The remaining distanc is infinity so i need to fix that somehow
-
 
         /*
         LevelDirector.Instance.testText.text = 

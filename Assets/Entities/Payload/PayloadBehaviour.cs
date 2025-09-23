@@ -73,7 +73,7 @@ public class PayloadBehaviour : Entity
         gasSlider.transform.parent.transform.LookAt(Discon_PlayerController.Instance.transform, Vector3.up);
     }
 
-
+    #region -----------------------Gas--------------------------------
     private void UpdateGasSlider()
     {
         gasSlider.value = (float)currentGas/(float)maxGas;
@@ -135,27 +135,6 @@ public class PayloadBehaviour : Entity
         BackwardFacing();
         agent.speed = returnSpeed;
     }
-    
-    public void ForwardFacing()
-    {
-        Debug.Log("Front Facing");
-        //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
-        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
-        {
-            Debug.Log("Front Facing Success");
-            agent.SetDestination(stage.Checkpoint);
-        }
-    }
-    public void BackwardFacing()
-    {
-        Debug.Log("Back Facing");
-        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
-        {
-            Debug.Log("Back Success");
-            agent.SetDestination(stage.PreviousCheckpoint);
-        }
-    }
-
 
     IEnumerator burnGas()
     {
@@ -184,6 +163,31 @@ public class PayloadBehaviour : Entity
         //Debug.Log($"Payload Stopped, current Gas is {currentGas}");
         yield break;
     }
+
+    #endregion
+
+    #region -----------------------Facing--------------------------------
+    public void ForwardFacing()
+    {
+        Debug.Log("Front Facing");
+        //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
+        {
+            Debug.Log("Front Facing Success");
+            agent.SetDestination(stage.Checkpoint);
+        }
+    }
+    public void BackwardFacing()
+    {
+        Debug.Log("Back Facing");
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
+        {
+            Debug.Log("Back Success");
+            agent.SetDestination(stage.PreviousCheckpoint);
+        }
+    }
+    #endregion
+
 
     private void InitializeAgent()
     {

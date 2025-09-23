@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Enemy
+  m_Name: Enemy_Basic_Bait
   m_Shader: {fileID: -6465566751694194690, guid: 06bcf6b8235eaa7499d603cbf9258dcd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -99,7 +99,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GlowIntensity: -0.2
-    - _InnerGlowIntensity: 7.28
+    - _InnerGlowIntensity: 3.59
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _OuterGlowIntensity: 1.06
@@ -121,7 +121,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlowColour: {r: 1, g: 1, b: 1, a: 0}
-    - _InnerGlowColour: {r: 0.3962264, g: 0.27536488, b: 0.38154894, a: 0}
+    - _InnerGlowColour: {r: 0.36101466, g: 0.27450982, b: 0.39607844, a: 0}
     - _OuterGlowColour: {r: 0.18001652, g: 0.23155704, b: 0.51572317, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

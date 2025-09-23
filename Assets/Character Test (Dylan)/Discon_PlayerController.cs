@@ -45,6 +45,10 @@ public class Discon_PlayerController : Entity
 
     public float dashEnterWindow = 0.20f;
 
+    [Header("Extra Fields")]
+    public float dashDistance = 6f;
+    public float dashDuration = .5f;
+
     // --- internals ---
     CharacterController cc;
     float rotVel;
@@ -58,6 +62,15 @@ public class Discon_PlayerController : Entity
     bool  _burstActive = false;
     float _burstTimeLeft = 0f;
     float _burstSpeed = 0f;
+
+    bool  _dashActive = false;
+    float _dashSpeed = 0f;
+    float _dashTimeLeft = 0f;
+    Vector3 dashDirection = Vector3.zero;
+
+    Vector2 input = Vector2.zero;
+    Vector3 dir = Vector3.zero;
+
 
     //Instance
     public static Discon_PlayerController Instance;
@@ -97,6 +110,9 @@ public class Discon_PlayerController : Entity
 
     void Update()
     {
+        // ===== Store Input
+        input = InputAxis();
+
         // ===== Attack Input (Left Mouse Button)
         if (Input.GetMouseButtonDown(0))
         {
@@ -110,15 +126,10 @@ public class Discon_PlayerController : Entity
         bool inAtk3 = state.IsName(attack3StateName);
 
         // ===== Input (movement) — LOCK WASD if in attack
-        Vector3 dir = Vector3.zero;
+        dir = Vector3.zero;
         if (!(inAtk1 || inAtk2 || inAtk3))
         {
-            float h = Input.GetAxisRaw("Horizontal");
-            float v = Input.GetAxisRaw("Vertical");
-            Vector2 input = new Vector2(h, v);
-
-
-
+            //Vector2 input = InputAxis();
             
             if (input.sqrMagnitude > 0.0001f)
             {
@@ -188,6 +199,28 @@ public class Discon_PlayerController : Entity
                 _burstActive = false;
         }
 
+        // ===== Trigger Dash
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _dashActive == false)
+        { 
+            _dashActive = true;
+            _dashSpeed = dashDistance / dashDuration;
+            _dashTimeLeft = dashDuration;
+            dashDirection = new Vector3(input.x, 0, input.y);
+        }
+
+        // ===== Dashing burst
+        if (_dashActive)
+        {
+            cc.Move(dir * (_dashSpeed * Time.deltaTime));
+            velocity.x = 0f;
+            velocity.z = 0f;
+
+            _dashTimeLeft -= Time.deltaTime;
+            if (_dashTimeLeft <= 0f)
+                _dashActive = false;
+        }
+        
+
         // ===== Apply base movement
         cc.Move(velocity * Time.deltaTime);
 
@@ -207,6 +240,13 @@ public class Discon_PlayerController : Entity
     }
 
     // ---------- Helpers ----------
+    Vector2 InputAxis()
+    {
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        return new Vector2(h, v);
+    }
+    
     bool IsGrounded()
     {
         if (cc.isGrounded) return true;
@@ -221,15 +261,13 @@ public class Discon_PlayerController : Entity
         Gizmos.DrawWireSphere(groundCheck.position + Vector3.up * 0.02f, groundCheckRadius);
     }
 
-    #region Attack Fields
+    #region ---------------Attack Fields------------------------
     [SerializeField] private HitBox basicHB_1;
     [SerializeField] private HitBox basicHB_2;
     [SerializeField] private HitBox basicHB_3;
     [SerializeField] private int basicDamage_1 = 1;
     [SerializeField] private int basicDamage_2 = 1;
     [SerializeField] private int basicDamage_3 = 1;
-    //private bool attackBuffering = false;
-    //private float bufferCount = 0f;
 
     private void InitializeHitboxs()
     {
