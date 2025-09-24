@@ -23,7 +23,7 @@ public class EnemyChaseState : EnemyState
 
     public EnemyChaseState(EnemyBehaviour enemy) : base(enemy)
     {
-        Debug.Log("Enemy entering Chase State");
+        //Debug.Log("Enemy entering Chase State");
     }
 
     public override void EnterStateAction()
@@ -39,7 +39,6 @@ public class EnemyChaseState : EnemyState
             enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
         }
 
-
         if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
         {
             ReachTargetAction();
@@ -47,7 +46,7 @@ public class EnemyChaseState : EnemyState
 
         if (Vector3.Distance(enemy.transform.position, Discon_PlayerController.Instance.transform.position) <= enemy.aggroRange)
         {
-            Debug.Log("Player in Aggro range");
+            //Debug.Log("Player in Aggro range");
             enemy.state = new EnemyAttackState(enemy);
 
         }
@@ -64,7 +63,7 @@ public class EnemyAttackState : EnemyState
 
     public EnemyAttackState(EnemyBehaviour enemy) : base(enemy)
     {
-        Debug.Log("Enemy entering Attack State");
+        //Debug.Log("Enemy entering Attack State");
     }
     public override void EnterStateAction()
     {
@@ -112,5 +111,26 @@ public class EnemyPayloadState : EnemyState
     {
         PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount);
         enemy.state = new EnemyAttackState(enemy);
+    }
+}
+
+public class EnemyTauntState: EnemyState
+{
+    private Transform target;
+    public EnemyTauntState(EnemyBehaviour enemy, Transform target) : base(enemy)
+    {
+        this.target = target;
+        enemy.agent.SetDestination(target.transform.position);
+    }
+    public override void EnterStateAction()
+    {
+    }
+    public override void DoEnemyAction()
+    {
+        if (Vector3.Distance(enemy.transform.position, target.position) <= enemy.aggroRange) ReachTargetAction();
+    }
+    public override void ReachTargetAction()
+    {
+        enemy.Attack();
     }
 }
