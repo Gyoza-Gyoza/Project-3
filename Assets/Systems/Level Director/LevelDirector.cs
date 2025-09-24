@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,6 +13,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private GameObject test;
     [SerializeField] private float spawnSpread;
     [SerializeField] private LayerMask environmentMask;
+    private List<Transform> spawnMarker = new List<Transform>(); 
     public Stage[] Stages
     {
         get { return stages; }
@@ -53,22 +55,29 @@ public class LevelDirector : Singleton<LevelDirector>
     }
     private void SpawnEnemies()
     {
-        timer += Stages[currentStage].SpawnFrequency * Time.deltaTime; 
-
+        timer += Stages[currentStage].SpawnFrequency * Time.deltaTime;
         if (timer >= 1f)
         {
-            if (GetSpawnLocation(out Vector3 spawnPosition))
+            //if (GetSpawnLocation(out Vector3 spawnPosition))
+            //{
+            //    for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+            //    {
+            //        GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
+            //        enemy.transform.position = spawnPosition + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
+            //    }
+            //}
+            //else
+            //{
+            //    Debug.Log("Failed to find a location, spawn cancelled");
+            //}
+
+            Vector3 pos = GetSpawnMarkerLocation();
+            for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
             {
-                for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
-                {
-                    GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-                    enemy.transform.position = spawnPosition + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
-                }
+                NavMeshAgent enemy = GameObjectPool.GetObject(enemyPrefab).GetComponent<NavMeshAgent>();
+                enemy.Warp(pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
             }
-            else
-            {
-                Debug.Log("Failed to find a location, spawn cancelled");
-            }
+
             timer = 0;
         }
     }
@@ -99,6 +108,32 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         return false;
     }
+    private Vector3 GetSpawnMarkerLocation()
+    {
+        Vector3 pos = Vector3.zero;
+
+        foreach (Transform position in spawnMarker)
+        {
+            // Checks if position is within range
+            if (!(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) <= Stages[currentStage].MaxSpawnDistance) ||
+                !(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) >= Stages[currentStage].MinSpawnDistance)) continue;
+
+            if (Physics.Linecast(position.position, Discon_PlayerController.Instance.transform.position, environmentMask))
+            {
+                Debug.DrawLine(position.position, Discon_PlayerController.Instance.transform.position, Color.green, 1f);
+                pos = position.position;
+                break;
+            }
+            else
+            {
+                Debug.DrawLine(position.position, Discon_PlayerController.Instance.transform.position, Color.red, 1f);
+                continue;
+            }
+        }
+        Debug.Log($"{pos.x}, {pos.y}, {pos.z}");
+        return pos;
+    }
+    public void MarkLocation(Transform pos) => spawnMarker.Add(pos);
     public void CompletedStage()
     {
         currentStage++;

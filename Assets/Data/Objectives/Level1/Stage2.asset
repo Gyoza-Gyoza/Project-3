@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnFrequency: 0.5
   maxSpawnAmount: 5
-  minSpawnDistance: 5
-  maxSpawnDistance: 10
+  minSpawnDistance: 1
+  maxSpawnDistance: 100
   checkpoint: {x: 56.3, y: -0.3372865, z: 16.4}
   payloadSpeed: 10
