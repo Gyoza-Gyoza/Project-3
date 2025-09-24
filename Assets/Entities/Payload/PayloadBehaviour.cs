@@ -95,7 +95,7 @@ public class PayloadBehaviour : Entity
         //Debug.Log("Starting to fill gas");
         while (fillingGas)
         {
-            UpdateGasSlider();
+            HUDController.Instance.SetPayloadGas(currentGas / maxGas);
             count += Time.deltaTime;
             if (count > 1f / fillingRate) 
             {
@@ -148,7 +148,7 @@ public class PayloadBehaviour : Entity
         {
             PayloadBehaviour.Instance.agent.isStopped = false;
             //Debug.Log($"Payload Moving, current Gas {currentGas}");
-            UpdateGasSlider();
+            HUDController.Instance.SetPayloadGas(currentGas / maxGas);
             count += Time.deltaTime;
             if (count > 1f / burningRate)
             {

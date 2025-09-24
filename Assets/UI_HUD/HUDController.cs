@@ -24,6 +24,15 @@ public class HUDController : Singleton<HUDController>
     private float gasTarget;
     private bool updatingGas = false;
 
+    [Header("Payload Gas")]
+    [SerializeField] private Slider payloadGas;
+    [SerializeField] private Slider payloadGasCatchUp;
+    [SerializeField] private float payloadGasCatchUpTiming;
+    private float payloadGasOrigin;
+    private float payloadGasTemp;
+    private float payloadGasTarget;
+    private bool updatingPayloadGas = false;
+
     [Header("Progress Bar")]
     [SerializeField] private Slider progress;
     [SerializeField] private TextMeshProUGUI progressText;
@@ -126,6 +135,50 @@ public class HUDController : Singleton<HUDController>
             {
                 updatingGas = false;
                 gasCatchUp.value = gasTarget;
+            }
+        }
+        yield break;
+    }
+    #endregion
+
+
+    #region Gas Car
+    public void SetPayloadGas(float input)
+    {
+        if (updatingPayloadGas == false)
+        {
+            payloadGasOrigin = payloadGas.value;
+            payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
+            payloadGas.value = payloadGasTarget;
+            StartCoroutine(UpdateHealthSequence());
+        }
+        else
+        {
+            payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
+            payloadGas.value = payloadGasTarget;
+        }
+    }
+
+    IEnumerator UpdatePayloadGasSequence()
+    {
+        updatingPayloadGas = true;
+        //health.value = healthTarget;
+
+        float catchupCount = 0f;
+
+        while (updatingPayloadGas)
+        {
+            if (catchupCount < payloadGasCatchUpTiming)
+            {
+                catchupCount += Time.deltaTime;
+
+                gasCatchUp.value = Mathf.SmoothStep(payloadGasOrigin, payloadGasTarget, (float)(catchupCount / payloadGasCatchUpTiming));
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            else
+            {
+                updatingPayloadGas = false;
+                payloadGasCatchUp.value = payloadGasTarget;
             }
         }
         yield break;

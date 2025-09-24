@@ -55,21 +55,26 @@ public class Discon_PlayerController : Entity
     float verticalVelocity;
     float cachedStepOffset;
     float airTime = 0f;
+    Vector2 input = Vector2.zero;
+    Vector3 dir = Vector3.zero;
 
-    // dash internals
-    bool  _didDashThisState = false;
+    // --- Attack Burst internals ---
+    bool  _didBurstThisState = false;
     int   _lastStateHash = 0;
     bool  _burstActive = false;
     float _burstTimeLeft = 0f;
     float _burstSpeed = 0f;
 
+    //Eze Written
+    // --- Dash Internals ---
     bool  _dashActive = false;
     float _dashSpeed = 0f;
     float _dashTimeLeft = 0f;
     Vector3 dashDirection = Vector3.zero;
 
-    Vector2 input = Vector2.zero;
-    Vector3 dir = Vector3.zero;
+
+    // --- Double Jump ---
+    bool _firstJump = false;
 
 
     //Instance
@@ -152,12 +157,23 @@ public class Discon_PlayerController : Entity
         if (groundedBefore && verticalVelocity < 0f)
             verticalVelocity = -2f;
 
+        // ===== Double Jump (only if in jump)
+        if (!(inAtk1 || inAtk2 || inAtk3) && !groundedBefore && Input.GetButtonDown("Jump") && _firstJump)
+        {
+            verticalVelocity += Mathf.Sqrt(2f * jumpHeight * -gravity);
+            anim?.SetTrigger("Double Jump");
+            _firstJump = false;
+            //airTime = 0f;
+        }
+
+
         // ===== Jump (only if not attacking)
-        if (!(inAtk1 || inAtk2 || inAtk3) && groundedBefore && Input.GetButtonDown("Jump"))
+        if (!(inAtk1 || inAtk2 || inAtk3) && groundedBefore && Input.GetButtonDown("Jump") && !_firstJump)
         {
             verticalVelocity = Mathf.Sqrt(2f * jumpHeight * -gravity);
             anim?.SetTrigger("Jump");
             airTime = 0f;
+            _firstJump = true;
         }
 
         // ===== Gravity & base move
@@ -168,11 +184,11 @@ public class Discon_PlayerController : Entity
         // ===== Dash burst trigger
         if (state.fullPathHash != _lastStateHash)
         {
-            _didDashThisState = false;
+            _didBurstThisState = false;
             _lastStateHash = state.fullPathHash;
         }
 
-        if (!_didDashThisState && (inAtk1 || inAtk2) && state.normalizedTime <= dashEnterWindow)
+        if (!_didBurstThisState && (inAtk1 || inAtk2) && state.normalizedTime <= dashEnterWindow)
         {
             if (!requireGroundedForDash || IsGrounded())
             {
@@ -183,7 +199,7 @@ public class Discon_PlayerController : Entity
                 _burstTimeLeft = dur;
                 _burstActive   = true;
 
-                _didDashThisState = true;
+                _didBurstThisState = true;
             }
         }
 
@@ -205,14 +221,15 @@ public class Discon_PlayerController : Entity
             _dashActive = true;
             _dashSpeed = dashDistance / dashDuration;
             _dashTimeLeft = dashDuration;
-            dashDirection = new Vector3(input.x, 0, input.y);
+            dashDirection = new Vector3(dir.x, 0, dir.z).normalized;
             anim?.SetTrigger("Dash");
+            velocity.y = 0f;
         }
 
         // ===== Dashing burst
         if (_dashActive)
         {
-            cc.Move(dir * (_dashSpeed * Time.deltaTime));
+            cc.Move(dashDirection * (_dashSpeed * Time.deltaTime));
             velocity.x = 0f;
             velocity.z = 0f;
 
@@ -228,7 +245,7 @@ public class Discon_PlayerController : Entity
         cc.Move(velocity * Time.deltaTime);
 
         // ===== Post-move grounded & landing
-        bool groundedNow = IsGrounded();
+        bool groundedNow = IsGrounded(); //Eze's Comment, this is weird as it seems like it is checking ground check twice??
         float prevAirTime = airTime;
 
         if (groundedNow) { airTime = 0f; }
@@ -237,7 +254,9 @@ public class Discon_PlayerController : Entity
         if (!groundedBefore && groundedNow && prevAirTime >= minAirTime)
         {
             anim?.ResetTrigger("Jump");
+            anim?.ResetTrigger("Double Jump");
             anim?.SetTrigger("Land");
+            _firstJump = false;
             //if (verticalVelocity < -2f) verticalVelocity = -2f;
         }
     }

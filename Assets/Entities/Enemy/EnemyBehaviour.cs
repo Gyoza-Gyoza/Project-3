@@ -11,8 +11,8 @@ public class EnemyBehaviour : Entity
     [SerializeField] private float hitHorforce = 1f;
     [SerializeField] private int damageAmount = 1;
     [SerializeField] private HitBox hb;
-    [SerializeField] public float burnAdjAmount { get; private set; } = 0f;
-    [SerializeField] public float speedAdjAmount { get; private set; } = 0f;
+    public float burnAdjAmount;
+    public float speedAdjAmount;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;

@@ -26,7 +26,17 @@ public class Escort : Stage
         set { escortDistance = value; }
     }
     public override float Progress
-    { get { return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; } }
+    { get 
+        {
+            if (PayloadBehaviour.Instance.Agent.destination == checkpoint)
+                return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
+            else
+                return storedProgress;
+        } 
+    }
+
+    private float storedProgress;
+
     public override void StartStage()
     {
         FaceForward();
@@ -58,11 +68,13 @@ public class Escort : Stage
     #region Facing
     public void FaceForward()
     {
+        storedProgress = 0;
         PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
     }
 
     public void FaceBackwards()
     {
+        storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
         PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
     }
     #endregion
