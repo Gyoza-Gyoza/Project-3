@@ -74,8 +74,8 @@ public class LevelDirector : Singleton<LevelDirector>
             Vector3 pos = GetSpawnMarkerLocation();
             for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
             {
-                GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-                enemy.transform.position = pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), pos.y + 5, Random.Range(-spawnSpread, spawnSpread));
+                NavMeshAgent enemy = GameObjectPool.GetObject(enemyPrefab).GetComponent<NavMeshAgent>();
+                enemy.Warp(pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
             }
 
             timer = 0;
