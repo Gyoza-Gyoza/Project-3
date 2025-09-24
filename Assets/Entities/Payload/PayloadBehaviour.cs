@@ -9,17 +9,20 @@ public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
-    
+    private float extraReturnSpeed;
 
 
 
     [SerializeField] private Slider gasSlider;
 
     [SerializeField] private float burningRate = 0.5f;
-    [SerializeField] private float fillingRate = 1f;
-    [SerializeField] private int maxGas = 100;
-    private bool fillingGas = false;
     private bool burningGas = false;
+    private float extraBurningRate = 0f;
+
+    [SerializeField] private float fillingRate = 1f;
+    private bool fillingGas = false;
+
+    [SerializeField] private int maxGas = 100;
     private int currentGas;
 
     //public float CheckpointProgress
@@ -73,7 +76,7 @@ public class PayloadBehaviour : Entity
         gasSlider.transform.parent.transform.LookAt(Discon_PlayerController.Instance.transform, Vector3.up);
     }
 
-    #region -----------------------Gas--------------------------------
+    #region --------------------------Gas--------------------------------
     private void UpdateGasSlider()
     {
         gasSlider.value = (float)currentGas/(float)maxGas;
@@ -188,6 +191,21 @@ public class PayloadBehaviour : Entity
     }
     #endregion
 
+    #region ------------------Enemy Surrounding Behaviour----------------
+    public void EnemyPushing(float burnAdj, float returnSpeedAdj)
+    {
+        extraBurningRate += burnAdj;
+        extraReturnSpeed += returnSpeedAdj;
+    }
+
+
+    public void EnemyExit(float burnAdj, float returnSpeedAdj)
+    {
+        extraBurningRate -= burnAdj;
+        extraReturnSpeed -= returnSpeedAdj;
+    }
+    #endregion
+
 
     private void InitializeAgent()
     {
@@ -228,6 +246,8 @@ public class PayloadBehaviour : Entity
     {
 
     }
+
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")

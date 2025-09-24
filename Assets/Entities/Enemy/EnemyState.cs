@@ -54,7 +54,7 @@ public class EnemyChaseState : EnemyState
     }
     public override void ReachTargetAction()
     { 
-        enemy.state = new EnemyAttackState(enemy);
+        enemy.state = new EnemyPayloadState(enemy);
     }
 }
 
@@ -74,9 +74,7 @@ public class EnemyAttackState : EnemyState
     public override void DoEnemyAction()
     {
         if (enemy.agent.isActiveAndEnabled)
-        {
-            enemy.agent.SetDestination(Discon_PlayerController.Instance.transform.position);
-        }
+        enemy.agent.SetDestination(Discon_PlayerController.Instance.transform.position);
 
         if (Vector3.Distance(enemy.transform.position, Discon_PlayerController.Instance.transform.position) > enemy.aggroRange)
         {
@@ -90,11 +88,8 @@ public class EnemyAttackState : EnemyState
 
     public override void ReachTargetAction()
     {
-        //Attack
-
         enemy.Attack();
     }
-
 }
 
 public class EnemyPayloadState : EnemyState
@@ -109,10 +104,13 @@ public class EnemyPayloadState : EnemyState
     }
     public override void DoEnemyAction()
     {
-
+        float d = Vector3.Distance(enemy.transform.position, Discon_PlayerController.Instance.transform.position);
+        if (d <= enemy.aggroRange) ReachTargetAction();
+        else PayloadBehaviour.Instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount);
     }
     public override void ReachTargetAction()
     {
-        //Attack
+        PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount);
+        enemy.state = new EnemyAttackState(enemy);
     }
 }

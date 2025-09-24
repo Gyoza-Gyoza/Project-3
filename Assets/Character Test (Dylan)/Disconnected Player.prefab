@@ -309,7 +309,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8222591325822294115}
   - component: {fileID: 718740528306519168}
-  - component: {fileID: 5003939685996303340}
   - component: {fileID: 7084905766283001148}
   m_Layer: 0
   m_Name: Disconnected Player
@@ -361,41 +360,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5003939685996303340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3934873912641554010}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c70c73fa0fe1864080c07640948a1fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5.5
-  rotationSmoothTime: 0.1
-  jumpHeight: 7
-  gravity: -150
-  cameraTransform: {fileID: 0}
-  anim: {fileID: 6321172151938069609}
-  groundCheck: {fileID: 4827485756497120877}
-  groundCheckRadius: 0.18
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  minAirTime: 0.08
-  attack1StateName: Attack1
-  attack2StateName: Attack2
-  attack3StateName: Attack3
-  locomotionStateName: Player|Idle
-  attackTriggerParam: AttackPress
-  requireGroundedForDash: 1
-  attack1DashDistance: 4
-  attack1DashDuration: 0.12
-  attack2DashDistance: 4
-  attack2DashDuration: 0.12
-  dashEnterWindow: 0.15
 --- !u!114 &7084905766283001148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,6 +398,8 @@ MonoBehaviour:
   attack2DashDistance: 4
   attack2DashDuration: 0.12
   dashEnterWindow: 0.15
+  dashDistance: 6
+  dashDuration: 0.5
   basicHB_1: {fileID: 8286394681236013106}
   basicHB_2: {fileID: 3146933944624421723}
   basicHB_3: {fileID: 5790455069400257327}

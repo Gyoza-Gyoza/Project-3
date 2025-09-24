@@ -11,6 +11,8 @@ public class EnemyBehaviour : Entity
     [SerializeField] private float hitHorforce = 1f;
     [SerializeField] private int damageAmount = 1;
     [SerializeField] private HitBox hb;
+    [SerializeField] public float burnAdjAmount { get; private set; } = 0f;
+    [SerializeField] public float speedAdjAmount { get; private set; } = 0f;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;
@@ -91,21 +93,8 @@ public class EnemyBehaviour : Entity
     public void Attack()
     {
         animator.SetTrigger("Attacking");
-        //StartCoroutine(AttackSequence());
     }
-    IEnumerator AttackSequence()
-    {
-        isAttacking = true;
-        agent.isStopped = true;
-        yield return new WaitForSeconds(1f);
-        hb.gameObject.GetComponent<BoxCollider>().enabled = true;
-        yield return new WaitForSeconds(.1f);
-        hb.gameObject.GetComponent<BoxCollider>().enabled = false;
-        yield return new WaitForSeconds(.5f);
-        agent.isStopped = false;
-        isAttacking = false;
-        yield break;
-    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") && flying == false)

@@ -200,12 +200,13 @@ public class Discon_PlayerController : Entity
         }
 
         // ===== Trigger Dash
-        if (Input.GetKeyDown(KeyCode.LeftShift) && _dashActive == false)
+        if (Input.GetMouseButtonDown(1) && _dashActive == false)
         { 
             _dashActive = true;
             _dashSpeed = dashDistance / dashDuration;
             _dashTimeLeft = dashDuration;
             dashDirection = new Vector3(input.x, 0, input.y);
+            anim?.SetTrigger("Dash");
         }
 
         // ===== Dashing burst
@@ -217,9 +218,11 @@ public class Discon_PlayerController : Entity
 
             _dashTimeLeft -= Time.deltaTime;
             if (_dashTimeLeft <= 0f)
+            { 
                 _dashActive = false;
+                anim?.ResetTrigger("Dash");
+            }
         }
-        
 
         // ===== Apply base movement
         cc.Move(velocity * Time.deltaTime);

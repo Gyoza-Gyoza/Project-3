@@ -34,15 +34,6 @@ public class Escort : Stage
     public override void DoPayloadBehaviour()
     {
         HUDController.Instance.SetProgressBar(LevelDirector.Instance.StageProgress);
-        //### BUG ALERT###
-        //The remaining distanc is infinity so i need to fix that somehow
-
-        /*
-        LevelDirector.Instance.testText.text = 
-        $"Current Stage is {LevelDirector.Instance.CurrentStage} " +
-        $"\n Checkpoint progress is {Progress * 100}% " +
-        $"\n Total progress is {LevelDirector.Instance.StageProgress * 100}%";
-        */
         if (PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
         {
             PayloadBehaviour.Instance.CompleteStage();
@@ -64,6 +55,7 @@ public class Escort : Stage
 
     }
 
+    #region Facing
     public void FaceForward()
     {
         PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
@@ -73,5 +65,5 @@ public class Escort : Stage
     {
         PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
     }
-
+    #endregion
 }
