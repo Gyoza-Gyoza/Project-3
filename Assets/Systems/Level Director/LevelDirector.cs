@@ -176,15 +176,15 @@ public class LevelDirector : Singleton<LevelDirector>
                 case Escort escort:
                     Gizmos.color = Color.red;
                     currentPosition = escort.Checkpoint;
-                    Gizmos.DrawWireSphere(currentPosition, 1f);
+                    Gizmos.DrawWireSphere(currentPosition, 5f);
                     break;
                 case Defend defend:
                     Gizmos.color = Color.blue;
-                    Gizmos.DrawWireSphere(currentPosition, 3f);
+                    Gizmos.DrawWireSphere(currentPosition, 5f);
                     break;
                 case Collect collect:
                     Gizmos.color = Color.yellow;
-                    Gizmos.DrawWireSphere(currentPosition, 3f);
+                    Gizmos.DrawWireSphere(currentPosition, 5f);
                     break;
                 default:
                     Gizmos.color = Color.white;

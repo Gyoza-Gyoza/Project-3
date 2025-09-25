@@ -145,12 +145,15 @@ public class HUDController : Singleton<HUDController>
     #region Gas Car
     public void SetPayloadGas(float input)
     {
+
+        //Debug.Log($"Updating Payload Gas Input is {input}");
+
         if (updatingPayloadGas == false)
         {
             payloadGasOrigin = payloadGas.value;
             payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
             payloadGas.value = payloadGasTarget;
-            StartCoroutine(UpdateHealthSequence());
+            StartCoroutine(UpdatePayloadGasSequence());
         }
         else
         {
@@ -161,8 +164,8 @@ public class HUDController : Singleton<HUDController>
 
     IEnumerator UpdatePayloadGasSequence()
     {
+        //Debug.Log("Start Setting Payload Gas");
         updatingPayloadGas = true;
-        //health.value = healthTarget;
 
         float catchupCount = 0f;
 
@@ -172,7 +175,7 @@ public class HUDController : Singleton<HUDController>
             {
                 catchupCount += Time.deltaTime;
 
-                gasCatchUp.value = Mathf.SmoothStep(payloadGasOrigin, payloadGasTarget, (float)(catchupCount / payloadGasCatchUpTiming));
+                payloadGasCatchUp.value = Mathf.SmoothStep(payloadGasOrigin, payloadGasTarget, (float)(catchupCount / payloadGasCatchUpTiming));
                 yield return new WaitForSeconds(Time.deltaTime);
             }
             else
@@ -181,6 +184,8 @@ public class HUDController : Singleton<HUDController>
                 payloadGasCatchUp.value = payloadGasTarget;
             }
         }
+
+        //Debug.Log("Stop Setting Payload Gas");
         yield break;
     }
     #endregion
@@ -189,7 +194,7 @@ public class HUDController : Singleton<HUDController>
     #region Progress Bar
     public void SetProgressBar(float input)
     {
-        Debug.Log($"Setting progress to {input}");
+        //Debug.Log($"Setting progress to {input}");
         float clamped = Mathf.Clamp(input, 0f, 1f);
         progressText.text = $"{Mathf.Round(clamped * 10000)/100}%";
         progress.value = clamped;

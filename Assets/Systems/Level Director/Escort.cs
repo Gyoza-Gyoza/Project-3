@@ -68,12 +68,14 @@ public class Escort : Stage
     #region Facing
     public void FaceForward()
     {
+        Debug.Log("Facing Forward");
         storedProgress = 0;
         PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
     }
 
     public void FaceBackwards()
     {
+        Debug.Log("Facing Backward");
         storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
         PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
     }
