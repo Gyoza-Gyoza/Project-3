@@ -46,6 +46,7 @@ public class Escort : Stage
         HUDController.Instance.SetProgressBar(LevelDirector.Instance.StageProgress);
         if (PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
         {
+            Debug.Log($"Remaining Distance is {PayloadBehaviour.Instance.Agent.remainingDistance}");
             PayloadBehaviour.Instance.CompleteStage();
         }
     }

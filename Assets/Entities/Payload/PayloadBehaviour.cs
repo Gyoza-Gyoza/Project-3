@@ -218,6 +218,7 @@ public class PayloadBehaviour : Entity
     }
     public void CompleteStage()
     {
+        Debug.Log("Complete Stage called");
         LevelDirector.Instance.CompletedStage();
         if (LevelDirector.Instance.CurrentStage < stages.Length)
         {
