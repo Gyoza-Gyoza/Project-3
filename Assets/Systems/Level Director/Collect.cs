@@ -70,7 +70,7 @@ public class Collect : Stage
     }
     public override void PlayerInRange()
     {
-        AmountCollected += Discon_PlayerController.Instance.DropOffItems();
+        AmountCollected += PlayerController3P.Instance.DropOffItems();
     }
     public override void PlayerOutOfRange()
     {

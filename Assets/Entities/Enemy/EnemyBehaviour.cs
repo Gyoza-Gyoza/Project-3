@@ -55,7 +55,7 @@ public class EnemyBehaviour : Entity
     protected override void OnDamage()
     {
         StartCoroutine(DamageFlicker());
-        //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(Discon_PlayerController.Instance.transform.position, this.transform.position), 0)).normalized;
+        //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
         Stunned();
     }
 
@@ -63,7 +63,7 @@ public class EnemyBehaviour : Entity
     {
         agent.enabled = false;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f , this.transform.position.z);
-        Vector3 difference = this.transform.position -  Discon_PlayerController.Instance.transform.position;
+        Vector3 difference = this.transform.position -  PlayerController3P.Instance.transform.position;
         Vector3 horNormed = new Vector3(difference.x, 0, difference.z).normalized;
         Vector3 force = Vector3.up * hitUpforce + horNormed * hitHorforce;
         rb.AddForce(force, ForceMode.Impulse);
@@ -87,7 +87,7 @@ public class EnemyBehaviour : Entity
         if (toDamage.tag == "Player")
         {
             //toDamage.GetComponent<PlayerController>().TakeDamage(damageAmount);
-            toDamage.GetComponent<Discon_PlayerController>().TakeDamage(damageAmount);
+            toDamage.GetComponent<PlayerController3P>().TakeDamage(damageAmount);
         }
     }
     public void Attack()

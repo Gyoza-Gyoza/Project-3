@@ -26,7 +26,6 @@ public class PlayerController : Entity
     }
     private Vector3 movement;
     public static PlayerController Instance;
-    //public static Discon_PlayerController Instance;
 
     private void Awake()
     {
@@ -45,7 +44,6 @@ public class PlayerController : Entity
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
-        //if (Instance == null) Instance = Discon_PlayerController.Instance;
     }
     private void Update()
     {

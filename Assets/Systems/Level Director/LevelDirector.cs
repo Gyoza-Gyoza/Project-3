@@ -89,20 +89,20 @@ public class LevelDirector : Singleton<LevelDirector>
         for(int i = 0; i < 100; i++)
         {
             randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-            randomPosition = Discon_PlayerController.Instance.transform.position + randomDirection * (stages[currentStage].MinSpawnDistance + Random.Range(0f, stages[currentStage].MaxSpawnDistance));
+            randomPosition = PlayerController3P.Instance.transform.position + randomDirection * (stages[currentStage].MinSpawnDistance + Random.Range(0f, stages[currentStage].MaxSpawnDistance));
             
-            Vector3 vectorToPlayer = Discon_PlayerController.Instance.transform.position - randomPosition;
+            Vector3 vectorToPlayer = PlayerController3P.Instance.transform.position - randomPosition;
             float distanceToPlayer = vectorToPlayer.magnitude;
-            Debug.DrawLine(randomPosition, Discon_PlayerController.Instance.transform.position, Color.red, 1f);
+            Debug.DrawLine(randomPosition, PlayerController3P.Instance.transform.position, Color.red, 1f);
 
-            if (Physics.Linecast(randomPosition, Discon_PlayerController.Instance.transform.position, environmentMask))
+            if (Physics.Linecast(randomPosition, PlayerController3P.Instance.transform.position, environmentMask))
             {
-                Debug.DrawLine(randomPosition, Discon_PlayerController.Instance.transform.position, Color.green, 1f);
+                Debug.DrawLine(randomPosition, PlayerController3P.Instance.transform.position, Color.green, 1f);
                 return true;
             }
             else
             {
-                Debug.DrawLine(randomPosition, Discon_PlayerController.Instance.transform.position, Color.red, 1f);
+                Debug.DrawLine(randomPosition, PlayerController3P.Instance.transform.position, Color.red, 1f);
                 continue;
             }
         }
@@ -115,18 +115,18 @@ public class LevelDirector : Singleton<LevelDirector>
         foreach (Transform position in spawnMarker)
         {
             // Checks if position is within range
-            if (!(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) <= Stages[currentStage].MaxSpawnDistance) ||
-                !(Vector3.Distance(Discon_PlayerController.Instance.transform.position, position.position) >= Stages[currentStage].MinSpawnDistance)) continue;
+            if (!(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) <= Stages[currentStage].MaxSpawnDistance) ||
+                !(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) >= Stages[currentStage].MinSpawnDistance)) continue;
 
-            if (Physics.Linecast(position.position, Discon_PlayerController.Instance.transform.position, environmentMask))
+            if (Physics.Linecast(position.position, PlayerController3P.Instance.transform.position, environmentMask))
             {
-                Debug.DrawLine(position.position, Discon_PlayerController.Instance.transform.position, Color.green, 1f);
+                Debug.DrawLine(position.position, PlayerController3P.Instance.transform.position, Color.green, 1f);
                 pos = position.position;
                 break;
             }
             else
             {
-                Debug.DrawLine(position.position, Discon_PlayerController.Instance.transform.position, Color.red, 1f);
+                Debug.DrawLine(position.position, PlayerController3P.Instance.transform.position, Color.red, 1f);
                 continue;
             }
         }

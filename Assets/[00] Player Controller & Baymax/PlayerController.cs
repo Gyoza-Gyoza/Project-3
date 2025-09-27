@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController3P : MonoBehaviour
+public class PlayerController3P : Entity
 {
     [Header("Refs")]
     public ThirdPersonCamera camRig;
@@ -158,6 +158,8 @@ public class PlayerController3P : MonoBehaviour
     private Vector3 plungeDir = Vector3.zero;
     private bool plungeImpulseStarted = false;
 
+    // Instance
+    public static PlayerController3P Instance;
 
     void Awake()
     {
@@ -165,6 +167,13 @@ public class PlayerController3P : MonoBehaviour
         if (!animator) animator = GetComponentInChildren<Animator>();
         lastJumpPressedTime = float.NegativeInfinity;
         lastGroundedTime    = float.NegativeInfinity;
+
+        //Ezekiel's Injection
+        InitializeHitboxs();
+
+        //Singleton
+        if (Instance == null) Instance = this;
+        else Destroy(Instance);
     }
 
     void Start()
@@ -193,7 +202,7 @@ public class PlayerController3P : MonoBehaviour
         UpdateAttack();      // timers
         HandleMovement();    // movement depends on dash/attack
         HandleJump();        // blocked during attacks
-        UpdatePlunge();
+        UpdatePlunge();     
     }
 
     // -------------------- Movement --------------------
@@ -837,6 +846,7 @@ public class PlayerController3P : MonoBehaviour
         }
     }
 
+    #region === Plunge ===
     // -------------------- Plunge Attack --------------------
     void BeginPlunge()
     {
@@ -889,7 +899,7 @@ public class PlayerController3P : MonoBehaviour
             animator.SetBool("IsAttacking", false);
         }
     }
-
+    #endregion
 
     // -------------------- Helpers --------------------
     bool TryGetCameraRelativeMove(out Vector3 dir)
@@ -897,6 +907,7 @@ public class PlayerController3P : MonoBehaviour
         float ix = Input.GetAxisRaw("Horizontal");
         float iz = Input.GetAxisRaw("Vertical");
         Vector2 input = new Vector2(ix, iz);
+
         if (input.sqrMagnitude > 0.0001f)
         {
             input.Normalize();
@@ -926,4 +937,142 @@ public class PlayerController3P : MonoBehaviour
         dir = Vector3.zero;
         return false;
     }
+
+    #region ---------------Attack Fields------------------------
+    [SerializeField] private HitBox attack1HB;
+    [SerializeField] private HitBox attack2HB;
+    [SerializeField] private HitBox attack3HB_sweep;
+    [SerializeField] private HitBox attack3HB_slam;
+    [SerializeField] private HitBox plungeHB;
+    [SerializeField] private int    attack1Damage = 1;
+    [SerializeField] private int    attack2Damage = 1;
+    [SerializeField] private int    attack3Damage_sweep = 1;
+    [SerializeField] private int    attack3Damage_slam = 1;
+    [SerializeField] private int    plungeDamage = 1;
+
+    private void InitializeHitboxs()
+    {
+        attack1HB.HitBoxListeners       += Attack1;
+        attack2HB.HitBoxListeners       += Attack2;
+        attack3HB_sweep.HitBoxListeners += Attack3Sweep;
+        attack3HB_slam.HitBoxListeners  += Attack3Slam;
+        plungeHB.HitBoxListeners        += AttackPlunge;
+    }
+
+    public void Attack1(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack1Damage);
+        }
+    }
+
+    public void Attack2(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack2Damage);
+        }
+    }
+
+    public void Attack3Sweep(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_sweep);
+        }
+    }
+
+    public void Attack3Slam(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_slam);
+        }
+    }
+
+    public void AttackPlunge(GameObject toDamage)
+    {
+        if (toDamage.tag == "Enemy")
+        {
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(plungeDamage);
+        }
+    }
+    #endregion
+
+    #region --------------Item------------------
+
+    private int itemsCollected = 0;
+    public int ItemsCollected
+    { get { return itemsCollected; } }
+
+    public void OnCollect()
+    {
+        itemsCollected++;
+        // Add any additional logic for collecting items, such as updating UI or playing sound effects
+    }
+    public int DropOffItems()
+    {
+        int amount = itemsCollected; // Returns the amount of items dropped off
+        itemsCollected -= itemsCollected;
+        return amount;
+        // Add any additional logic for dropping off items, such as updating UI or playing sound effects
+    }
+    #endregion
+
+    #region ----------------Gas--------------------------
+    [Header("Gas")]
+    [SerializeField] private int maxGas = 50;
+    [SerializeField] private int startingGas = 0;
+    private int currentGas;
+
+    public bool AddGas(int amount)
+    {
+        if (currentGas >= maxGas)
+        {
+            currentGas = maxGas;
+            return false;
+        }
+        else
+        {
+            currentGas += amount;
+            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            return true;
+        }
+        //Add the rest of effects that relies on this
+    }
+
+    public bool RemoveGas(int amount)
+    {
+        //Debug.Log("Remove Gas called");
+        if (currentGas <= 0)
+        {
+            currentGas = 0;
+            return false;
+        }
+        else
+        {
+            currentGas -= amount;
+            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            return true;
+        }
+    }
+    #endregion
+
+    #region Entity Overrides
+    protected override void OnHeal()
+    {
+        //throw new System.NotImplementedException();
+    }
+
+    protected override void OnDamage()
+    {
+        HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
+    }
+
+    public override void OnDeath()
+    {
+        //throw new System.NotImplementedException();
+    }
+    #endregion
 }
