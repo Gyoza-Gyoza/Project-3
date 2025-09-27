@@ -9,4 +9,9 @@ public class SpawnMarker : MonoBehaviour
     {
         LevelDirector.Instance.MarkLocation(transform);
     }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawCube(this.transform.position, new Vector3(5f, 5f, 5f));
+    }
 }

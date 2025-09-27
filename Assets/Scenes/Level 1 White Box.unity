@@ -4296,7 +4296,7 @@ GameObject:
   - component: {fileID: 753519940}
   - component: {fileID: 753519942}
   - component: {fileID: 753519941}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Altar (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4316,7 +4316,7 @@ Transform:
   m_LocalScale: {x: 96.03378, y: 2.1245968, z: 96.03378}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1370879776}
+  m_Father: {fileID: 905515465}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &753519941
 MeshRenderer:
@@ -4939,7 +4939,7 @@ GameObject:
   - component: {fileID: 870517354}
   - component: {fileID: 870517356}
   - component: {fileID: 870517355}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Altar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4959,7 +4959,7 @@ Transform:
   m_LocalScale: {x: 96.03378, y: 2.1245968, z: 96.03378}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1370879776}
+  m_Father: {fileID: 905515465}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &870517355
 MeshRenderer:
@@ -5171,6 +5171,40 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2494537136192194781, guid: d1dcfc55c6ff94d4cb1e18ceb7f18cca, type: 3}
   m_PrefabInstance: {fileID: 1143848466}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &905515464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 905515465}
+  m_Layer: 9
+  m_Name: Altars
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &905515465
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905515464}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 870517354}
+  - {fileID: 753519940}
+  - {fileID: 1091182839}
+  m_Father: {fileID: 1370879776}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &932984000
 GameObject:
   m_ObjectHideFlags: 0
@@ -5980,13 +6014,13 @@ GameObject:
   - component: {fileID: 1091182839}
   - component: {fileID: 1091182841}
   - component: {fileID: 1091182840}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Altar (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1091182839
 Transform:
   m_ObjectHideFlags: 0
@@ -5996,11 +6030,11 @@ Transform:
   m_GameObject: {fileID: 1091182838}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.7, y: 0, z: 384.6}
+  m_LocalPosition: {x: -1.7, y: -1.4, z: 384.6}
   m_LocalScale: {x: 96.03378, y: 2.1245968, z: 96.03378}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1370879776}
+  m_Father: {fileID: 905515465}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1091182840
 MeshRenderer:
@@ -7536,9 +7570,7 @@ Transform:
   - {fileID: 1550108104}
   - {fileID: 2021738324}
   - {fileID: 1348462819}
-  - {fileID: 870517354}
-  - {fileID: 753519940}
-  - {fileID: 1091182839}
+  - {fileID: 905515465}
   - {fileID: 73472518}
   - {fileID: 1142641155}
   m_Father: {fileID: 0}
@@ -7561,7 +7593,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 192
   m_UseGeometry: 0
   m_DefaultArea: 0
   m_GenerateLinks: 1
@@ -11682,7 +11714,7 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 1

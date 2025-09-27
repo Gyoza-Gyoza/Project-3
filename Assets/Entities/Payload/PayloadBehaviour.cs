@@ -133,7 +133,7 @@ public class PayloadBehaviour : Entity
 
     public void StopBurningGas()
     {
-        Debug.Log("Stop Burning");
+        //Debug.Log("Stop Burning");
         burningGas = false;
         BackwardFacing();
         agent.speed = returnSpeed;
@@ -172,21 +172,23 @@ public class PayloadBehaviour : Entity
     #region -----------------------Facing--------------------------------
     public void ForwardFacing()
     {
-        Debug.Log("Front Facing");
+        Debug.Log("Front Facing on payload called");
         //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
         if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
         {
             Debug.Log("Front Facing Success");
-            agent.SetDestination(stage.Checkpoint);
+            stage.FaceForward();
+            //agent.SetDestination(stage.Checkpoint);
         }
     }
     public void BackwardFacing()
     {
-        Debug.Log("Back Facing");
+        Debug.Log("Back Facing on payload called");
         if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
         {
             Debug.Log("Back Success");
-            agent.SetDestination(stage.PreviousCheckpoint);
+            stage.FaceBackwards();
+            //agent.SetDestination(stage.PreviousCheckpoint);
         }
     }
     #endregion
@@ -213,12 +215,12 @@ public class PayloadBehaviour : Entity
         agent.speed = MovementSpeed;
         agent.angularSpeed = turnSpeed;
         if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.Checkpoint);
-        CompleteStage();
+        CompleteStage(); //Complete the beginning one
         agent.isStopped = true;
     }
     public void CompleteStage()
     {
-        Debug.Log("Complete Stage called");
+        Debug.Log($"Complete Stage called for stage {LevelDirector.Instance.CurrentStage + 1}");
         LevelDirector.Instance.CompletedStage();
         if (LevelDirector.Instance.CurrentStage < stages.Length)
         {
@@ -236,6 +238,8 @@ public class PayloadBehaviour : Entity
         while (agent.pathPending) yield return null;
 
         escort.EscortDistance = agent.remainingDistance;
+
+        yield break;
     }
     protected override void OnHeal()
     {
@@ -254,7 +258,7 @@ public class PayloadBehaviour : Entity
         if(other.gameObject.tag == "Player")
         {
             playerInRange = true;
-            stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
+            stages[LevelDirector.Instance.CurrentStage].PlayerInRange(); 
         }
     }
     private void OnTriggerExit(Collider other)

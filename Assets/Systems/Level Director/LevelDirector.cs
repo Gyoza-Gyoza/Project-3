@@ -137,7 +137,7 @@ public class LevelDirector : Singleton<LevelDirector>
     public void CompletedStage()
     {
         currentStage++;
-        currentStage = Mathf.Clamp(currentStage, 0, Stages.Length);
+        currentStage = Mathf.Clamp(currentStage, 0, Stages.Length - 1);
     }
     public void CompleteLevel()
     {

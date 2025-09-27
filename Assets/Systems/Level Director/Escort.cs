@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 [CreateAssetMenu(fileName = "Escort", menuName = "ScriptableObjects/Stages/Escort", order = 1)]
 public class Escort : Stage
@@ -9,6 +10,8 @@ public class Escort : Stage
     [SerializeField] private Vector3 checkpoint;
     [Tooltip("Speed of the payload")]
     [SerializeField] private float payloadSpeed;
+    [Tooltip("If this is a checkpoint")]
+    [SerializeField] private bool isCheckpoint;
     private float escortDistance;
     private Vector3 previousCheckpoint;
     public Vector3 PreviousCheckpoint
@@ -31,7 +34,7 @@ public class Escort : Stage
             if (PayloadBehaviour.Instance.Agent.destination == checkpoint)
                 return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
             else
-                return storedProgress;
+                return PayloadBehaviour.Instance.Agent.remainingDistance;
         } 
     }
 
@@ -44,11 +47,23 @@ public class Escort : Stage
     public override void DoPayloadBehaviour()
     {
         HUDController.Instance.SetProgressBar(LevelDirector.Instance.StageProgress);
-        if (PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
+        //Basically check if the 
+        if (PayloadBehaviour.Instance.Agent.hasPath && PayloadBehaviour.Instance.Agent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            Debug.Log($"Remaining Distance is {PayloadBehaviour.Instance.Agent.remainingDistance}");
-            PayloadBehaviour.Instance.CompleteStage();
+            Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
+
+            if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
+            {
+                Debug.Log($"Super Close to point, completing point");
+                PayloadBehaviour.Instance.CompleteStage();
+            }
+
         }
+        else
+        {
+            Debug.LogWarning("Path incomplete or invalid!");
+        }
+
     }
 
     public override void PlayerInRange()
@@ -78,6 +93,8 @@ public class Escort : Stage
     {
         Debug.Log("Facing Backward");
         storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
+        //Eze's note to self
+        //This stored progress is very wrong btw. It does not go down when the player goes backwards.
         PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
     }
     #endregion
