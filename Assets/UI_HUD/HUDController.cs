@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,11 +24,34 @@ public class HUDController : Singleton<HUDController>
     private float gasTarget;
     private bool updatingGas = false;
 
+    [Header("Payload Gas")]
+    [SerializeField] private Slider payloadGas;
+    [SerializeField] private Slider payloadGasCatchUp;
+    [SerializeField] private float payloadGasCatchUpTiming;
+    private float payloadGasOrigin;
+    private float payloadGasTemp;
+    private float payloadGasTarget;
+    private bool updatingPayloadGas = false;
+
+    [Header("Progress Bar")]
+    [SerializeField] private Slider progress;
+    [SerializeField] private TextMeshProUGUI progressText;
+    //[SerializeField] private Slider gasCatchUp;
+    //[SerializeField] private float gasCatchUpTiming;
+    //private float gasOrigin;
+    //private float gasTemp;
+    //private float gasTarget;
+    //private bool updatingGas = false;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
+
+    #region Health
 
     public void SetHealth(float input)
     {
@@ -72,6 +96,9 @@ public class HUDController : Singleton<HUDController>
         yield break;
     }
 
+    #endregion
+
+    #region Gas
     public void SetGas(float input)
     {
         if (updatingGas == false)
@@ -112,6 +139,67 @@ public class HUDController : Singleton<HUDController>
         }
         yield break;
     }
+    #endregion
+
+
+    #region Gas Car
+    public void SetPayloadGas(float input)
+    {
+
+        //Debug.Log($"Updating Payload Gas Input is {input}");
+
+        if (updatingPayloadGas == false)
+        {
+            payloadGasOrigin = payloadGas.value;
+            payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
+            payloadGas.value = payloadGasTarget;
+            StartCoroutine(UpdatePayloadGasSequence());
+        }
+        else
+        {
+            payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
+            payloadGas.value = payloadGasTarget;
+        }
+    }
+
+    IEnumerator UpdatePayloadGasSequence()
+    {
+        //Debug.Log("Start Setting Payload Gas");
+        updatingPayloadGas = true;
+
+        float catchupCount = 0f;
+
+        while (updatingPayloadGas)
+        {
+            if (catchupCount < payloadGasCatchUpTiming)
+            {
+                catchupCount += Time.deltaTime;
+
+                payloadGasCatchUp.value = Mathf.SmoothStep(payloadGasOrigin, payloadGasTarget, (float)(catchupCount / payloadGasCatchUpTiming));
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            else
+            {
+                updatingPayloadGas = false;
+                payloadGasCatchUp.value = payloadGasTarget;
+            }
+        }
+
+        //Debug.Log("Stop Setting Payload Gas");
+        yield break;
+    }
+    #endregion
+
+
+    #region Progress Bar
+    public void SetProgressBar(float input)
+    {
+        //Debug.Log($"Setting progress to {input}");
+        float clamped = Mathf.Clamp(input, 0f, 1f);
+        progressText.text = $"{Mathf.Round(clamped * 10000)/100}%";
+        progress.value = clamped;
+    }
+    #endregion
     // Update is called once per frame
     void Update()
     {

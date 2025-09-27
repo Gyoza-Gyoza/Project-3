@@ -299,23 +299,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   initialDamage: 5
-  initialMovementSpeed: 5
-  jumpHeight: 5
-  dashAmount: 5
+  initialMovementSpeed: 13
+  jumpHeight: 800
+  dashAmount: 20
   dashDuration: 0.2
   dashCooldown: 2
   groundCheck: {fileID: 4989598724637755416}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   jawScript: {fileID: 0}
-  attackBuffer: 1
+  attackBuffer: 2
   basicHB_1: {fileID: 3843280657165947952}
   basicHB_2: {fileID: 4865277019843570511}
   basicHB_3: {fileID: 4352942014616108942}
   basicDamage_1: 20
   basicDamage_2: 20
-  basicDamage_3: 100
+  basicDamage_3: 50
   maxGas: 50
   startingGas: 0
 --- !u!95 &1788774236931569489

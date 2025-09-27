@@ -26,17 +26,24 @@ public class Escort : Stage
         set { escortDistance = value; }
     }
     public override float Progress
-    { get { return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; } }
+    { get 
+        {
+            if (PayloadBehaviour.Instance.Agent.destination == checkpoint)
+                return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
+            else
+                return storedProgress;
+        } 
+    }
+
+    private float storedProgress;
+
     public override void StartStage()
     {
         FaceForward();
     }
     public override void DoPayloadBehaviour()
     {
-        LevelDirector.Instance.testText.text = 
-        $"Current Stage is {LevelDirector.Instance.CurrentStage} " +
-        $"\n Checkpoint progress is {Progress * 100}% " +
-        $"\n Total progress is {LevelDirector.Instance.StageProgress * 100}%";
+        HUDController.Instance.SetProgressBar(LevelDirector.Instance.StageProgress);
         if (PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
         {
             PayloadBehaviour.Instance.CompleteStage();
@@ -58,14 +65,19 @@ public class Escort : Stage
 
     }
 
+    #region Facing
     public void FaceForward()
     {
+        Debug.Log("Facing Forward");
+        storedProgress = 0;
         PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
     }
 
     public void FaceBackwards()
     {
+        Debug.Log("Facing Backward");
+        storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
         PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
     }
-
+    #endregion
 }

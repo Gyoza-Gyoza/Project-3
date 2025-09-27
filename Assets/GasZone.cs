@@ -37,7 +37,7 @@ public class GasZone : MonoBehaviour
             if (count > 1f / addRate)
             {
                 count -= (1f / addRate);
-               if ( PlayerController.Instance.AddGas(1) == false)
+               if ( Discon_PlayerController.Instance.AddGas(1) == false)
                 {
                     addingGas = false;
                 }

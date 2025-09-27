@@ -9,14 +9,20 @@ public class PayloadBehaviour : Entity
 {
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
+    private float extraReturnSpeed;
+
+
 
     [SerializeField] private Slider gasSlider;
 
     [SerializeField] private float burningRate = 0.5f;
-    [SerializeField] private float fillingRate = 1f;
-    [SerializeField] private int maxGas = 100;
-    private bool fillingGas = false;
     private bool burningGas = false;
+    private float extraBurningRate = 0f;
+
+    [SerializeField] private float fillingRate = 1f;
+    private bool fillingGas = false;
+
+    [SerializeField] private int maxGas = 100;
     private int currentGas;
 
     //public float CheckpointProgress
@@ -67,10 +73,10 @@ public class PayloadBehaviour : Entity
             StartBurningGas();
         }
 
-        gasSlider.transform.parent.transform.LookAt(PlayerController.Instance.transform, Vector3.up);
+        gasSlider.transform.parent.transform.LookAt(Discon_PlayerController.Instance.transform, Vector3.up);
     }
 
-
+    #region --------------------------Gas--------------------------------
     private void UpdateGasSlider()
     {
         gasSlider.value = (float)currentGas/(float)maxGas;
@@ -89,12 +95,12 @@ public class PayloadBehaviour : Entity
         //Debug.Log("Starting to fill gas");
         while (fillingGas)
         {
-            UpdateGasSlider();
+            HUDController.Instance.SetPayloadGas((float)currentGas / (float)maxGas);
             count += Time.deltaTime;
             if (count > 1f / fillingRate) 
             {
                 count -= (1f / fillingRate);
-                if (PlayerController.Instance.RemoveGas(1) == false)
+                if (Discon_PlayerController.Instance.RemoveGas(1) == false)
                 {
                     StopFillingGas();
                 }
@@ -132,7 +138,38 @@ public class PayloadBehaviour : Entity
         BackwardFacing();
         agent.speed = returnSpeed;
     }
-    
+
+    IEnumerator burnGas()
+    {
+        float count = 0f;
+
+
+        while (currentGas > 0)
+        {
+            PayloadBehaviour.Instance.agent.isStopped = false;
+            //Debug.Log($"Payload Moving, current Gas {currentGas}");
+            HUDController.Instance.SetPayloadGas((float)currentGas / (float) maxGas);
+            count += Time.deltaTime;
+            if (count > 1f / burningRate)
+            {
+                count -= (1f / burningRate);
+                currentGas -= 1;
+            }
+
+            //Debug.Log("Gas still burning");
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        currentGas = 0;
+        StopBurningGas();
+
+        //PayloadBehaviour.Instance.agent.isStopped = true;
+        //Debug.Log($"Payload Stopped, current Gas is {currentGas}");
+        yield break;
+    }
+
+    #endregion
+
+    #region -----------------------Facing--------------------------------
     public void ForwardFacing()
     {
         Debug.Log("Front Facing");
@@ -152,35 +189,23 @@ public class PayloadBehaviour : Entity
             agent.SetDestination(stage.PreviousCheckpoint);
         }
     }
+    #endregion
 
-
-    IEnumerator burnGas()
+    #region ------------------Enemy Surrounding Behaviour----------------
+    public void EnemyPushing(float burnAdj, float returnSpeedAdj)
     {
-        float count = 0f;
-
-
-        while (currentGas > 0)
-        {
-            PayloadBehaviour.Instance.agent.isStopped = false;
-            //Debug.Log($"Payload Moving, current Gas {currentGas}");
-            UpdateGasSlider();
-            count += Time.deltaTime;
-            if (count > 1f / burningRate)
-            {
-                count -= (1f / burningRate);
-                currentGas -= 1;
-            }
-
-            //Debug.Log("Gas still burning");
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        currentGas = 0;
-        StopBurningGas();
-
-        //PayloadBehaviour.Instance.agent.isStopped = true;
-        //Debug.Log($"Payload Stopped, current Gas is {currentGas}");
-        yield break;
+        extraBurningRate += burnAdj;
+        extraReturnSpeed += returnSpeedAdj;
     }
+
+
+    public void EnemyExit(float burnAdj, float returnSpeedAdj)
+    {
+        extraBurningRate -= burnAdj;
+        extraReturnSpeed -= returnSpeedAdj;
+    }
+    #endregion
+
 
     private void InitializeAgent()
     {
@@ -221,6 +246,8 @@ public class PayloadBehaviour : Entity
     {
 
     }
+
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Player")

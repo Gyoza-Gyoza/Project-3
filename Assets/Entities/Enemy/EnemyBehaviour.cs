@@ -9,28 +9,43 @@ public class EnemyBehaviour : Entity
     [SerializeField] private GameObject flickerSign;
     [SerializeField] private float hitUpforce = 1f;
     [SerializeField] private float hitHorforce = 1f;
+    [SerializeField] private int damageAmount = 1;
+    [SerializeField] private HitBox hb;
+    public float burnAdjAmount;
+    public float speedAdjAmount;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;
+    private Animator animator;
     private bool flying = false;
+    private bool isAttacking = false;
+    public bool IsAttacking
+    { get { return isAttacking; } }
 
+    public float payloadRange = 1f;
+    public float aggroRange = 1f;
     public float attackRange = 1f;
+
+    private GameObject target;
+
+    public GameObject Target
+    {
+        get { return target; }
+        set { target = value; }
+    }
+
     protected override void Start()
     {
         base.Start();
         state = new EnemyChaseState(this);
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
-
+        hb.HitBoxListeners += DamagePlayer;
+        animator = GetComponent<Animator>();
     }
     private void Update()
     {
-
-        if (agent.isOnNavMesh)
-        {
-            agent.SetDestination(PayloadBehaviour.Instance.transform.position);
-            agent.enabled = true;
-        }
+        state.DoEnemyAction();
     }
     public override void OnDeath()
     {
@@ -40,7 +55,7 @@ public class EnemyBehaviour : Entity
     protected override void OnDamage()
     {
         StartCoroutine(DamageFlicker());
-        //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController.Instance.transform.position, this.transform.position), 0)).normalized;
+        //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(Discon_PlayerController.Instance.transform.position, this.transform.position), 0)).normalized;
         Stunned();
     }
 
@@ -48,7 +63,7 @@ public class EnemyBehaviour : Entity
     {
         agent.enabled = false;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f , this.transform.position.z);
-        Vector3 difference = this.transform.position -  PlayerController.Instance.transform.position;
+        Vector3 difference = this.transform.position -  Discon_PlayerController.Instance.transform.position;
         Vector3 horNormed = new Vector3(difference.x, 0, difference.z).normalized;
         Vector3 force = Vector3.up * hitUpforce + horNormed * hitHorforce;
         rb.AddForce(force, ForceMode.Impulse);
@@ -64,6 +79,20 @@ public class EnemyBehaviour : Entity
 
     protected override void OnHeal()
     {
+    }
+
+
+    public void DamagePlayer(GameObject toDamage)
+    {
+        if (toDamage.tag == "Player")
+        {
+            //toDamage.GetComponent<PlayerController>().TakeDamage(damageAmount);
+            toDamage.GetComponent<Discon_PlayerController>().TakeDamage(damageAmount);
+        }
+    }
+    public void Attack()
+    {
+        animator.SetTrigger("Attacking");
     }
 
     private void OnCollisionEnter(Collision collision)
