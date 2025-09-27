@@ -1,0 +1,163 @@
+using UnityEngine;
+
+public class ThirdPersonCamera : MonoBehaviour
+{
+    [Header("Refs")]
+    public Transform target;   // Player root
+    public Transform pivot;    // CameraPivot (child under rig)
+    public Camera cam;         // Main Camera
+
+    [Header("Follow")]
+    [Tooltip("Higher = snappier follow")]
+    public float followSmooth = 12f;
+
+    [Header("Orbit")]
+    public float sensX = 180f;
+    public float sensY = 130f;
+    public float minPitch = -25f;
+    public float maxPitch = 65f;
+    public bool invertY = false;
+
+    [Header("Framing")]
+    [Tooltip("Horizontal shoulder offset, e.g., x=0.35 for over-the-shoulder")]
+    public Vector3 shoulderOffset = new Vector3(0.35f, 0f, 0f);
+
+    [Header("Zoom (Boom length)")]
+    public float distance = 4.8f;
+    public float minDistance = 2.2f;
+    public float maxDistance = 6.5f;
+    public float zoomSpeed = 3.0f;
+
+    [Header("Collision")]
+    [Tooltip("Sphere radius used for camera collision checks")]
+    public float collisionRadius = 0.25f;
+    [Tooltip("Which layers the camera collides with (exclude Player)")]
+    public LayerMask collisionMask = ~0;
+    [Tooltip("How fast the boom length blends when colliding / clearing")]
+    public float boomSmooth = 14f;
+
+    // Internals
+    float yaw, pitch;
+    Vector3 followVel;
+    float currentDistance; // smoothed boom
+    float targetDistance;  // desired boom (post-collision)
+
+    void OnEnable()
+    {
+        if (!cam) cam = Camera.main;
+        LockCursor(true);
+
+        // Initialize from current LOCAL pivot rotation to avoid a tiny snap
+        if (pivot)
+        {
+            var e = pivot.localEulerAngles;
+            yaw   = e.y;
+            pitch = ClampPitch(e.x);
+        }
+
+        currentDistance = Mathf.Clamp(distance, minDistance, maxDistance);
+        targetDistance  = currentDistance;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) LockCursor(false);
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) LockCursor(true);
+
+        // Mouse wheel zoom (adjust desired distance; smoothing happens later)
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (Mathf.Abs(scroll) > 0.0001f)
+        {
+            distance = Mathf.Clamp(distance - scroll * zoomSpeed, minDistance, maxDistance);
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (!target || !pivot || !cam) return;
+
+        // --- Smooth follow of the rig to the target ---
+        float followT = 1f / Mathf.Max(followSmooth, 0.001f);
+        transform.position = Vector3.SmoothDamp(
+            transform.position, target.position, ref followVel, followT);
+
+        // --- Orbit (yaw/pitch on the pivot) ---
+        float mx = Input.GetAxis("Mouse X");
+        float my = Input.GetAxis("Mouse Y");
+        yaw   += mx * sensX * Time.deltaTime;
+        pitch += (invertY ? 1f : -1f) * my * sensY * Time.deltaTime;
+        pitch  = Mathf.Clamp(pitch, minPitch, maxPitch);
+        pivot.localRotation = Quaternion.Euler(pitch, yaw, 0f);
+
+        // --- Compute desired camera position from shoulder + boom ---
+        // Desired local position behind pivot on -Z by 'distance'
+        Vector3 desiredLocal = shoulderOffset + new Vector3(0f, 0f, -distance);
+        Vector3 worldPivot   = pivot.position;
+        Vector3 worldDesired = worldPivot + pivot.rotation * desiredLocal;
+
+        // --- Collision: sphere cast from pivot toward desired ---
+        Vector3 dir  = (worldDesired - worldPivot);
+        float   dist = dir.magnitude;
+        Vector3 nDir = dist > 1e-4f ? dir / dist : pivot.forward;
+
+        float safeDist = dist; // default: no hit
+        if (Physics.SphereCast(worldPivot, collisionRadius, nDir, out RaycastHit hit, dist, collisionMask, QueryTriggerInteraction.Ignore))
+        {
+            // Place camera just before the surface using the sphere radius (not a magic 0.05)
+            safeDist = Mathf.Max(hit.distance - collisionRadius, 0f);
+        }
+
+        // Set the target boom length and smooth toward it
+        targetDistance  = Mathf.Clamp(safeDist, 0f, dist);
+        currentDistance = SmoothToward(currentDistance, targetDistance, boomSmooth);
+
+        // Final camera transform
+        cam.transform.position = worldPivot + nDir * currentDistance;
+        cam.transform.rotation = pivot.rotation;
+    }
+
+    float SmoothToward(float current, float target, float speed)
+    {
+        // Exponential smoothing that is framerate-independent
+        float t = 1f - Mathf.Exp(-Mathf.Max(0.0001f, speed) * Time.deltaTime);
+        return Mathf.Lerp(current, target, t);
+    }
+
+    void LockCursor(bool locked)
+    {
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible   = !locked;
+    }
+
+    float ClampPitch(float x)
+    {
+        // Convert 0..360 to signed range for clamping
+        if (x > 180f) x -= 360f;
+        return Mathf.Clamp(x, minPitch, maxPitch);
+    }
+
+    // ===== Utilities you can call from your controller =====
+
+    /// World-space ray from camera center.
+    public Ray GetAimRay()
+    {
+        return new Ray(cam.transform.position, cam.transform.forward);
+    }
+
+    /// World aim point by raycast; falls back to far point if nothing hit.
+    public Vector3 GetAimPoint(float maxDist, LayerMask mask)
+    {
+        Ray ray = GetAimRay();
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDist, mask, QueryTriggerInteraction.Ignore))
+            return hit.point;
+        return ray.origin + ray.direction * maxDist;
+    }
+
+    /// Flat (XZ) forward from camera relative to a transform.
+    public Vector3 GetFlatAimDirection(Transform from)
+    {
+        Vector3 fwd = cam.transform.forward;
+        fwd.y = 0f;
+        return fwd.sqrMagnitude < 1e-4f ? from.forward : fwd.normalized;
+    }
+}
