@@ -50,18 +50,18 @@ public class Escort : Stage
         //Basically check if the 
         if (PayloadBehaviour.Instance.Agent.hasPath && PayloadBehaviour.Instance.Agent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
+            //Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
 
             if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
             {
-                Debug.Log($"Super Close to point, completing point");
+                //Debug.Log($"Super Close to point, completing point");
                 PayloadBehaviour.Instance.CompleteStage();
             }
 
         }
         else
         {
-            Debug.LogWarning("Path incomplete or invalid!");
+            //Debug.LogWarning("Path incomplete or invalid!");
         }
 
     }
