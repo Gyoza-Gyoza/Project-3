@@ -11,8 +11,6 @@ public class PayloadBehaviour : Entity
     [SerializeField] private float returnSpeed;
     private float extraReturnSpeed;
 
-
-
     [SerializeField] private Slider gasSlider;
 
     [SerializeField] private float burningRate = 0.5f;
@@ -62,6 +60,8 @@ public class PayloadBehaviour : Entity
         stages = LevelDirector.Instance.Stages;
 
         InitializeAgent();
+
+
     }
     private void Update()
     {
@@ -124,7 +124,8 @@ public class PayloadBehaviour : Entity
     }
 
     public void StartBurningGas()
-    { 
+    {
+        Debug.Log("Starting to burn gas");
         burningGas = true;
         ForwardFacing();
         agent.speed = MovementSpeed;
