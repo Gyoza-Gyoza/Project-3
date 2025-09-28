@@ -49,6 +49,8 @@ public class EnemyBehaviour : Entity
     }
     public override void OnDeath()
     {
+        //Do something else
+        LevelDirector.Instance.EnemyCount -= 1;
         GameObject.Destroy(this.gameObject);
     }
 

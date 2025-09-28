@@ -43,12 +43,13 @@ public class HUDController : Singleton<HUDController>
     //private float gasTarget;
     //private bool updatingGas = false;
 
-
+    [Header("Debug")]
+    [SerializeField] private TextMeshProUGUI enemyCount;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     #region Health
@@ -141,7 +142,6 @@ public class HUDController : Singleton<HUDController>
     }
     #endregion
 
-
     #region Gas Car
     public void SetPayloadGas(float input)
     {
@@ -190,7 +190,6 @@ public class HUDController : Singleton<HUDController>
     }
     #endregion
 
-
     #region Progress Bar
     public void SetProgressBar(float input)
     {
@@ -200,6 +199,15 @@ public class HUDController : Singleton<HUDController>
         progress.value = clamped;
     }
     #endregion
+
+    #region Debug
+    public void UpdateTotalEnemyCount(int input)
+    {
+        enemyCount.text = input.ToString();
+    }
+
+    #endregion
+
     // Update is called once per frame
     void Update()
     {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -28,6 +29,15 @@ public class LevelDirector : Singleton<LevelDirector>
     private Vector3 currentPosition; // Used for drawing gizmos
     private PayloadBehaviour payload;
 
+    [SerializeField] private int maxEnemies = 0;
+
+
+    [SerializeField] private int enemyCount = 0;
+    public int EnemyCount
+    { get { return enemyCount; } 
+      set { enemyCount = value; HUDController.Instance.UpdateTotalEnemyCount(enemyCount); }
+    }  
+    
     public float StageProgress
     { 
         get 
@@ -60,7 +70,7 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             //if (GetSpawnLocation(out Vector3 spawnPosition))
             //{
-            //    for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+            //    for (int i = 0; i < Stages[currentStage].EnemyPerSpawn; i++)
             //    {
             //        GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
             //        enemy.transform.position = spawnPosition + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
@@ -72,10 +82,16 @@ public class LevelDirector : Singleton<LevelDirector>
             //}
 
             Vector3 pos = GetSpawnMarkerLocation();
-            for (int i = 0; i < Stages[currentStage].MaxSpawnAmount; i++)
+
+            for (int i = 0; i < Stages[currentStage].EnemyPerSpawn; i++)
             {
+                if (enemyCount > maxEnemies)
+                {
+                    break;
+                }
                 NavMeshAgent enemy = GameObjectPool.GetObject(enemyPrefab).GetComponent<NavMeshAgent>();
                 enemy.Warp(pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
+                EnemyCount += 1;
             }
 
             timer = 0;
@@ -165,6 +181,16 @@ public class LevelDirector : Singleton<LevelDirector>
                 //Debug.Log($"Escorts point {i}, Previous: {escort1.PreviousCheckpoint}, Current: {escort1.Checkpoint}");
             }
         }
+    }
+
+    public void WinGame()
+    {
+
+    }
+
+    public void LoseGame()
+    {
+
     }
 
     private void OnDrawGizmos()

@@ -21,7 +21,16 @@ public class PayloadBehaviour : Entity
     private bool fillingGas = false;
 
     [SerializeField] private int maxGas = 100;
+    [SerializeField] private int iniGas = 0;
     private int currentGas;
+
+    public int CurrentGas
+    { 
+        get { return currentGas; }
+        set { currentGas = value; UpdateGasSlider(); }
+    }
+
+    [SerializeField] private Animator animator;
 
     //public float CheckpointProgress
     //{ 
@@ -60,16 +69,15 @@ public class PayloadBehaviour : Entity
         stages = LevelDirector.Instance.Stages;
 
         InitializeAgent();
-
-
+        CurrentGas = iniGas;
     }
     private void Update()
     {
         if (LevelDirector.Instance.CurrentStage < stages.Length) stages[LevelDirector.Instance.CurrentStage].DoPayloadBehaviour();
 
-        if (currentGas > 0 && !burningGas)
+        if (CurrentGas > 0 && !burningGas)
         {
-            //Debug.Log("Burning conditions triggered");
+            Debug.Log("Burning conditions triggered");
             StartBurningGas();
         }
 
@@ -79,7 +87,8 @@ public class PayloadBehaviour : Entity
     #region --------------------------Gas--------------------------------
     private void UpdateGasSlider()
     {
-        gasSlider.value = (float)currentGas/(float)maxGas;
+        gasSlider.value = (float)CurrentGas / (float)maxGas;
+        HUDController.Instance.SetPayloadGas((float)CurrentGas / (float)maxGas);
     }
 
     public void StartFillingGas()
@@ -95,7 +104,7 @@ public class PayloadBehaviour : Entity
         //Debug.Log("Starting to fill gas");
         while (fillingGas)
         {
-            HUDController.Instance.SetPayloadGas((float)currentGas / (float)maxGas);
+            HUDController.Instance.SetPayloadGas((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
             if (count > 1f / fillingRate) 
             {
@@ -106,13 +115,13 @@ public class PayloadBehaviour : Entity
                 }
                 else
                 {
-                    currentGas += 1;
+                    CurrentGas += 1;
                 }
             }
 
-            if (currentGas >= maxGas)
+            if (CurrentGas >= maxGas)
             {
-                currentGas = maxGas;
+                CurrentGas = maxGas;
                 StopFillingGas();
             }
 
@@ -145,22 +154,22 @@ public class PayloadBehaviour : Entity
         float count = 0f;
 
 
-        while (currentGas > 0)
+        while (CurrentGas > 0)
         {
             PayloadBehaviour.Instance.agent.isStopped = false;
-            //Debug.Log($"Payload Moving, current Gas {currentGas}");
-            HUDController.Instance.SetPayloadGas((float)currentGas / (float) maxGas);
+            //Debug.Log($"Payload Moving, current Gas {CurrentGas}");
+            HUDController.Instance.SetPayloadGas((float)CurrentGas / (float) maxGas);
             count += Time.deltaTime;
             if (count > 1f / burningRate)
             {
                 count -= (1f / burningRate);
-                currentGas -= 1;
+                CurrentGas -= 1;
             }
 
             //Debug.Log("Gas still burning");
             yield return new WaitForSeconds(Time.deltaTime);
         }
-        currentGas = 0;
+        CurrentGas = 0;
         StopBurningGas();
 
         //PayloadBehaviour.Instance.agent.isStopped = true;

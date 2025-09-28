@@ -161,6 +161,7 @@ public class PlayerController3P : Entity
     // Instance
     public static PlayerController3P Instance;
 
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -176,8 +177,13 @@ public class PlayerController3P : Entity
         else Destroy(Instance);
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+        currentGas = startingGas;
+        HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
+        HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+
         bool groundedNow = controller.isGrounded;
         wasGrounded = groundedNow;
         if (groundedNow) lastGroundedTime = Time.time;
@@ -186,8 +192,8 @@ public class PlayerController3P : Entity
         {
             animator.SetBool("Grounded", groundedNow);
             animator.SetFloat("Speed", 0f);
-            animator.SetFloat("YVel", 0f);
-            animator.SetBool("IsDashing", false);
+            //animator.SetFloat("YVel", 0f);
+            //animator.SetBool("IsDashing", false);
             animator.SetBool("IsAttacking", false);
         }
 
@@ -268,8 +274,8 @@ public class PlayerController3P : Entity
         if (animator)
         {
             animator.SetFloat("Speed", (isAttacking ? 0f : rawPlanarSpeed));
-            animator.SetFloat("YVel", velocity.y);
-            animator.SetBool("IsDashing", isGroundDashing || isAirDashing);
+            //animator.SetFloat("YVel", velocity.y);
+            //animator.SetBool("IsDashing", isGroundDashing || isAirDashing);
             animator.SetBool("IsAttacking", isAttacking);
         }
     }
@@ -459,7 +465,7 @@ public class PlayerController3P : Entity
 
         if (animator)
         {
-            animator.SetBool("IsDashing", true);
+            //animator.SetBool("IsDashing", true);
 
             Vector3 flatFacing = transform.forward; flatFacing.y = 0f; flatFacing.Normalize();
             Vector3 flatDash = dashDir; flatDash.y = 0f; flatDash.Normalize();
@@ -492,7 +498,7 @@ public class PlayerController3P : Entity
 
         if (animator)
         {
-            animator.SetBool("IsDashing", true);
+            //animator.SetBool("IsDashing", true);
             animator.SetBool("Grounded", false);
 
             Vector3 flatFacing = transform.forward; flatFacing.y = 0f; flatFacing.Normalize();
@@ -530,14 +536,14 @@ public class PlayerController3P : Entity
     {
         isGroundDashing = false;
         groundDashCooldownUntil = Time.time + dashCooldown;
-        if (animator) animator.SetBool("IsDashing", false);
+        //if (animator) animator.SetBool("IsDashing", false);
     }
 
     void EndAirDash()
     {
         isAirDashing = false;
         airDashCooldownUntil = Time.time + airDashCooldown;
-        if (animator) animator.SetBool("IsDashing", false);
+        //if (animator) animator.SetBool("IsDashing", false);
     }
 
     // -------------------- Attack Input & Update --------------------
