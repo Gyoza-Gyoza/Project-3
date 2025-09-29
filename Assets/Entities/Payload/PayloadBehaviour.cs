@@ -297,6 +297,7 @@ public class PayloadBehaviour : Entity
     [SerializeField] private Color32 forwardEndColor = Color.green;
     [SerializeField] private Color32 backwardStartColor = Color.red;
     [SerializeField] private Color32 backwardEndColor = Color.red;
+    [SerializeField] private float verticleOffset = 1f;
 
     private void IniLineRenderer()
     {
@@ -308,7 +309,7 @@ public class PayloadBehaviour : Entity
     private void DrawPath()
     {
         lineRenderer.positionCount = agent.path.corners.Length;
-        lineRenderer.SetPosition(0, transform.position);
+        lineRenderer.SetPosition(0, transform.position + new Vector3(0,verticleOffset,0));
 
         if (isFacingForward)
         {
@@ -329,7 +330,7 @@ public class PayloadBehaviour : Entity
         for (int i = 0; i < agent.path.corners.Length; i++) 
         {
             Vector3 pointPosition = new Vector3(agent.path.corners[i].x, agent.path.corners[i].y, agent.path.corners[i].z);
-            lineRenderer.SetPosition(i, pointPosition);
+            lineRenderer.SetPosition(i, pointPosition + new Vector3(0, verticleOffset, 0));
         }
     }
 
