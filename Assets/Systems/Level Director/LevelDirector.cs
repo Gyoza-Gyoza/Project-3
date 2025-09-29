@@ -30,22 +30,49 @@ public class LevelDirector : Singleton<LevelDirector>
     private PayloadBehaviour payload;
 
     [SerializeField] private int maxEnemies = 0;
-
-
     [SerializeField] private int enemyCount = 0;
     public int EnemyCount
     { get { return enemyCount; } 
       set { enemyCount = value; HUDController.Instance.UpdateTotalEnemyCount(enemyCount); }
-    }  
-    
+    }
+
+
+    private float levelLength = 0f;
+
+    private void calculateLevelLength()
+    {
+        for (int i = 1; i < stages.Length; i++)
+        {
+            levelLength += calculateCheckpointLength(i);
+        }
+    }
+
+    private float calculateCheckpointLength(int index)
+    {
+        if (stages[index - 1] is Escort escort1 && stages[index] is Escort escort2)
+        {
+            return Vector3.Magnitude(escort2.Checkpoint - escort1.Checkpoint);
+        }
+
+        return 0f;
+    }
+
     public float StageProgress
     { 
         get 
         {
             // Subtracting by one to ignore the first checkpoint as it's the starting point
-            float result;
-            float progressionPerStage = 1f / (Stages.Length - 1);
-            result = progressionPerStage * (currentStage - 1) + stages[currentStage].Progress * progressionPerStage;
+            float calc = 0f;
+            //float progressionPerStage = 1f / (Stages.Length - 1);
+            for (int i = 1; i < currentStage; i++)
+            {
+                calc += calculateCheckpointLength(i);
+            }
+            calc += stages[currentStage].Progress * calculateCheckpointLength(currentStage);
+
+            float result = calc / levelLength;
+
+            //Debug.Log($"Stage Progress: {result}");
 
             return Mathf.Clamp01(result); 
         } 
@@ -58,6 +85,7 @@ public class LevelDirector : Singleton<LevelDirector>
         base.Awake();
         payload = PayloadBehaviour.Instance;
         AssignEscortStages();
+        calculateLevelLength();
     }
     private void Update()
     {

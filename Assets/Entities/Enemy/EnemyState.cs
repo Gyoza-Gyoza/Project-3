@@ -36,7 +36,7 @@ public class EnemyChaseState : EnemyState
         //Debug.Log("Chase Do Enemy Action being called");
         if (enemy.agent.isActiveAndEnabled)
         {
-            Debug.Log("Agent is active and enabled, resuming chase");
+            //Debug.Log("Agent is active and enabled, resuming chase");
             enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
         }
 
@@ -47,7 +47,7 @@ public class EnemyChaseState : EnemyState
 
         if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.aggroRange)
         {
-            Debug.Log("Player in Aggro range");
+            //Debug.Log("Player in Aggro range");
             enemy.state = new EnemyAttackState(enemy);
 
         }

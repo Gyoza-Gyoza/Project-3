@@ -32,9 +32,9 @@ public class Escort : Stage
     { get 
         {
             if (PayloadBehaviour.Instance.Agent.destination == checkpoint)
-                return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
-            else
                 return PayloadBehaviour.Instance.Agent.remainingDistance;
+            else
+                return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; 
         } 
     }
 
