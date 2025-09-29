@@ -112,6 +112,13 @@ public class PlayerController3P : Entity
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] impactVFX;
 
+    // ------------------ Devices ------------------
+    [Header("Devices")]
+    [SerializeField] private GameObject tauntDevicePrefab;
+    [SerializeField] private float throwForce = 10f;
+    [SerializeField] private float upwardsForce = 5f;
+    [SerializeField] private Transform throwPoint;
+
     // ------------------ Internals ------------------
     private CharacterController controller;
     private Vector3 velocity; // Y; horizontal is moved via controller.Move in sections
@@ -210,6 +217,7 @@ public class PlayerController3P : Entity
     {
         HandleDashInput();   // RMB cancels attacks
         HandleAttackInput(); // LMB starts/queues
+        HandleDeviceInput(); // Device inputs
         UpdateDash();        // timers
         UpdateAttack();      // timers
         HandleMovement();    // movement depends on dash/attack
@@ -934,6 +942,25 @@ public class PlayerController3P : Entity
         {
             animator.SetBool("IsAttacking", false);
         }
+    }
+
+    // -------------------- Devices --------------------
+    private void HandleDeviceInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ThrowDevice();
+        }
+    }
+    void ThrowDevice()
+    {
+        // spawn grenade
+        GameObject grenade = Instantiate(tauntDevicePrefab, throwPoint.position, throwPoint.rotation);
+
+        // apply physics
+        Rigidbody rb = grenade.GetComponent<Rigidbody>();
+        Vector3 force = Camera.main.transform.forward * throwForce + Vector3.up * upwardsForce;
+        rb.AddForce(force, ForceMode.VelocityChange);
     }
     #endregion
 

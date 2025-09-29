@@ -5,14 +5,22 @@ using UnityEngine;
 public class TauntDevice : Device
 {
     [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private float deactivationAnimationDuration; 
+    [SerializeField] private float deactivationAnimationDuration;
     private SphereCollider col;
+    private SphereCollider trigger;
+    private Rigidbody rb;
     private List<EnemyBehaviour> enemiesInRange = new List<EnemyBehaviour>();
 
     private void Awake()
     {
-        col = GetComponent<SphereCollider>();
-        col.radius = Range;
+        SphereCollider[] cols = GetComponents<SphereCollider>();
+        foreach (SphereCollider collider in cols)
+        {
+            if (collider.isTrigger) trigger = collider;
+            else col = collider;
+        }
+        trigger.radius = Range;
+        rb = GetComponent<Rigidbody>();
     }
     private void OnEnable()
     {
@@ -35,6 +43,7 @@ public class TauntDevice : Device
     {
         timer = 0f;
         enemiesInRange.Clear();
+        rb.isKinematic = false;
     }
     public override void ActivateDevice()
     {
@@ -73,6 +82,13 @@ public class TauntDevice : Device
         // Play deactivation animation here
         yield return new WaitForSeconds(deactivationAnimationDuration);
         GameObjectPool.ReturnObject(gameObject);
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.layer == 6) // Ground layer is 6
+        {
+            rb.isKinematic = true;
+        }
     }
     private void OnTriggerEnter(Collider other)
     {

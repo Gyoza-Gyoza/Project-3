@@ -534,6 +534,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4012617394526500404}
   - {fileID: 6323766174511350962}
   - {fileID: 7475103513348397526}
   m_Father: {fileID: 0}
@@ -650,6 +651,10 @@ MonoBehaviour:
     delay: 0.05
   - vfxPrefab: {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
     delay: 0.15
+  tauntDevicePrefab: {fileID: 0}
+  throwForce: 10
+  upwardsForce: 5
+  throwPoint: {fileID: 0}
   attack1HB: {fileID: 7755424022190292366}
   attack2HB: {fileID: 8956669829931543296}
   attack3HB_sweep: {fileID: 599260985665156423}
@@ -662,6 +667,37 @@ MonoBehaviour:
   plungeDamage: 100
   maxGas: 150
   startingGas: 0
+--- !u!1 &7971844834700300875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4012617394526500404}
+  m_Layer: 3
+  m_Name: DeviceThrowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4012617394526500404
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7971844834700300875}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.47, z: 0.36}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7867352040754746910}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8085172661591179644
 GameObject:
   m_ObjectHideFlags: 0
