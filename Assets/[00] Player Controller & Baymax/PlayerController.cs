@@ -245,17 +245,17 @@ public class PlayerController3P : Entity
         Vector3 camRight = Vector3.Cross(Vector3.up, camFwd).normalized;
         Vector3 moveDirInput = camFwd * input.y + camRight * input.x;
 
-        if (moveDirInput.magnitude > 0)
-        {
-            if (!walkAudioSource.isPlaying)
-            {
-                walkAudioSource.Play();
-            }
-        }
-        else
-        {
-            walkAudioSource.Stop();
-        }
+        // if (moveDirInput.magnitude > 0)
+        // {
+        //     if (!walkAudioSource.isPlaying)
+        //     {
+        //         walkAudioSource.Play();
+        //     }
+        // }
+        // else
+        // {
+        //     walkAudioSource.Stop();
+        // }
 
         float rawPlanarSpeed = moveDirInput.magnitude * walkSpeed;
 
@@ -313,6 +313,23 @@ public class PlayerController3P : Entity
             //animator.SetBool("IsDashing", isGroundDashing || isAirDashing);
             animator.SetBool("IsAttacking", isAttacking);
         }
+
+        bool walkingNow = !isAttacking && !isGroundDashing && !isAirDashing && controller.isGrounded && rawPlanarSpeed > 0.1f;
+
+        if (walkAudioSource != null)
+        {
+            if (walkingNow)
+            {
+                if (!walkAudioSource.isPlaying)
+                    walkAudioSource.Play();
+            }
+            else
+            {
+                if (walkAudioSource.isPlaying)
+                    walkAudioSource.Stop();
+            }
+        }
+
     }
 
     // -------------------- Jump (incl. Double Jump) --------------------
@@ -328,7 +345,8 @@ public class PlayerController3P : Entity
 
         if (!wasGrounded && grounded)
         {
-            PlaySFX(SFXs[6]);
+            //PlaySFX(SFXs[6]);
+            AudioManager.Play("Land"); 
             doubleJumpAvailable = enableDoubleJump;
             jumpRequested = false;
             jumpImpulseApplied = false;
@@ -381,7 +399,8 @@ public class PlayerController3P : Entity
             float jumpSpeed = Mathf.Sqrt(jumpHeight * -2f * gravity);
             velocity.y = jumpSpeed;
             jumpImpulseApplied = true;
-            PlaySFX(SFXs[4]);
+            //PlaySFX(SFXs[4]);
+            AudioManager.Play("Jump"); 
         }
 
         // Gravity
@@ -417,7 +436,8 @@ public class PlayerController3P : Entity
         float jumpSpeed = Mathf.Sqrt(doubleJumpHeight * -2f * gravity);
         velocity.y = jumpSpeed;
 
-        PlaySFX(SFXs[5]);
+        //PlaySFX(SFXs[5]);
+        AudioManager.Play("DoubleJump"); 
 
         if (animator)
         {
@@ -523,7 +543,8 @@ public class PlayerController3P : Entity
             }
         }
 
-        PlaySFX(SFXs[3]);
+        //PlaySFX(SFXs[3]);
+        AudioManager.Play("Dash"); 
     }
 
     void BeginAirDash()
@@ -685,21 +706,24 @@ public class PlayerController3P : Entity
                 animator.ResetTrigger(atk1Trigger); 
                 animator.SetTrigger(atk1Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[0]));
-                PlaySFX(SFXs[0]);
+                //PlaySFX(SFXs[0]);
+                AudioManager.Play("A1"); 
             }
             else if (index == 2) 
             { 
                 animator.ResetTrigger(atk2Trigger); 
                 animator.SetTrigger(atk2Trigger); 
                 StartCoroutine(SpawnVFX(slashVFX[1]));
-                PlaySFX(SFXs[1]);
+                //PlaySFX(SFXs[1]);
+                AudioManager.Play("A2"); 
             }
             else 
             { 
                 animator.ResetTrigger(atk3Trigger); 
                 animator.SetTrigger(atk3Trigger); 
                 StartCoroutine(SpawnVFX(slashVFX[2]));
-                PlaySFX(SFXs[2]);
+                //PlaySFX(SFXs[2]);
+                AudioManager.Play("A3"); 
             }
             animator.SetBool("IsAttacking", true);
         }
@@ -924,7 +948,8 @@ public class PlayerController3P : Entity
     // -------------------- Plunge Attack --------------------
     void BeginPlunge()
     {
-        PlaySFX(SFXs[7]);
+        //PlaySFX(SFXs[7]);
+        AudioManager.Play("Plunge"); 
         isPlunging = true;
         plungeTimer = 0f;
         plungeImpulseStarted = false;
