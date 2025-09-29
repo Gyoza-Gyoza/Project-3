@@ -928,6 +928,7 @@ public class PlayerController3P : Entity
         isPlunging = false;
         plungeTimer = 0f;
         plungeImpulseStarted = false;
+        StartCoroutine(SpawnVFX(slashVFX[3]));
 
         if (animator)
         {
