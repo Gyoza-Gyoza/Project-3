@@ -11,12 +11,17 @@ public class EnemyBehaviour : Entity
     [SerializeField] private float hitHorforce = 1f;
     [SerializeField] private int damageAmount = 1;
     [SerializeField] private HitBox hb;
+    [SerializeField] private float deathTime = 1f;
     public float burnAdjAmount;
     public float speedAdjAmount;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;
     private Animator animator;
+    [SerializeField] private GameObject ball;
+    [SerializeField] private GameObject meshOffset;
+    [SerializeField] private GameObject deathParticleSystem;
+
     private bool flying = false;
     private bool isAttacking = false;
     public bool IsAttacking
@@ -51,7 +56,30 @@ public class EnemyBehaviour : Entity
     {
         //Do something else
         LevelDirector.Instance.EnemyCount -= 1;
+        StartCoroutine(DeathCouroutine());
+    }
+
+    IEnumerator DeathCouroutine()
+    {
+        agent.enabled = false;
+        deathParticleSystem.SetActive(true);
+        ball.SetActive(false);
+        KnockbackFromPlayer();
+        float count = 0f;
+        while (count <=  deathTime)
+        {
+            count += Time.deltaTime;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        meshOffset.SetActive(false);
+        ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
+        particleSystem.Stop();
+        while (particleSystem.IsAlive())
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
         GameObject.Destroy(this.gameObject);
+        yield break;
     }
 
     protected override void OnDamage()
@@ -65,7 +93,12 @@ public class EnemyBehaviour : Entity
     {
         agent.enabled = false;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f , this.transform.position.z);
-        Vector3 difference = this.transform.position -  PlayerController3P.Instance.transform.position;
+        KnockbackFromPlayer();
+    }
+
+    private void KnockbackFromPlayer()
+    {
+        Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
         Vector3 horNormed = new Vector3(difference.x, 0, difference.z).normalized;
         Vector3 force = Vector3.up * hitUpforce + horNormed * hitHorforce;
         rb.AddForce(force, ForceMode.Impulse);
