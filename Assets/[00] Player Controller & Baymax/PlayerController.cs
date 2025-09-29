@@ -1141,9 +1141,16 @@ public class PlayerController3P : Entity
         HUDController.Instance.DamageFlicker();
     }
 
+    private bool dead = false;
+
     public override void OnDeath()
     {
         //throw new System.NotImplementedException();
+        if (dead != true)
+        {
+            LevelDirector.Instance.LoseGame();
+            dead = true;
+        }
     }
     #endregion
 }

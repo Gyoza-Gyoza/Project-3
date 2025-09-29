@@ -129,7 +129,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
         target.gameObject.SetActive(false);
     }
 
-    private IEnumerator Fade(Graphic target, float start, float end, float duration)
+    public IEnumerator Fade(Graphic target, float start, float end, float duration)
     {
         float timer = 0f;
 
@@ -144,7 +144,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
             yield return null;
         }
     }
-    private IEnumerator Fade(CanvasGroup target, float start, float end, float duration)
+    public IEnumerator Fade(CanvasGroup target, float start, float end, float duration)
     {
         float timer = 0f;
 

@@ -5,6 +5,8 @@ using System.Net.NetworkInformation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 
 public class LevelDirector : Singleton<LevelDirector>
@@ -14,6 +16,9 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private GameObject test;
     [SerializeField] private float spawnSpread;
     [SerializeField] private LayerMask environmentMask;
+
+    private LineRenderer lineRenderer;
+
     private List<Transform> spawnMarker = new List<Transform>(); 
     public Stage[] Stages
     {
@@ -86,6 +91,7 @@ public class LevelDirector : Singleton<LevelDirector>
         payload = PayloadBehaviour.Instance;
         AssignEscortStages();
         calculateLevelLength();
+        lineRenderer = new LineRenderer();
     }
     private void Update()
     {
@@ -187,6 +193,7 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         // Handle level completion logic here
         testText.text = $"Level Completed! Total Progress: 100%";
+        WinGame();
     }
 
     private void AssignEscortStages()
@@ -213,12 +220,22 @@ public class LevelDirector : Singleton<LevelDirector>
 
     public void WinGame()
     {
-
+        HUDController.Instance.WinScreen();
     }
 
     public void LoseGame()
     {
+        HUDController.Instance.LoseScreen();
+    }
 
+    public void Restart()
+    {
+        SceneManager.LoadScene("Level 1 White Box", LoadSceneMode.Single);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     private void OnDrawGizmos()

@@ -36,16 +36,30 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private float flickerRate;
     [SerializeField] private float warningThreshold;
 
+    [SerializeField] private CanvasGroup highlight;
+    private bool highlighting = false;
+    private bool highlightSwitch = false;
+    public float highlightSpeed = 1f;
+    private int enemiesPushing = 0;
+    public float highlightSpeedUpPer = 0.1f;
+
+
     private float payloadGasOrigin;
     private float payloadGasTemp;
     private float payloadGasTarget;
     private bool updatingPayloadGas = false;
+
     private bool flickering = false;
     private bool flickerSwitch = false;
 
     [Header("Progress Bar")]
     [SerializeField] private Slider progress;
     [SerializeField] private TextMeshProUGUI progressText;
+
+
+    [Header("Conditions")]
+    [SerializeField] private CanvasGroup winGroup;
+    [SerializeField] private CanvasGroup loseGroup;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
@@ -186,7 +200,7 @@ public class HUDController : Singleton<HUDController>
         {
             if (flickering == false)
             {
-                StartCoroutine(WarningFlicker());
+                StartCoroutine(LowGasWarningFlicker());
             }
         }
         else
@@ -222,7 +236,7 @@ public class HUDController : Singleton<HUDController>
         yield break;
     }
 
-    IEnumerator WarningFlicker()
+    IEnumerator LowGasWarningFlicker()
     {
         //Debug.Log("Start flickering");
         flickering = true;
@@ -253,15 +267,89 @@ public class HUDController : Singleton<HUDController>
         yield break;
     }
 
+    public void StartHighlight()
+    {
+        Debug.Log("Start Highling called");
+        enemiesPushing += 1;
+        if (!highlighting)
+        {
+            highlighting = true;
+            StartCoroutine(EnemyPushingWarning());
+        }
+    }
+
+    public void StopHighlight()
+    {
+        enemiesPushing -= 1;
+        if (enemiesPushing <= 0)
+        {
+            highlighting = false;
+        }
+    }
+
+    IEnumerator EnemyPushingWarning()
+    {
+        Debug.Log("Enemy Push Coroutine called");
+        while (highlighting)
+        {
+            // Fade In
+            yield return StartCoroutine(HighlightFadeTo(1f));
+            // Fade Out
+            yield return StartCoroutine(HighlightFadeTo(0f));
+        }
+        highlight.alpha = 0f;
+    }
+
+
+    IEnumerator HighlightFadeTo(float target)
+    {
+        Debug.Log("Highlight fade done");
+        while (!Mathf.Approximately(highlight.alpha, target))
+        {
+            highlight.alpha = Mathf.MoveTowards(
+                highlight.alpha,
+                target,
+                (highlightSpeed + (enemiesPushing * highlightSpeedUpPer)) * Time.deltaTime // uses current fadeSpeed continuously
+            );
+            yield return null;
+        }
+    }
+
     #endregion
 
     #region Progress Bar
     public void SetProgressBar(float input)
     {
-        Debug.Log($"Setting progress to {input}");
+        //Debug.Log($"Setting progress to {input}");
         float clamped = Mathf.Clamp(input, 0f, 1f);
         progressText.text = $"{Mathf.Round(clamped * 10000)/100}%";
         progress.value = clamped;
+    }
+    #endregion
+
+    #region Win Lose
+    public void WinScreen()
+    {
+        StartCoroutine(ScreenEffectsManager.Instance.Fade(winGroup, 0f, 1f, 1f));
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void LoseScreen()
+    {
+        StartCoroutine(ScreenEffectsManager.Instance.Fade(loseGroup, 0f, 1f, 1f));
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void RestartPressed()
+    {
+        LevelDirector.Instance.Restart();
+    }
+
+    public void QuitPressed()
+    {
+        LevelDirector.Instance.Quit();
     }
     #endregion
 

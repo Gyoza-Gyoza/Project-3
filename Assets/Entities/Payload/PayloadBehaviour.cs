@@ -64,7 +64,7 @@ public class PayloadBehaviour : Entity
 
         agent = GetComponent<NavMeshAgent>();
         interactRadius = GetComponent<SphereCollider>().radius;
-        lineRenderer = GetComponent<LineRenderer>();
+        IniLineRenderer();
     }
     protected override void Start()
     {
@@ -219,17 +219,21 @@ public class PayloadBehaviour : Entity
     #region ------------------Enemy Surrounding Behaviour----------------
     public void EnemyPushing(float burnAdj, float moveSpeedAdj , float returnSpeedAdj)
     {
+        Debug.Log("Enemy Pushing");
         extraBurningRate += burnAdj;
         hinderedMovementSpeed += moveSpeedAdj;
         extraReturnSpeed += returnSpeedAdj;
+        HUDController.Instance.StartHighlight();
     }
 
 
     public void EnemyExit(float burnAdj, float moveSpeedAdj, float returnSpeedAdj)
     {
+        Debug.Log("Enemy Stop Pushing");
         extraBurningRate -= burnAdj;
         hinderedMovementSpeed -= moveSpeedAdj;
         extraReturnSpeed -= returnSpeedAdj;
+        HUDController.Instance.StopHighlight();
     }
     #endregion
 
