@@ -146,6 +146,7 @@ public class PayloadBehaviour : Entity
         burningGas = true;
         ForwardFacing();
         agent.speed = MovementSpeed - hinderedMovementSpeed;
+        animator.SetBool("Walking", true);
         StartCoroutine(burnGas());
     }
 
