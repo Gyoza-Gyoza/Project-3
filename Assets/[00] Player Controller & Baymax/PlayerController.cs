@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController3P : Entity
@@ -111,6 +113,8 @@ public class PlayerController3P : Entity
     [SerializeField] private Transform VFXZeroPoint;
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] impactVFX;
+    [SerializeField] private Volume volume;
+    private LensDistortion lensDistortion;
 
     // ------------------ Devices ------------------
     [Header("Devices")]
@@ -181,6 +185,10 @@ public class PlayerController3P : Entity
         if (!animator) animator = GetComponentInChildren<Animator>();
         lastJumpPressedTime = float.NegativeInfinity;
         lastGroundedTime    = float.NegativeInfinity;
+        if(volume.profile.TryGet<LensDistortion>(out var ld))
+        {
+            lensDistortion = ld;
+        }
 
         //Ezekiel's Injection
         InitializeHitboxs();
@@ -497,6 +505,8 @@ public class PlayerController3P : Entity
                 animator.SetTrigger(fwdDashTrigger);
             }
         }
+        StopCoroutine("DashEffects");
+        StartCoroutine(DashEffects());
     }
 
     void BeginAirDash()
@@ -531,8 +541,21 @@ public class PlayerController3P : Entity
                 animator.SetTrigger(airDashTrigger);
             }
         }
+        StopCoroutine("DashEffects");
+        StartCoroutine(DashEffects());
     }
-
+    private IEnumerator DashEffects()
+    {
+        lensDistortion.intensity.value = -0.5f;
+        StartCoroutine(SpawnVFX(slashVFX[4]));
+        float timer = 0f;
+        while (timer <= 1f)
+        {
+            timer += Time.deltaTime; 
+            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer);
+            yield return null;
+        }
+    }
     void UpdateDash()
     {
         if (isGroundDashing || isAirDashing)
@@ -1066,7 +1089,7 @@ public class PlayerController3P : Entity
     private IEnumerator SpawnVFX(VFX vfxToSpawn)
     {
         yield return new WaitForSeconds(vfxToSpawn.delay);
-        Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation);
+        Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position + vfxToSpawn.offset, VFXZeroPoint.rotation);
     }
     #endregion
 

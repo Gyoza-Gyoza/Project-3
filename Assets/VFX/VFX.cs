@@ -7,4 +7,5 @@ public class VFX
 {
     public GameObject vfxPrefab;
     public float delay;
+    public Vector3 offset;
 }
