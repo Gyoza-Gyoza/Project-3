@@ -8,6 +8,7 @@ public class HUDController : Singleton<HUDController>
 {
     [Header("Health")]
     [SerializeField] private Slider health;
+    [SerializeField] private Image healthFill;
     [SerializeField] private Slider healthCatchUp;
     [SerializeField] private float healthCatchUpTiming;
     private float healthOrigin;
@@ -97,6 +98,23 @@ public class HUDController : Singleton<HUDController>
                 healthCatchUp.value = healthTarget;
             }
         }
+        yield break;
+    }
+
+    public void DamageFlicker()
+    {
+        StartCoroutine(DamageFlickerSequence());
+    }
+    IEnumerator DamageFlickerSequence()
+    {
+        Color temp = healthFill.color;
+
+        healthFill.color = Color.red;
+
+        yield return new WaitForSeconds(.5f);
+
+        healthFill.color = temp;
+
         yield break;
     }
 

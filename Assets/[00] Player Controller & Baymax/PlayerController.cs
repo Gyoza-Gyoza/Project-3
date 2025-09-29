@@ -1138,6 +1138,7 @@ public class PlayerController3P : Entity
     protected override void OnDamage()
     {
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
+        HUDController.Instance.DamageFlicker();
     }
 
     public override void OnDeath()
