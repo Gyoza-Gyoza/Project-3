@@ -138,11 +138,12 @@ MonoBehaviour:
   deathTime: 1
   burnAdjAmount: 0.1
   speedAdjAmount: 0.1
+  retreatAdjAmount: 0.1
   agent: {fileID: 0}
   ball: {fileID: 7242094643601931924}
   meshOffset: {fileID: 1657219682364904867}
   deathParticleSystem: {fileID: 3929770318114016586}
-  payloadRange: 1
+  payloadRange: 5
   aggroRange: 15
   attackRange: 3
 --- !u!54 &9097011396309068352

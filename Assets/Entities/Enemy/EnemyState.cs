@@ -111,11 +111,11 @@ public class EnemyPayloadState : EnemyState
     {
         float d = Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position);
         if (d <= enemy.aggroRange) ReachTargetAction();
-        else PayloadBehaviour.Instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount);
+        else PayloadBehaviour.Instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount, enemy.retreatAdjAmount);
     }
     public override void ReachTargetAction()
     {
-        PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount);
+        PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount, enemy.retreatAdjAmount);
         enemy.state = new EnemyAttackState(enemy);
     }
 }

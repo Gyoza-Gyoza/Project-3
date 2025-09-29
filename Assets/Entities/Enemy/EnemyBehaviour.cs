@@ -14,6 +14,7 @@ public class EnemyBehaviour : Entity
     [SerializeField] private float deathTime = 1f;
     public float burnAdjAmount;
     public float speedAdjAmount;
+    public float retreatAdjAmount;
     [HideInInspector] public NavMeshAgent agent;
     public EnemyState state;
     private Rigidbody rb;

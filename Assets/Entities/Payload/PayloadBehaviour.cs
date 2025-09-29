@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class PayloadBehaviour : Entity
 {
+    private float hinderedMovementSpeed;
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
     private float extraReturnSpeed;
@@ -144,7 +145,7 @@ public class PayloadBehaviour : Entity
         Debug.Log("Starting to burn gas");
         burningGas = true;
         ForwardFacing();
-        agent.speed = MovementSpeed;
+        agent.speed = MovementSpeed - hinderedMovementSpeed;
         StartCoroutine(burnGas());
     }
 
@@ -153,7 +154,7 @@ public class PayloadBehaviour : Entity
         //Debug.Log("Stop Burning");
         burningGas = false;
         BackwardFacing();
-        agent.speed = returnSpeed;
+        agent.speed = returnSpeed + extraReturnSpeed;
     }
 
     IEnumerator burnGas()
@@ -167,9 +168,9 @@ public class PayloadBehaviour : Entity
             //Debug.Log($"Payload Moving, current Gas {CurrentGas}");
             HUDController.Instance.SetPayloadGas((float)CurrentGas / (float) maxGas);
             count += Time.deltaTime;
-            if (count > 1f / burningRate)
+            if (count > 1f / (burningRate + extraBurningRate))
             {
-                count -= (1f / burningRate);
+                count -= (1f / (burningRate + extraBurningRate));
                 CurrentGas -= 1;
             }
 
@@ -215,16 +216,18 @@ public class PayloadBehaviour : Entity
     #endregion
 
     #region ------------------Enemy Surrounding Behaviour----------------
-    public void EnemyPushing(float burnAdj, float returnSpeedAdj)
+    public void EnemyPushing(float burnAdj, float moveSpeedAdj , float returnSpeedAdj)
     {
         extraBurningRate += burnAdj;
+        hinderedMovementSpeed += moveSpeedAdj;
         extraReturnSpeed += returnSpeedAdj;
     }
 
 
-    public void EnemyExit(float burnAdj, float returnSpeedAdj)
+    public void EnemyExit(float burnAdj, float moveSpeedAdj, float returnSpeedAdj)
     {
         extraBurningRate -= burnAdj;
+        hinderedMovementSpeed -= moveSpeedAdj;
         extraReturnSpeed -= returnSpeedAdj;
     }
     #endregion
