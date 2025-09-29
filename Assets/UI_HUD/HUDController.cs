@@ -36,12 +36,6 @@ public class HUDController : Singleton<HUDController>
     [Header("Progress Bar")]
     [SerializeField] private Slider progress;
     [SerializeField] private TextMeshProUGUI progressText;
-    //[SerializeField] private Slider gasCatchUp;
-    //[SerializeField] private float gasCatchUpTiming;
-    //private float gasOrigin;
-    //private float gasTemp;
-    //private float gasTarget;
-    //private bool updatingGas = false;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
@@ -203,7 +197,10 @@ public class HUDController : Singleton<HUDController>
     #region Debug
     public void UpdateTotalEnemyCount(int input)
     {
-        enemyCount.text = input.ToString();
+        if (enemyCount!= null && enemyCount.isActiveAndEnabled)
+        {
+            enemyCount.text = input.ToString();
+        }
     }
 
     #endregion
