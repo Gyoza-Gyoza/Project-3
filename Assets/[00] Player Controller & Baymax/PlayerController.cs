@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -105,6 +106,11 @@ public class PlayerController3P : Entity
     public float plungeDuration = 0.5f;
     public string plungeTrigger = "Plunge"; // Animator trigger
 
+    // ------------------ VFX ------------------
+    [Header("VFX")]
+    [SerializeField] private Transform VFXZeroPoint;
+    [SerializeField] private VFX[] slashVFX;
+    [SerializeField] private VFX[] impactVFX;
 
     // ------------------ Internals ------------------
     private CharacterController controller;
@@ -638,9 +644,24 @@ public class PlayerController3P : Entity
 
         if (animator)
         {
-            if (index == 1) { animator.ResetTrigger(atk1Trigger); animator.SetTrigger(atk1Trigger); }
-            else if (index == 2) { animator.ResetTrigger(atk2Trigger); animator.SetTrigger(atk2Trigger); }
-            else { animator.ResetTrigger(atk3Trigger); animator.SetTrigger(atk3Trigger); }
+            if (index == 1) 
+            {
+                animator.ResetTrigger(atk1Trigger); 
+                animator.SetTrigger(atk1Trigger);
+                StartCoroutine(SpawnVFX(slashVFX[0]));
+            }
+            else if (index == 2) 
+            { 
+                animator.ResetTrigger(atk2Trigger); 
+                animator.SetTrigger(atk2Trigger); 
+                StartCoroutine(SpawnVFX(slashVFX[1]));
+            }
+            else 
+            { 
+                animator.ResetTrigger(atk3Trigger); 
+                animator.SetTrigger(atk3Trigger); 
+                StartCoroutine(SpawnVFX(slashVFX[2]));
+            }
             animator.SetBool("IsAttacking", true);
         }
     }
@@ -673,12 +694,20 @@ public class PlayerController3P : Entity
             {
                 if (attackIndex == 1)
                 {
-                    if (animator) { animator.ResetTrigger(atkToIdle1Trigger); animator.SetTrigger(atkToIdle1Trigger); }
+                    if (animator) 
+                    { 
+                        animator.ResetTrigger(atkToIdle1Trigger); 
+                        animator.SetTrigger(atkToIdle1Trigger); 
+                    }
                     EndAttackState();
                 }
                 else if (attackIndex == 2)
                 {
-                    if (animator) { animator.ResetTrigger(atkToIdle2Trigger); animator.SetTrigger(atkToIdle2Trigger); }
+                    if (animator) 
+                    { 
+                        animator.ResetTrigger(atkToIdle2Trigger); 
+                        animator.SetTrigger(atkToIdle2Trigger); 
+                    }
                     EndAttackState();
                 }
                 else
@@ -970,6 +999,7 @@ public class PlayerController3P : Entity
         if (toDamage.tag == "Enemy")
         {
             toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack1Damage);
+            StartCoroutine(SpawnVFX(impactVFX[0]));
         }
     }
 
@@ -978,6 +1008,7 @@ public class PlayerController3P : Entity
         if (toDamage.tag == "Enemy")
         {
             toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack2Damage);
+            StartCoroutine(SpawnVFX(impactVFX[1]));
         }
     }
 
@@ -1003,6 +1034,11 @@ public class PlayerController3P : Entity
         {
             toDamage.GetComponent<EnemyBehaviour>().TakeDamage(plungeDamage);
         }
+    }
+    private IEnumerator SpawnVFX(VFX vfxToSpawn)
+    {
+        yield return new WaitForSeconds(vfxToSpawn.delay);
+        Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation);
     }
     #endregion
 
