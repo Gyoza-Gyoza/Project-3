@@ -94,10 +94,21 @@ public class EnemyBehaviour : Entity
     }
     public void Attack()
     {
+        Debug.Log("Enemy Attack Called");
+        //agent.isStopped = true;
+        agent.updateRotation = false;
+        this.gameObject.transform.LookAt(PlayerController3P.Instance.transform);
+        //this.transform.rotation;
         animator.SetTrigger("Attacking");
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void StopAttack()
+    {
+        agent.updateRotation = true;
+        animator.ResetTrigger("Attacking");
+    }
+
+private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") && flying == false)
         {

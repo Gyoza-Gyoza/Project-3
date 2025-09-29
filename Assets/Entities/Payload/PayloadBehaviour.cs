@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -62,6 +63,7 @@ public class PayloadBehaviour : Entity
 
         agent = GetComponent<NavMeshAgent>();
         interactRadius = GetComponent<SphereCollider>().radius;
+        lineRenderer = GetComponent<LineRenderer>();
     }
     protected override void Start()
     {
@@ -82,6 +84,11 @@ public class PayloadBehaviour : Entity
         }
 
         gasSlider.transform.parent.transform.LookAt(PlayerController3P.Instance.transform, Vector3.up);
+        
+        if (agent.hasPath)
+        {
+            DrawPath();
+        }
     }
 
     #region --------------------------Gas--------------------------------
@@ -180,6 +187,8 @@ public class PayloadBehaviour : Entity
     #endregion
 
     #region -----------------------Facing--------------------------------
+
+    private bool isFacingForward = true;
     public void ForwardFacing()
     {
         Debug.Log("Front Facing on payload called");
@@ -188,6 +197,7 @@ public class PayloadBehaviour : Entity
         {
             Debug.Log("Front Facing Success");
             stage.FaceForward();
+            isFacingForward = true;
             //agent.SetDestination(stage.Checkpoint);
         }
     }
@@ -198,6 +208,7 @@ public class PayloadBehaviour : Entity
         {
             Debug.Log("Back Success");
             stage.FaceBackwards();
+            isFacingForward = false;
             //agent.SetDestination(stage.PreviousCheckpoint);
         }
     }
@@ -279,4 +290,47 @@ public class PayloadBehaviour : Entity
             stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
         }
     }
+
+    private LineRenderer lineRenderer;
+    [SerializeField] private float rendererWidth = .15f;
+    [SerializeField] private Color32 forwardStartColor = Color.green;
+    [SerializeField] private Color32 forwardEndColor = Color.green;
+    [SerializeField] private Color32 backwardStartColor = Color.red;
+    [SerializeField] private Color32 backwardEndColor = Color.red;
+
+    private void IniLineRenderer()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.startWidth = rendererWidth;
+        lineRenderer.endWidth = rendererWidth;
+    }
+
+    private void DrawPath()
+    {
+        lineRenderer.positionCount = agent.path.corners.Length;
+        lineRenderer.SetPosition(0, transform.position);
+
+        if (isFacingForward)
+        {
+            lineRenderer.startColor = forwardStartColor;
+            lineRenderer.endColor = forwardEndColor;
+        }
+        else
+        {
+            lineRenderer.startColor = backwardStartColor;
+            lineRenderer.endColor = backwardEndColor;
+        }
+
+        if (agent.path.corners.Length < 2)
+        {
+            return;
+        }
+
+        for (int i = 0; i < agent.path.corners.Length; i++) 
+        {
+            Vector3 pointPosition = new Vector3(agent.path.corners[i].x, agent.path.corners[i].y, agent.path.corners[i].z);
+            lineRenderer.SetPosition(i, pointPosition);
+        }
+    }
+
 }

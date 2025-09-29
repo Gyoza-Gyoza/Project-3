@@ -146,7 +146,7 @@ public class LevelDirector : Singleton<LevelDirector>
                 continue;
             }
         }
-        Debug.Log($"{pos.x}, {pos.y}, {pos.z}");
+        //Debug.Log($"{pos.x}, {pos.y}, {pos.z}");
         return pos;
     }
     public void MarkLocation(Transform pos) => spawnMarker.Add(pos);

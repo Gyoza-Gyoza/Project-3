@@ -36,6 +36,7 @@ public class EnemyChaseState : EnemyState
         //Debug.Log("Chase Do Enemy Action being called");
         if (enemy.agent.isActiveAndEnabled)
         {
+            Debug.Log("Agent is active and enabled, resuming chase");
             enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
         }
 
@@ -46,7 +47,7 @@ public class EnemyChaseState : EnemyState
 
         if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.aggroRange)
         {
-            //Debug.Log("Player in Aggro range");
+            Debug.Log("Player in Aggro range");
             enemy.state = new EnemyAttackState(enemy);
 
         }
@@ -73,15 +74,20 @@ public class EnemyAttackState : EnemyState
     public override void DoEnemyAction()
     {
         if (enemy.agent.isActiveAndEnabled)
-        enemy.agent.SetDestination(PlayerController3P.Instance.transform.position);
+            enemy.agent.SetDestination(PlayerController3P.Instance.transform.position);
 
         if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) > enemy.aggroRange)
         {
+            enemy.StopAttack();
             enemy.state = new EnemyChaseState(enemy);
         }
         else if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
         {
             ReachTargetAction();
+        }
+        else
+        {
+            enemy.StopAttack();
         }
     }
 
@@ -89,8 +95,8 @@ public class EnemyAttackState : EnemyState
     {
         enemy.Attack();
     }
-}
 
+}
 public class EnemyPayloadState : EnemyState
 {
     public EnemyPayloadState(EnemyBehaviour enemy) : base(enemy)
@@ -114,7 +120,7 @@ public class EnemyPayloadState : EnemyState
     }
 }
 
-public class EnemyTauntState: EnemyState
+public class EnemyTauntState : EnemyState
 {
     private Transform target;
     public EnemyTauntState(EnemyBehaviour enemy, Transform target) : base(enemy)
