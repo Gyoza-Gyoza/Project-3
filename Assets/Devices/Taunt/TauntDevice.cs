@@ -6,6 +6,9 @@ public class TauntDevice : Device
 {
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float deactivationAnimationDuration;
+    [SerializeField] private GameObject activationEffect;
+    [SerializeField] private float activationDelay;
+    private Animator anim;
     private SphereCollider col;
     private SphereCollider trigger;
     private Rigidbody rb;
@@ -21,11 +24,11 @@ public class TauntDevice : Device
         }
         trigger.radius = Range;
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<Animator>();
     }
     private void OnEnable()
     {
         InitializeDevice();
-        ActivateDevice();
     }
     private void Update()
     {
@@ -47,7 +50,7 @@ public class TauntDevice : Device
     }
     public override void ActivateDevice()
     {
-        // Play activation animation here
+        anim.Play("Enable");
 
         Collider[] hits = Physics.OverlapSphere(transform.position, Range, enemyLayer);
 
@@ -63,6 +66,11 @@ public class TauntDevice : Device
         }
 
         isActive = true;
+    }
+    private IEnumerator ActivateDeviceCoroutine()
+    {
+        yield return new WaitForSeconds(activationDelay);
+        ActivateDevice();
     }
     public void DeactivateDevice()
     {
@@ -88,6 +96,7 @@ public class TauntDevice : Device
         if(collision.gameObject.layer == 6) // Ground layer is 6
         {
             rb.isKinematic = true;
+            StartCoroutine(ActivateDeviceCoroutine());
         }
     }
     private void OnTriggerEnter(Collider other)
