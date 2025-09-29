@@ -119,6 +119,13 @@ public class PlayerController3P : Entity
     [SerializeField] private float upwardsForce = 5f;
     [SerializeField] private Transform throwPoint;
 
+
+    // ----------------- Audio -----------------------
+    [SerializeField] private AudioClip[] SFXs;
+
+    [SerializeField]private AudioSource mainAudioSource;
+    [SerializeField] private AudioSource walkAudioSource;
+
     // ------------------ Internals ------------------
     private CharacterController controller;
     private Vector3 velocity; // Y; horizontal is moved via controller.Move in sections
@@ -182,6 +189,7 @@ public class PlayerController3P : Entity
         lastJumpPressedTime = float.NegativeInfinity;
         lastGroundedTime    = float.NegativeInfinity;
 
+
         //Ezekiel's Injection
         InitializeHitboxs();
 
@@ -196,7 +204,7 @@ public class PlayerController3P : Entity
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
-
+        //mainAudioSource = this.GetComponent<AudioSource>();
         bool groundedNow = controller.isGrounded;
         wasGrounded = groundedNow;
         if (groundedNow) lastGroundedTime = Time.time;
@@ -237,6 +245,18 @@ public class PlayerController3P : Entity
         Vector3 camRight = Vector3.Cross(Vector3.up, camFwd).normalized;
         Vector3 moveDirInput = camFwd * input.y + camRight * input.x;
 
+        if (moveDirInput.magnitude > 0)
+        {
+            if (!walkAudioSource.isPlaying)
+            {
+                walkAudioSource.Play();
+            }
+        }
+        else
+        {
+            walkAudioSource.Stop();
+        }
+
         float rawPlanarSpeed = moveDirInput.magnitude * walkSpeed;
 
         if (isGroundDashing || isAirDashing)
@@ -248,6 +268,7 @@ public class PlayerController3P : Entity
                 ? new Vector3(dashVel.x, dashVel.y + velocity.y, dashVel.z)
                 : dashVel;
             controller.Move(finalMove * Time.deltaTime);
+
 
             if (rotateToDashDirection)
             {
@@ -307,6 +328,7 @@ public class PlayerController3P : Entity
 
         if (!wasGrounded && grounded)
         {
+            PlaySFX(SFXs[6]);
             doubleJumpAvailable = enableDoubleJump;
             jumpRequested = false;
             jumpImpulseApplied = false;
@@ -359,6 +381,7 @@ public class PlayerController3P : Entity
             float jumpSpeed = Mathf.Sqrt(jumpHeight * -2f * gravity);
             velocity.y = jumpSpeed;
             jumpImpulseApplied = true;
+            PlaySFX(SFXs[4]);
         }
 
         // Gravity
@@ -393,6 +416,8 @@ public class PlayerController3P : Entity
 
         float jumpSpeed = Mathf.Sqrt(doubleJumpHeight * -2f * gravity);
         velocity.y = jumpSpeed;
+
+        PlaySFX(SFXs[5]);
 
         if (animator)
         {
@@ -497,6 +522,8 @@ public class PlayerController3P : Entity
                 animator.SetTrigger(fwdDashTrigger);
             }
         }
+
+        PlaySFX(SFXs[3]);
     }
 
     void BeginAirDash()
@@ -531,6 +558,7 @@ public class PlayerController3P : Entity
                 animator.SetTrigger(airDashTrigger);
             }
         }
+
     }
 
     void UpdateDash()
@@ -657,18 +685,21 @@ public class PlayerController3P : Entity
                 animator.ResetTrigger(atk1Trigger); 
                 animator.SetTrigger(atk1Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[0]));
+                PlaySFX(SFXs[0]);
             }
             else if (index == 2) 
             { 
                 animator.ResetTrigger(atk2Trigger); 
                 animator.SetTrigger(atk2Trigger); 
                 StartCoroutine(SpawnVFX(slashVFX[1]));
+                PlaySFX(SFXs[1]);
             }
             else 
             { 
                 animator.ResetTrigger(atk3Trigger); 
                 animator.SetTrigger(atk3Trigger); 
                 StartCoroutine(SpawnVFX(slashVFX[2]));
+                PlaySFX(SFXs[2]);
             }
             animator.SetBool("IsAttacking", true);
         }
@@ -893,6 +924,7 @@ public class PlayerController3P : Entity
     // -------------------- Plunge Attack --------------------
     void BeginPlunge()
     {
+        PlaySFX(SFXs[7]);
         isPlunging = true;
         plungeTimer = 0f;
         plungeImpulseStarted = false;
@@ -1068,6 +1100,22 @@ public class PlayerController3P : Entity
         yield return new WaitForSeconds(vfxToSpawn.delay);
         Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation);
     }
+
+    public void PlaySFX(AudioClip sfxToPlay)
+    {
+        mainAudioSource.clip = sfxToPlay;
+        mainAudioSource.Play();
+    }
+
+    /*
+    private IEnumerator PlaySFX(SFXs sfxToPlay)
+    {
+        yield return new WaitForSeconds(sfxToPlay.delay);
+        mainAudioSource.clip = sfxToPlay.clip;
+        mainAudioSource.Play();
+    }
+    */
+
     #endregion
 
     #region --------------Item------------------
