@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController3P : Entity
@@ -111,6 +113,8 @@ public class PlayerController3P : Entity
     [SerializeField] private Transform VFXZeroPoint;
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] impactVFX;
+    [SerializeField] private Volume volume;
+    private LensDistortion lensDistortion;
 
     // ------------------ Devices ------------------
     [Header("Devices")]
@@ -549,6 +553,7 @@ public class PlayerController3P : Entity
         //Camera Shake and FOV
         camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);
         camRig.Shake(10f, 0.12f);
+        StartCoroutine(SpawnVFX(slashVFX[4]));
     }
 
     void BeginAirDash()
@@ -589,8 +594,21 @@ public class PlayerController3P : Entity
         //Camera Shake
         camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);
         camRig.Shake(10f, 0.12f);
+        
+        StartCoroutine(SpawnVFX(slashVFX[4]));
     }
-
+    private IEnumerator DashEffects()
+    {
+        lensDistortion.intensity.value = -0.5f;
+        StartCoroutine(SpawnVFX(slashVFX[4]));
+        float timer = 0f;
+        while (timer <= 1f)
+        {
+            timer += Time.deltaTime;
+            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer);
+            yield return null;
+        }
+    }
     void UpdateDash()
     {
         if (isGroundDashing || isAirDashing)
