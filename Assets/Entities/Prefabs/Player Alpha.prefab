@@ -642,17 +642,27 @@ MonoBehaviour:
   slashVFX:
   - vfxPrefab: {fileID: 3243457357590951956, guid: 1152ee87544ebd94db9a5adc33670c71, type: 3}
     delay: 0.05
+    offset: {x: 0, y: 0, z: 0}
   - vfxPrefab: {fileID: 6122071356068926262, guid: 2db808806f82acc409a0f338be469c4f, type: 3}
     delay: 0.15
+    offset: {x: 0, y: 0, z: 0}
   - vfxPrefab: {fileID: 4747255061412231293, guid: 8192c660984c2684183bd4446e556542, type: 3}
     delay: 0.82
+    offset: {x: 0, y: 0, z: 0}
   - vfxPrefab: {fileID: 4747255061412231293, guid: 6ba0aeb444735d341985080d7c58d41d, type: 3}
     delay: 0
+    offset: {x: 0, y: 0, z: 0}
+  - vfxPrefab: {fileID: 7891826638842234386, guid: ffc2596ca558e7e4f8ed6bc5a12a324d, type: 3}
+    delay: 0
+    offset: {x: 0, y: 0.5, z: 0}
   impactVFX:
   - vfxPrefab: {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
     delay: 0.05
+    offset: {x: 0, y: 0, z: 0}
   - vfxPrefab: {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
     delay: 0.15
+    offset: {x: 0, y: 0, z: 0}
+  volume: {fileID: 0}
   tauntDevicePrefab: {fileID: 4603723585979238004, guid: 54b4e801c5a0da24cb6c3a223ccc8106, type: 3}
   throwForce: 30
   upwardsForce: 5
