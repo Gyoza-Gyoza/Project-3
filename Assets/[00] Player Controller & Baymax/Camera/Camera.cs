@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
@@ -42,6 +43,21 @@ public class ThirdPersonCamera : MonoBehaviour
     float currentDistance; // smoothed boom
     float targetDistance;  // desired boom (post-collision)
 
+    // --- Camera Effects ---
+    [Header("Effects")]
+    [Tooltip("Base FOV captured on enable; FOV kick returns to this.")]
+    public float baseFOV = 60f;
+
+    // Shake runtime
+    float shakeTimeLeft = 0f;
+    float shakeMagnitude = 0f;
+    float shakeSeedX, shakeSeedY;
+    Quaternion shakeRotOffset = Quaternion.identity;
+    Vector3 shakePosOffset = Vector3.zero;
+
+    // FOV runtime
+    Coroutine fovKickCR;
+
     void OnEnable()
     {
         if (!cam) cam = Camera.main;
@@ -57,6 +73,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
         currentDistance = Mathf.Clamp(distance, minDistance, maxDistance);
         targetDistance  = currentDistance;
+
+        if (cam) baseFOV = cam.fieldOfView;
     }
 
     void Update()
@@ -103,7 +121,7 @@ public class ThirdPersonCamera : MonoBehaviour
         float safeDist = dist; // default: no hit
         if (Physics.SphereCast(worldPivot, collisionRadius, nDir, out RaycastHit hit, dist, collisionMask, QueryTriggerInteraction.Ignore))
         {
-            // Place camera just before the surface using the sphere radius (not a magic 0.05)
+            // Place camera just before the surface using the sphere radius
             safeDist = Mathf.Max(hit.distance - collisionRadius, 0f);
         }
 
@@ -114,6 +132,11 @@ public class ThirdPersonCamera : MonoBehaviour
         // Final camera transform
         cam.transform.position = worldPivot + nDir * currentDistance;
         cam.transform.rotation = pivot.rotation;
+
+        // --- apply runtime effects (shake) ---
+        UpdateShake();
+        cam.transform.position += shakePosOffset;
+        cam.transform.rotation = cam.transform.rotation * shakeRotOffset;
     }
 
     float SmoothToward(float current, float target, float speed)
@@ -159,5 +182,95 @@ public class ThirdPersonCamera : MonoBehaviour
         Vector3 fwd = cam.transform.forward;
         fwd.y = 0f;
         return fwd.sqrMagnitude < 1e-4f ? from.forward : fwd.normalized;
+    }
+
+    // ====================== SHAKE ======================
+    /// <summary>
+    /// Triggers a short screen shake. Magnitude ~ 0.2 for subtle, ~0.5 for big.
+    /// </summary>
+    public void Shake(float magnitude = 0.2f, float duration = 0.15f)
+    {
+        // If a shake is already playing, take the stronger magnitude and extend time if needed
+        shakeMagnitude = Mathf.Max(shakeMagnitude, Mathf.Abs(magnitude));
+        shakeTimeLeft  = Mathf.Max(shakeTimeLeft, duration);
+
+        // randomize noise seeds so repeated calls feel different
+        shakeSeedX = Random.value * 1000f;
+        shakeSeedY = Random.value * 1000f;
+    }
+
+    void UpdateShake()
+    {
+        if (shakeTimeLeft <= 0f)
+        {
+            shakePosOffset = Vector3.zero;
+            shakeRotOffset = Quaternion.identity;
+            return;
+        }
+
+        // exponential decay
+        shakeTimeLeft -= Time.deltaTime;
+        float t = Mathf.Clamp01(shakeTimeLeft <= 0f ? 0f : shakeTimeLeft);
+        // ease-out envelope so it settles quickly
+        float envelope = t * t;
+
+        // Perlin noise for smooth motion rather than jitter
+        float nx = (Mathf.PerlinNoise(shakeSeedX, Time.time * 40f) * 2f - 1f);
+        float ny = (Mathf.PerlinNoise(shakeSeedY, Time.time * 40f) * 2f - 1f);
+
+        float posAmp = 0.08f * shakeMagnitude;   // positional amplitude (meters)
+        float rotAmp = 0.75f * shakeMagnitude;   // rotational amplitude (degrees)
+
+        shakePosOffset = new Vector3(nx, ny, 0f) * posAmp * envelope;
+        shakeRotOffset = Quaternion.Euler(ny * rotAmp * envelope, 0f, -nx * rotAmp * envelope);
+    }
+
+    // ====================== FOV KICK ======================
+    /// <summary>
+    /// Quick FOV bump (use on dash): ease in, optional hold, then ease out back to baseFOV.
+    /// </summary>
+    public void DashFOVKick(float deltaFOV = 8f, float inTime = 0.08f, float holdTime = 0.05f, float outTime = 0.10f)
+    {
+        if (!cam) return;
+        if (fovKickCR != null) StopCoroutine(fovKickCR);
+        fovKickCR = StartCoroutine(FOVKickRoutine(deltaFOV, inTime, holdTime, outTime));
+    }
+
+    IEnumerator FOVKickRoutine(float delta, float inTime, float holdTime, float outTime)
+    {
+        float start = baseFOV;
+        float peak  = baseFOV + delta;
+
+        // ease in
+        float t = 0f;
+        while (t < inTime)
+        {
+            t += Time.deltaTime;
+            float a = (inTime <= 0f) ? 1f : Mathf.SmoothStep(0f, 1f, t / inTime);
+            cam.fieldOfView = Mathf.Lerp(start, peak, a);
+            yield return null;
+        }
+
+        // hold
+        float h = 0f;
+        while (h < holdTime)
+        {
+            h += Time.deltaTime;
+            cam.fieldOfView = peak;
+            yield return null;
+        }
+
+        // ease out
+        float o = 0f;
+        while (o < outTime)
+        {
+            o += Time.deltaTime;
+            float a = (outTime <= 0f) ? 1f : Mathf.SmoothStep(0f, 1f, o / outTime);
+            cam.fieldOfView = Mathf.Lerp(peak, start, a);
+            yield return null;
+        }
+
+        cam.fieldOfView = start;
+        fovKickCR = null;
     }
 }

@@ -544,7 +544,11 @@ public class PlayerController3P : Entity
         }
 
         //PlaySFX(SFXs[3]);
-        AudioManager.Play("Dash"); 
+        AudioManager.Play("Dash");
+
+        //Camera Shake and FOV
+        camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);
+        camRig.Shake(10f, 0.12f);
     }
 
     void BeginAirDash()
@@ -580,6 +584,11 @@ public class PlayerController3P : Entity
             }
         }
 
+        AudioManager.Play("Dash");
+
+        //Camera Shake
+        camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);
+        camRig.Shake(10f, 0.12f);
     }
 
     void UpdateDash()
@@ -999,6 +1008,8 @@ public class PlayerController3P : Entity
         {
             animator.SetBool("IsAttacking", false);
         }
+
+        camRig.Shake(40.0f, 0.5f);
     }
 
     // -------------------- Devices --------------------
@@ -1111,6 +1122,7 @@ public class PlayerController3P : Entity
         {
             toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_slam);
         }
+        camRig.Shake(40.0f, 0.5f);
     }
 
     public void AttackPlunge(GameObject toDamage)
