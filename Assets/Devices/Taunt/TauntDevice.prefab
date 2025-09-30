@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &737589508412794084
 Transform:
   m_ObjectHideFlags: 0
@@ -5120,7 +5120,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 12.5
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -9204,7 +9204,7 @@ ParticleSystem:
     vector0_1:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -0.01
+      scalar: 0.53
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -9258,7 +9258,7 @@ ParticleSystem:
     vector0_2:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.7
+      scalar: 0.17
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -10008,7 +10008,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 4
+      scalar: 10
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -14753,7 +14753,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 20
+  m_Radius: 50
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2572644768825116979
 Rigidbody:
@@ -15217,8 +15217,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.8
-      minScalar: 0.75
+      scalar: 4.5
+      minScalar: 18.75
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -15681,7 +15681,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 4
+      value: 10
       mode: 0
       spread: 0
       speed:
