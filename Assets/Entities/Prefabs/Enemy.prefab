@@ -131,8 +131,8 @@ MonoBehaviour:
   initialDamage: 5
   initialMovementSpeed: 100
   flickerSign: {fileID: 2775048984678454219}
-  hitUpforce: 100
-  hitHorforce: 100
+  hitUpforce: 500
+  hitHorforce: 500
   damageAmount: 5
   hb: {fileID: 361636551238153991}
   deathTime: 1
@@ -143,6 +143,8 @@ MonoBehaviour:
   ball: {fileID: 7242094643601931924}
   meshOffset: {fileID: 1657219682364904867}
   deathParticleSystem: {fileID: 3929770318114016586}
+  hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
+  oriMat: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
   payloadRange: 10
   aggroRange: 15
   attackRange: 3
@@ -154,7 +156,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255745766610047194}
   serializedVersion: 4
-  m_Mass: 10
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}

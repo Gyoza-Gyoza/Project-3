@@ -22,6 +22,8 @@ public class EnemyBehaviour : Entity
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject meshOffset;
     [SerializeField] private GameObject deathParticleSystem;
+    [SerializeField] private Material hitMat;
+    [SerializeField] private Material oriMat;
 
     private bool flying = false;
     private bool isAttacking = false;
@@ -107,9 +109,9 @@ public class EnemyBehaviour : Entity
 
     IEnumerator DamageFlicker()
     {
-        flickerSign.SetActive(true);
+        meshOffset.GetComponent<MeshRenderer>().material = hitMat;
         yield return new WaitForSeconds(.1f);
-        flickerSign.SetActive(false);
+        meshOffset.GetComponent<MeshRenderer>().material = oriMat;
         yield break;
     }
 

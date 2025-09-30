@@ -192,7 +192,8 @@ public class LevelDirector : Singleton<LevelDirector>
     public void CompleteLevel()
     {
         // Handle level completion logic here
-        testText.text = $"Level Completed! Total Progress: 100%";
+        //testText.text = $"Level Completed! Total Progress: 100%";
+        Debug.Log("Complete level called");
         WinGame();
     }
 
