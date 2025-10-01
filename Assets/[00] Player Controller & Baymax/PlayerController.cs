@@ -194,7 +194,7 @@ public class PlayerController3P : Entity
         lastJumpPressedTime = float.NegativeInfinity;
         lastGroundedTime = float.NegativeInfinity;
 
-        InitializeHitboxs();
+        //InitializeHitboxs();
 
         if (Instance == null) Instance = this;
         else Destroy(Instance);
@@ -1095,57 +1095,57 @@ public class PlayerController3P : Entity
     // -------------------- HitBox Attack ------------------------------------------------------------------------------------------
     #region Attack Fields
 
-    private void InitializeHitboxs()
-    {
-        attack1HB.HitBoxListeners += Attack1;
-        attack2HB.HitBoxListeners += Attack2;
-        attack3HB_sweep.HitBoxListeners += Attack3Sweep;
-        attack3HB_slam.HitBoxListeners += Attack3Slam;
-        plungeHB.HitBoxListeners += AttackPlunge;
-    }
+    // private void InitializeHitboxs()
+    // {
+    //     attack1HB.HitBoxListeners += Attack1;
+    //     attack2HB.HitBoxListeners += Attack2;
+    //     attack3HB_sweep.HitBoxListeners += Attack3Sweep;
+    //     attack3HB_slam.HitBoxListeners += Attack3Slam;
+    //     plungeHB.HitBoxListeners += AttackPlunge;
+    // }
 
-    public void Attack1(GameObject toDamage)
-    {
-        if (toDamage.tag == "Enemy")
-        {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack1Damage);
-            StartCoroutine(SpawnVFX(impactVFX[0]));
-        }
-    }
+    // public void Attack1(GameObject toDamage)
+    // {
+    //     if (toDamage.tag == "Enemy")
+    //     {
+    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack1Damage);
+    //         StartCoroutine(SpawnVFX(impactVFX[0]));
+    //     }
+    // }
 
-    public void Attack2(GameObject toDamage)
-    {
-        if (toDamage.tag == "Enemy")
-        {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack2Damage);
-            StartCoroutine(SpawnVFX(impactVFX[1]));
-        }
-    }
+    // public void Attack2(GameObject toDamage)
+    // {
+    //     if (toDamage.tag == "Enemy")
+    //     {
+    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack2Damage);
+    //         StartCoroutine(SpawnVFX(impactVFX[1]));
+    //     }
+    // }
 
-    public void Attack3Sweep(GameObject toDamage)
-    {
-        if (toDamage.tag == "Enemy")
-        {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_sweep);
-        }
-    }
+    // public void Attack3Sweep(GameObject toDamage)
+    // {
+    //     if (toDamage.tag == "Enemy")
+    //     {
+    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_sweep);
+    //     }
+    // }
 
-    public void Attack3Slam(GameObject toDamage)
-    {
-        if (toDamage.tag == "Enemy")
-        {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_slam);
-        }
-        camRig.Shake(40.0f, 0.5f);
-    }
+    // public void Attack3Slam(GameObject toDamage)
+    // {
+    //     if (toDamage.tag == "Enemy")
+    //     {
+    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_slam);
+    //     }
+    //     camRig.Shake(40.0f, 0.5f);
+    // }
 
-    public void AttackPlunge(GameObject toDamage)
-    {
-        if (toDamage.tag == "Enemy")
-        {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(plungeDamage);
-        }
-    }
+    // public void AttackPlunge(GameObject toDamage)
+    // {
+    //     if (toDamage.tag == "Enemy")
+    //     {
+    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(plungeDamage);
+    //     }
+    // }
     private IEnumerator SpawnVFX(VFX vfxToSpawn)
     {
         yield return new WaitForSeconds(vfxToSpawn.delay);
