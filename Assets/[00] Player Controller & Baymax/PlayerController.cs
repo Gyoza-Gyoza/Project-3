@@ -9,6 +9,7 @@ public class PlayerController3P : Entity
     [Header("Refs")]
     public ThirdPersonCamera camRig;
     public Animator animator;
+    [SerializeField] private Volume globalVolume;
 
     [Header("Movement")]
     public float walkSpeed = 3.5f;
@@ -20,26 +21,22 @@ public class PlayerController3P : Entity
     public float groundedGravity = -2f;
     public float coyoteTime = 0.08f;
     public float jumpBuffer = 0.10f;
-    [Tooltip("Delay between pressing Jump and applying force.")]
-    public float jumpDelay = 0.00f; // keep at 0 for snappy jump
+    private float jumpDelay = 0.00f;
 
     [Header("Double Jump")]
-    public bool enableDoubleJump = true;
+    private bool enableDoubleJump = true;
     public float doubleJumpHeight = 1.2f;
-    [Tooltip("If true, zero downward Y before applying double jump so it always pops crisply.")]
-    public bool resetYOnDoubleJump = true;
+    private bool resetYOnDoubleJump = true;
 
-    // ------------------ DASH ------------------
+    // ------------------ DASH ------------------------------------------------------------------------------------------
     [Header("Dash (Common)")]
-    public bool dashDefaultBackwards = true;
-
-    [Header("Dash Facing / Animation")]
-    public bool useBackdashAnimation = true;
+    private bool useBackdashAnimation = true;
     [Range(-1f, 1f)] public float backDashDotThreshold = 0f;
     public string backDashTrigger = "BackDashStart";
-    public string fwdDashTrigger  = "DashStart";
-    public string airDashTrigger  = "AirDashStart";
-    public bool rotateToDashDirection = true;
+    public string fwdDashTrigger = "DashStart";
+    public string airDashTrigger = "AirDashStart";
+    private bool dashDefaultBackwards = true;
+    private bool rotateToDashDirection = false;
 
     [Header("Dash (Ground)")]
     public float dashDistance = 6f;
@@ -54,7 +51,7 @@ public class PlayerController3P : Entity
     public float airDashCooldown = 0.8f;
     [Range(0f, 60f)] public float airDashUpAngleDeg = 15f;
 
-    // ------------------ ATTACK COMBO ------------------
+    // ------------------ ATTACK COMBO ------------------------------------------------------------------------------------------
     [Header("Attack Combo (LMB)")]
     public string atk1Trigger = "Attack1";
     public string atk2Trigger = "Attack2";
@@ -64,7 +61,6 @@ public class PlayerController3P : Entity
 
     [Header("Attack 1 Timing")]
     public float atk1Duration = 1.0f;
-    [Tooltip("Last X seconds of the attack where LMB can be buffered to chain.")]
     public float atk1ChainLead = 0.30f;
 
     [Header("Attack 2 Timing")]
@@ -75,7 +71,7 @@ public class PlayerController3P : Entity
     public float atk3Duration = 1.0f;
     public float atk3ChainLead = 0.30f;
 
-    [Header("Lunge (only Attack 1 & 2)")]
+    [Header("Lunge")]
     public float atk1LungeDistance = 2.5f;
     public float atk1LungeDuration = 0.15f;
     public float atk1LungeDelay = 0.05f;
@@ -84,55 +80,61 @@ public class PlayerController3P : Entity
     public float atk2LungeDuration = 0.18f;
     public float atk2LungeDelay = 0.05f;
 
-    [Header("Attack 3: Jump Arc (separate forward & upward)")]
-    [Tooltip("Wait this long after Attack 3 starts, then apply the impulse.")]
+    [Header("Attack 3: Jump Arc")]
     public float atk3ImpulseDelay = 0.08f;
-
-    [Tooltip("Horizontal speed set at the impulse moment.")]
     public float atk3ForwardSpeed = 7.0f;
-
-    [Tooltip("Vertical speed set at the impulse moment.")]
     public float atk3UpwardSpeed = 8.0f;
-
-    [Tooltip("How long forward velocity is applied after impulse.")]
     public float atk3ForwardDuration = 0.45f;
-
-    [Tooltip("How long upward velocity is preserved before gravity fully takes over.")]
     public float atk3UpwardDuration = 0.30f;
 
-    // ------------------ PLUNGE ATTACK ------------------
+    // ------------------ PLUNGE ATTACK ------------------------------------------------------------------------------------------
     [Header("Plunge Attack")]
     public float plungeDelay = 0.15f;
     public float plungeForwardSpeed = 8f;
     public float plungeDownwardSpeed = 15f;
     public float plungeDuration = 0.5f;
-    public string plungeTrigger = "Plunge"; // Animator trigger
+    public string plungeTrigger = "Plunge";
 
-    // ------------------ VFX ------------------
+    // ------------------ ATTACK FIELDS ------------------------------------------------------------------------------------------
+    [Header("Attack Parameters")]
+    [SerializeField] private HitBox attack1HB;
+    [SerializeField] private HitBox attack2HB;
+    [SerializeField] private HitBox attack3HB_sweep;
+    [SerializeField] private HitBox attack3HB_slam;
+    [SerializeField] private HitBox plungeHB;
+    [SerializeField] private int attack1Damage = 1;
+    [SerializeField] private int attack2Damage = 1;
+    [SerializeField] private int attack3Damage_sweep = 1;
+    [SerializeField] private int attack3Damage_slam = 1;
+    [SerializeField] private int plungeDamage = 1;
+
+    // ------------------ VFX ------------------------------------------------------------------------------------------
     [Header("VFX")]
     [SerializeField] private Transform VFXZeroPoint;
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] impactVFX;
-    [SerializeField] private Volume volume;
+    [SerializeField] private VFX[] dashVFX;
     private LensDistortion lensDistortion;
 
-    // ------------------ Devices ------------------
-    [Header("Devices")]
+    // ------------------ EMBER ------------------------------------------------------------------------------------------
+    [Header("Ember")]
+    [SerializeField] private int maxGas = 50;
+    [SerializeField] private int startingGas = 0;
+    private int currentGas;
+
+    // ------------------ TAUNT DEVICE ------------------------------------------------------------------------------------------
+    [Header("Taunt Devices")]
     [SerializeField] private GameObject tauntDevicePrefab;
     [SerializeField] private float throwForce = 10f;
     [SerializeField] private float upwardsForce = 5f;
     [SerializeField] private Transform throwPoint;
 
-
-    // ----------------- Audio -----------------------
-    [SerializeField] private AudioClip[] SFXs;
-
-    [SerializeField]private AudioSource mainAudioSource;
+    // ----------------- AUDIO ------------------------------------------------------------------------------------------
     [SerializeField] private AudioSource walkAudioSource;
 
-    // ------------------ Internals ------------------
+    // ------------------ INTERNALS ------------------------------------------------------------------------------------------
     private CharacterController controller;
-    private Vector3 velocity; // Y; horizontal is moved via controller.Move in sections
+    private Vector3 velocity;
     private bool wasGrounded;
     private float lastGroundedTime;
     private float lastJumpPressedTime;
@@ -151,7 +153,7 @@ public class PlayerController3P : Entity
 
     // Attack runtime
     private bool isAttacking = false;
-    private int attackIndex = 0; // 0=none, 1,2,3
+    private int attackIndex = 0;
     private float attackTimer = 0f;
     private bool queuedNext = false;
 
@@ -185,30 +187,34 @@ public class PlayerController3P : Entity
     // Instance
     public static PlayerController3P Instance;
 
-
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         if (!animator) animator = GetComponentInChildren<Animator>();
         lastJumpPressedTime = float.NegativeInfinity;
-        lastGroundedTime    = float.NegativeInfinity;
+        lastGroundedTime = float.NegativeInfinity;
 
-
-        //Ezekiel's Injection
         InitializeHitboxs();
 
-        //Singleton
         if (Instance == null) Instance = this;
         else Destroy(Instance);
+
+        if (globalVolume && globalVolume.profile && globalVolume.profile.TryGet(out LensDistortion ld))
+        {
+            lensDistortion = ld;
+            lensDistortion.active = true;
+        }
+        else Debug.LogWarning ("LensDistortion not found.");
     }
 
     protected override void Start()
     {
         base.Start();
+
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
-        //mainAudioSource = this.GetComponent<AudioSource>();
+
         bool groundedNow = controller.isGrounded;
         wasGrounded = groundedNow;
         if (groundedNow) lastGroundedTime = Time.time;
@@ -217,8 +223,6 @@ public class PlayerController3P : Entity
         {
             animator.SetBool("Grounded", groundedNow);
             animator.SetFloat("Speed", 0f);
-            //animator.SetFloat("YVel", 0f);
-            //animator.SetBool("IsDashing", false);
             animator.SetBool("IsAttacking", false);
         }
 
@@ -230,14 +234,16 @@ public class PlayerController3P : Entity
         HandleDashInput();   // RMB cancels attacks
         HandleAttackInput(); // LMB starts/queues
         HandleDeviceInput(); // Device inputs
-        UpdateDash();        // timers
-        UpdateAttack();      // timers
-        HandleMovement();    // movement depends on dash/attack
-        HandleJump();        // blocked during attacks
-        UpdatePlunge();     
+        UpdateDash();        // Timers
+        UpdateAttack();      // Timers
+        HandleMovement();    // Movement depends on dash/attack
+        HandleJump();        // Blocked during attacks
+        UpdatePlunge();      // Timers
     }
 
-    // -------------------- Movement --------------------
+    // -------------------- Movement ------------------------------------------------------------------------------------------
+    #region Movement
+
     void HandleMovement()
     {
         float ix = Input.GetAxisRaw("Horizontal");
@@ -248,18 +254,6 @@ public class PlayerController3P : Entity
         Vector3 camFwd = camRig ? camRig.GetFlatAimDirection(transform) : Vector3.forward;
         Vector3 camRight = Vector3.Cross(Vector3.up, camFwd).normalized;
         Vector3 moveDirInput = camFwd * input.y + camRight * input.x;
-
-        // if (moveDirInput.magnitude > 0)
-        // {
-        //     if (!walkAudioSource.isPlaying)
-        //     {
-        //         walkAudioSource.Play();
-        //     }
-        // }
-        // else
-        // {
-        //     walkAudioSource.Stop();
-        // }
 
         float rawPlanarSpeed = moveDirInput.magnitude * walkSpeed;
 
@@ -333,10 +327,9 @@ public class PlayerController3P : Entity
                     walkAudioSource.Stop();
             }
         }
-
     }
 
-    // -------------------- Jump (incl. Double Jump) --------------------
+    // -------------------- Jump ------------------------------------------------------------------------------------------
     void HandleJump()
     {
         bool grounded = controller.isGrounded;
@@ -349,8 +342,7 @@ public class PlayerController3P : Entity
 
         if (!wasGrounded && grounded)
         {
-            //PlaySFX(SFXs[6]);
-            AudioManager.Play("Land"); 
+            AudioManager.Play("Land");
             doubleJumpAvailable = enableDoubleJump;
             jumpRequested = false;
             jumpImpulseApplied = false;
@@ -367,7 +359,7 @@ public class PlayerController3P : Entity
         if (!isAttacking && Input.GetButtonDown("Jump"))
             lastJumpPressedTime = Time.time;
 
-        bool canCoyote    = (Time.time - lastGroundedTime) <= coyoteTime;
+        bool canCoyote = (Time.time - lastGroundedTime) <= coyoteTime;
         bool bufferedJump = (Time.time - lastJumpPressedTime) <= jumpBuffer;
 
         if (!grounded && !canCoyote)
@@ -386,7 +378,7 @@ public class PlayerController3P : Entity
                 jumpApplyAtTime = Time.time + Mathf.Max(0f, jumpDelay);
 
                 lastJumpPressedTime = -999f;
-                lastGroundedTime    = -999f;
+                lastGroundedTime = -999f;
 
                 if (animator)
                 {
@@ -404,7 +396,7 @@ public class PlayerController3P : Entity
             velocity.y = jumpSpeed;
             jumpImpulseApplied = true;
             //PlaySFX(SFXs[4]);
-            AudioManager.Play("Jump"); 
+            AudioManager.Play("Jump");
         }
 
         // Gravity
@@ -441,7 +433,7 @@ public class PlayerController3P : Entity
         velocity.y = jumpSpeed;
 
         //PlaySFX(SFXs[5]);
-        AudioManager.Play("DoubleJump"); 
+        AudioManager.Play("DoubleJump");
 
         if (animator)
         {
@@ -451,7 +443,10 @@ public class PlayerController3P : Entity
         }
     }
 
-    // -------------------- Dash --------------------
+    #endregion
+
+    // -------------------- Dash ------------------------------------------------------------------------------------------
+    #region Dash
     void HandleDashInput()
     {
         if (!Input.GetMouseButtonDown(1)) return;
@@ -528,8 +523,6 @@ public class PlayerController3P : Entity
 
         if (animator)
         {
-            //animator.SetBool("IsDashing", true);
-
             Vector3 flatFacing = transform.forward; flatFacing.y = 0f; flatFacing.Normalize();
             Vector3 flatDash = dashDir; flatDash.y = 0f; flatDash.Normalize();
             float dot = Vector3.Dot(flatDash, flatFacing);
@@ -547,13 +540,12 @@ public class PlayerController3P : Entity
             }
         }
 
-        //PlaySFX(SFXs[3]);
-        AudioManager.Play("Dash");
+        AudioManager.Play("Dash");                      //Play Dash SFX
+        StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
+        DashEffects();                                  //Lens Distortion
 
-        //Camera Shake and FOV
-        camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);
-        camRig.Shake(10f, 0.12f);
-        StartCoroutine(SpawnVFX(slashVFX[4]));
+        camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);    //Camera FOV
+        camRig.Shake(10f, 0.12f);                       //Camera Shake
     }
 
     void BeginAirDash()
@@ -569,7 +561,6 @@ public class PlayerController3P : Entity
 
         if (animator)
         {
-            //animator.SetBool("IsDashing", true);
             animator.SetBool("Grounded", false);
 
             Vector3 flatFacing = transform.forward; flatFacing.y = 0f; flatFacing.Normalize();
@@ -589,26 +580,14 @@ public class PlayerController3P : Entity
             }
         }
 
-        AudioManager.Play("Dash");
+        AudioManager.Play("Dash");                      //Play Dash SFX
+        StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
+        DashEffects();                                  //Lens Distortion
 
-        //Camera Shake
-        camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);
-        camRig.Shake(10f, 0.12f);
-        
-        StartCoroutine(SpawnVFX(slashVFX[4]));
+        camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);    //Camera FOV
+        camRig.Shake(10f, 0.12f);                       //Camera Shake
     }
-    private IEnumerator DashEffects()
-    {
-        lensDistortion.intensity.value = -0.5f;
-        StartCoroutine(SpawnVFX(slashVFX[4]));
-        float timer = 0f;
-        while (timer <= 1f)
-        {
-            timer += Time.deltaTime;
-            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer);
-            yield return null;
-        }
-    }
+
     void UpdateDash()
     {
         if (isGroundDashing || isAirDashing)
@@ -626,21 +605,35 @@ public class PlayerController3P : Entity
     {
         isGroundDashing = false;
         groundDashCooldownUntil = Time.time + dashCooldown;
-        //if (animator) animator.SetBool("IsDashing", false);
     }
 
     void EndAirDash()
     {
         isAirDashing = false;
         airDashCooldownUntil = Time.time + airDashCooldown;
-        //if (animator) animator.SetBool("IsDashing", false);
     }
 
-    // -------------------- Attack Input & Update --------------------
+    private IEnumerator DashEffects()
+    {
+        lensDistortion.intensity.value = -0.8f;
+        float timer = 0f;
+        while (timer <= 1f)
+        {
+            timer += Time.deltaTime;
+            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer);
+            yield return null;
+        }
+    }
+
+    #endregion
+
+    // -------------------- Attack Input & Update ------------------------------------------------------------------------------------------
+    #region Attack Inputs
+
     void HandleAttackInput()
     {
-        // Plunge: only if airborne and not already attacking
-        if (!controller.isGrounded && !isAttacking && !isPlunging)
+        if (!controller.isGrounded && !isAttacking && !isPlunging) // Plunge: only if airborne and not already attacking
+
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -659,8 +652,7 @@ public class PlayerController3P : Entity
             }
             else
             {
-                // If inside chain window: queue next, and snap facing if WASD is held.
-                if (IsInChainWindow())
+                if (IsInChainWindow()) // If inside chain window: queue next, and snap facing if WASD is held.
                 {
                     queuedNext = true;
 
@@ -694,8 +686,8 @@ public class PlayerController3P : Entity
         attackIndex = index;
         attackTimer = 0f;
 
-        // Determine facing for this attack (consume any queued override decided during chain press)
-        Vector3 facingForThisAttack;
+        Vector3 facingForThisAttack;    // Determine facing for this attack (consume any queued override decided during chain press)
+
         if (queuedFacingOverride && queuedFacing.sqrMagnitude > 0.0001f)
         {
             facingForThisAttack = queuedFacing.normalized;
@@ -706,20 +698,20 @@ public class PlayerController3P : Entity
             Vector3 f = transform.forward; f.y = 0f;
             facingForThisAttack = (f.sqrMagnitude > 0.0001f) ? f.normalized : Vector3.forward;
         }
+
         queuedFacingOverride = false; // consume
         queuedNext = false;           // reset for this stage
 
-        // Setup movement burst for each attack
-        if (index == 1 || index == 2)
+        if (index == 1 || index == 2)   // Setup movement burst for each attack
         {
             float dist = (index == 1) ? atk1LungeDistance : atk2LungeDistance;
-            float dur  = (index == 1) ? atk1LungeDuration : atk2LungeDuration;
-            float del  = (index == 1) ? atk1LungeDelay    : atk2LungeDelay;
+            float dur = (index == 1) ? atk1LungeDuration : atk2LungeDuration;
+            float del = (index == 1) ? atk1LungeDelay : atk2LungeDelay;
             PrepareLunge(dist, dur, del, facingForThisAttack);
         }
         else // Attack 3
         {
-            isLunging = false;      // not used in A3
+            isLunging = false;  // not used in A3
             lungeStarted = false;
 
             PrepareAtk3Arc(facingForThisAttack);
@@ -728,29 +720,26 @@ public class PlayerController3P : Entity
 
         if (animator)
         {
-            if (index == 1) 
+            if (index == 1)
             {
-                animator.ResetTrigger(atk1Trigger); 
+                animator.ResetTrigger(atk1Trigger);
                 animator.SetTrigger(atk1Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[0]));
-                //PlaySFX(SFXs[0]);
-                AudioManager.Play("A1"); 
+                AudioManager.Play("A1");
             }
-            else if (index == 2) 
-            { 
-                animator.ResetTrigger(atk2Trigger); 
-                animator.SetTrigger(atk2Trigger); 
+            else if (index == 2)
+            {
+                animator.ResetTrigger(atk2Trigger);
+                animator.SetTrigger(atk2Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[1]));
-                //PlaySFX(SFXs[1]);
-                AudioManager.Play("A2"); 
+                AudioManager.Play("A2");
             }
-            else 
-            { 
-                animator.ResetTrigger(atk3Trigger); 
-                animator.SetTrigger(atk3Trigger); 
+            else
+            {
+                animator.ResetTrigger(atk3Trigger);
+                animator.SetTrigger(atk3Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[2]));
-                //PlaySFX(SFXs[2]);
-                AudioManager.Play("A3"); 
+                AudioManager.Play("A3");
             }
             animator.SetBool("IsAttacking", true);
         }
@@ -784,19 +773,19 @@ public class PlayerController3P : Entity
             {
                 if (attackIndex == 1)
                 {
-                    if (animator) 
-                    { 
-                        animator.ResetTrigger(atkToIdle1Trigger); 
-                        animator.SetTrigger(atkToIdle1Trigger); 
+                    if (animator)
+                    {
+                        animator.ResetTrigger(atkToIdle1Trigger);
+                        animator.SetTrigger(atkToIdle1Trigger);
                     }
                     EndAttackState();
                 }
                 else if (attackIndex == 2)
                 {
-                    if (animator) 
-                    { 
-                        animator.ResetTrigger(atkToIdle2Trigger); 
-                        animator.SetTrigger(atkToIdle2Trigger); 
+                    if (animator)
+                    {
+                        animator.ResetTrigger(atkToIdle2Trigger);
+                        animator.SetTrigger(atkToIdle2Trigger);
                     }
                     EndAttackState();
                 }
@@ -866,7 +855,11 @@ public class PlayerController3P : Entity
         }
     }
 
-    // -------------------- Lunge (Atk 1 & 2) --------------------
+    #endregion
+
+    // -------------------- Lunge ------------------------------------------------------------------------------------------
+    #region Lunge
+
     void PrepareLunge(float distance, float duration, float delay, Vector3 facingOverride)
     {
         isLunging = true;
@@ -914,7 +907,11 @@ public class PlayerController3P : Entity
         }
     }
 
-    // -------------------- Attack 3: Single-Impulse Jump Arc --------------------
+    #endregion
+
+    // -------------------- Attack 3 Jump ------------------------------------------------------------------------------------------
+    #region Attack 3
+
     void PrepareAtk3Arc(Vector3 facingOverride)
     {
         atk3ArcActive = true;
@@ -971,12 +968,15 @@ public class PlayerController3P : Entity
         }
     }
 
-    #region === Plunge ===
-    // -------------------- Plunge Attack --------------------
+    #endregion
+
+    // -------------------- Plunge Attack ------------------------------------------------------------------------------------------
+    #region Plunge
+
     void BeginPlunge()
     {
         //PlaySFX(SFXs[7]);
-        AudioManager.Play("Plunge"); 
+        AudioManager.Play("Plunge");
         isPlunging = true;
         plungeTimer = 0f;
         plungeImpulseStarted = false;
@@ -1030,7 +1030,11 @@ public class PlayerController3P : Entity
         camRig.Shake(40.0f, 0.5f);
     }
 
-    // -------------------- Devices --------------------
+    #endregion
+
+    // -------------------- Devices ------------------------------------------------------------------------------------------
+    #region Devices
+
     private void HandleDeviceInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -1048,9 +1052,10 @@ public class PlayerController3P : Entity
         Vector3 force = Camera.main.transform.forward * throwForce + Vector3.up * upwardsForce;
         rb.AddForce(force, ForceMode.VelocityChange);
     }
+
     #endregion
 
-    // -------------------- Helpers --------------------
+    // -------------------- Helpers ------------------------------------------------------------------------------------------
     bool TryGetCameraRelativeMove(out Vector3 dir)
     {
         float ix = Input.GetAxisRaw("Horizontal");
@@ -1087,25 +1092,16 @@ public class PlayerController3P : Entity
         return false;
     }
 
-    #region ---------------Attack Fields------------------------
-    [SerializeField] private HitBox attack1HB;
-    [SerializeField] private HitBox attack2HB;
-    [SerializeField] private HitBox attack3HB_sweep;
-    [SerializeField] private HitBox attack3HB_slam;
-    [SerializeField] private HitBox plungeHB;
-    [SerializeField] private int    attack1Damage = 1;
-    [SerializeField] private int    attack2Damage = 1;
-    [SerializeField] private int    attack3Damage_sweep = 1;
-    [SerializeField] private int    attack3Damage_slam = 1;
-    [SerializeField] private int    plungeDamage = 1;
+    // -------------------- HitBox Attack ------------------------------------------------------------------------------------------
+    #region Attack Fields
 
     private void InitializeHitboxs()
     {
-        attack1HB.HitBoxListeners       += Attack1;
-        attack2HB.HitBoxListeners       += Attack2;
+        attack1HB.HitBoxListeners += Attack1;
+        attack2HB.HitBoxListeners += Attack2;
         attack3HB_sweep.HitBoxListeners += Attack3Sweep;
-        attack3HB_slam.HitBoxListeners  += Attack3Slam;
-        plungeHB.HitBoxListeners        += AttackPlunge;
+        attack3HB_slam.HitBoxListeners += Attack3Slam;
+        plungeHB.HitBoxListeners += AttackPlunge;
     }
 
     public void Attack1(GameObject toDamage)
@@ -1156,48 +1152,10 @@ public class PlayerController3P : Entity
         Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation);
     }
 
-    public void PlaySFX(AudioClip sfxToPlay)
-    {
-        mainAudioSource.clip = sfxToPlay;
-        mainAudioSource.Play();
-    }
-
-    /*
-    private IEnumerator PlaySFX(SFXs sfxToPlay)
-    {
-        yield return new WaitForSeconds(sfxToPlay.delay);
-        mainAudioSource.clip = sfxToPlay.clip;
-        mainAudioSource.Play();
-    }
-    */
-
     #endregion
 
-    #region --------------Item------------------
-
-    private int itemsCollected = 0;
-    public int ItemsCollected
-    { get { return itemsCollected; } }
-
-    public void OnCollect()
-    {
-        itemsCollected++;
-        // Add any additional logic for collecting items, such as updating UI or playing sound effects
-    }
-    public int DropOffItems()
-    {
-        int amount = itemsCollected; // Returns the amount of items dropped off
-        itemsCollected -= itemsCollected;
-        return amount;
-        // Add any additional logic for dropping off items, such as updating UI or playing sound effects
-    }
-    #endregion
-
-    #region ----------------Gas--------------------------
-    [Header("Gas")]
-    [SerializeField] private int maxGas = 50;
-    [SerializeField] private int startingGas = 0;
-    private int currentGas;
+    // -------------------- Ember ------------------------------------------------------------------------------------------
+    #region Ember
 
     public bool AddGas(int amount)
     {
@@ -1217,7 +1175,6 @@ public class PlayerController3P : Entity
 
     public bool RemoveGas(int amount)
     {
-        //Debug.Log("Remove Gas called");
         if (currentGas <= 0)
         {
             currentGas = 0;
@@ -1230,8 +1187,32 @@ public class PlayerController3P : Entity
             return true;
         }
     }
+
     #endregion
 
+    // -------------------- Item ------------------------------------------------------------------------------------------
+    #region Item
+
+    private int itemsCollected = 0;
+    public int ItemsCollected
+    { get { return itemsCollected; } }
+
+    public void OnCollect()
+    {
+        itemsCollected++;
+        // Add any additional logic for collecting items, such as updating UI or playing sound effects
+    }
+    public int DropOffItems()
+    {
+        int amount = itemsCollected; // Returns the amount of items dropped off
+        itemsCollected -= itemsCollected;
+        return amount;
+        // Add any additional logic for dropping off items, such as updating UI or playing sound effects
+    }
+
+    #endregion
+
+    // -------------------- Entity Overrides ------------------------------------------------------------------------------------------
     #region Entity Overrides
     protected override void OnHeal()
     {
@@ -1255,5 +1236,6 @@ public class PlayerController3P : Entity
             dead = true;
         }
     }
+
     #endregion
 }
