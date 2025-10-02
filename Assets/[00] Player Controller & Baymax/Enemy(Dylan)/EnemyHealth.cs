@@ -4,7 +4,6 @@ public class EnemyHealth : MonoBehaviour
 {
     public int maxHP = 30;
     int currentHP;
-
     EnemyAI ai;
 
     void Awake()
@@ -13,14 +12,14 @@ public class EnemyHealth : MonoBehaviour
         ai = GetComponent<EnemyAI>();
     }
 
-    // Call this from your player’s hit/weapon logic
+    // REVERTED: takes the world position the hit came FROM (Vector3),
+    // not a Transform. EnemyAI will use this to compute knockback direction.
     public void TakeDamage(int amount, Vector3 hitFromPosition)
     {
         if (ai != null && ai.CurrentState == EnemyAI.State.Death) return;
 
         currentHP -= amount;
-        Vector3 dir = (transform.position - hitFromPosition).normalized;
-        ai?.OnHit(dir);
+        ai?.OnHit(hitFromPosition);   // <- restart knockback each time + flash
 
         if (currentHP <= 0)
         {
