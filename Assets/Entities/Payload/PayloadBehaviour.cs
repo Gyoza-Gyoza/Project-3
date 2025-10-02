@@ -96,7 +96,7 @@ public class PayloadBehaviour : Entity
     private void UpdateGasSlider()
     {
         gasSlider.value = (float)CurrentGas / (float)maxGas;
-        HUDController.Instance.SetPayloadGas((float)CurrentGas / (float)maxGas);
+        HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
     }
 
     public void StartFillingGas()
@@ -109,10 +109,10 @@ public class PayloadBehaviour : Entity
     {
         float count = 0f;
 
-        //Debug.Log("Starting to fill gas");
+        //Debug.Log("Starting to fill playerEmber");
         while (fillingGas)
         {
-            HUDController.Instance.SetPayloadGas((float)CurrentGas / (float)maxGas);
+            HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
             if (count > 1f / fillingRate) 
             {
@@ -136,13 +136,13 @@ public class PayloadBehaviour : Entity
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
-        //Debug.Log("Stop to fill gas");
+        //Debug.Log("Stop to fill playerEmber");
         yield break;
     }
 
     public void StartBurningGas()
     {
-        Debug.Log("Starting to burn gas");
+        Debug.Log("Starting to burn playerEmber");
         burningGas = true;
         ForwardFacing();
         agent.speed = MovementSpeed - hinderedMovementSpeed;
@@ -167,7 +167,7 @@ public class PayloadBehaviour : Entity
         {
             PayloadBehaviour.Instance.agent.isStopped = false;
             //Debug.Log($"Payload Moving, current Gas {CurrentGas}");
-            HUDController.Instance.SetPayloadGas((float)CurrentGas / (float) maxGas);
+            HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float) maxGas);
             count += Time.deltaTime;
             if (count > 1f / (burningRate + extraBurningRate))
             {

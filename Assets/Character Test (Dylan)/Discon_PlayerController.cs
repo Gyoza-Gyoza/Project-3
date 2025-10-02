@@ -110,7 +110,7 @@ public class Discon_PlayerController : Entity
         base.Start();
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
-        HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+        HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
     }
 
     void Update()
@@ -359,7 +359,7 @@ public class Discon_PlayerController : Entity
         else
         {
             currentGas += amount;
-            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
             return true;
         }
         //Add the rest of effects that relies on this
@@ -376,7 +376,7 @@ public class Discon_PlayerController : Entity
         else
         {
             currentGas -= amount;
-            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
             return true;
         }
     }

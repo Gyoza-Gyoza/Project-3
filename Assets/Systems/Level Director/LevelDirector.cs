@@ -83,9 +83,51 @@ public class LevelDirector : Singleton<LevelDirector>
             return Mathf.Clamp01(result); 
         } 
     }
+    #region
 
-    private float timer;
+    [Tooltip("Units per second that the death zone moves at")]
+    [SerializeField] private float deathZoneRate = 0f;
+    [SerializeField] private float deathZoneStartDelay = 3f;
+    private float deathZoneProgress = 0f; 
+    private bool deathZoneActive = false;
 
+    private void StartDeathZone()
+    {
+        StartCoroutine(DeathZoneCoroutine());
+    }
+
+    private void StopDeathZone()
+    {
+        deathZoneActive = false;
+    }
+
+
+    IEnumerator DeathZoneCoroutine()
+    {
+        //float count = 0f;
+        deathZoneActive = true;
+        float rate = deathZoneRate / 1f;
+
+
+        while (deathZoneActive)
+        {
+            //count += Time.deltaTime;
+            
+            deathZoneProgress += rate * Time.deltaTime;
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        yield break;
+    }
+
+    private void UpdateDeathZone()
+    {
+        HUDController.Instance.SetDeathBar(deathZoneProgress / levelLength);
+    }
+
+    #endregion
+
+    #region ----- Defaults (Awake, Start, Update) ------ 
     protected override void Awake()
     {
         base.Awake();
@@ -98,6 +140,10 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         if (spawnEnemies) SpawnEnemies();
     }
+    #endregion
+
+    private float timer;
+
     private void SpawnEnemies()
     {
         if (CanSpawn())
@@ -260,6 +306,7 @@ public class LevelDirector : Singleton<LevelDirector>
         }
     }
 
+    #region ------ Game State Manipulation ------
     public void WinGame()
     {
         HUDController.Instance.WinScreen();
@@ -279,6 +326,7 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         Application.Quit();
     }
+    #endregion
 
     private void OnDrawGizmos()
     {

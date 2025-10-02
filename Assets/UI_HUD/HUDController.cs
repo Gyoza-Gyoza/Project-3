@@ -17,25 +17,26 @@ public class HUDController : Singleton<HUDController>
     private bool updatingHealth = false;
 
     [Header("Gas")]
-    [SerializeField] private Slider gas;
-    [SerializeField] private Slider gasCatchUp;
-    [SerializeField] private float gasCatchUpTiming;
-    private float gasOrigin;
+    [SerializeField] private Slider playerEmber;
+    [SerializeField] private Slider playerEmberCatchUp;
+    [SerializeField] private float playerEmberCatchUpTiming;
+    private float emberOrigin;
     private float gasTemp;
-    private float gasTarget;
-    private bool updatingGas = false;
+    private float playerEmberTarget;
+    private bool updatingPlayerEmber = false;
 
     [Header("Payload Gas")]
-    [SerializeField] private Slider payloadGas;
+    [SerializeField] private Slider payloadEmber;
     [SerializeField] private Image payloadGasFill;
     [SerializeField] private Slider payloadGasCatchUp;
-    [SerializeField] private float payloadGasCatchUpTiming;
+    [SerializeField] private float payloadEmberCatchUpTiming;
+    //-------------------  Flicker ------------------------
     [SerializeField] private Color flickerColour;
     [SerializeField] private Color originalColour;
     [Tooltip("Seconds between each flicker")]
     [SerializeField] private float flickerRate;
     [SerializeField] private float warningThreshold;
-
+    //-------------------  Being attacked ------------------------
     [SerializeField] private CanvasGroup highlight;
     private bool highlighting = false;
     private bool highlightSwitch = false;
@@ -44,10 +45,10 @@ public class HUDController : Singleton<HUDController>
     public float highlightSpeedUpPer = 0.1f;
 
 
-    private float payloadGasOrigin;
+    private float payloadEmberOrigin;
     private float payloadGasTemp;
-    private float payloadGasTarget;
-    private bool updatingPayloadGas = false;
+    private float payloadEmberTarget;
+    private bool updatingPayloadEmber = false;
 
     private bool flickering = false;
     private bool flickerSwitch = false;
@@ -56,6 +57,9 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private Slider progress;
     [SerializeField] private TextMeshProUGUI progressText;
 
+    [Header("Death Bar")]
+    [SerializeField] private Slider death;
+    [SerializeField] private TextMeshProUGUI deathText;
 
     [Header("Conditions")]
     [SerializeField] private CanvasGroup winGroup;
@@ -134,43 +138,43 @@ public class HUDController : Singleton<HUDController>
 
     #endregion
 
-    #region Gas
-    public void SetGas(float input)
+    #region Player Ember
+    public void SetPlayerEmber(float input)
     {
-        if (updatingGas == false)
+        if (updatingPlayerEmber == false)
         {
-            gasOrigin = gas.value;
-            gasTarget = Mathf.Clamp(input, 0f, 1f);
-            gas.value = gasTarget;
+            emberOrigin = playerEmber.value;
+            playerEmberTarget = Mathf.Clamp(input, 0f, 1f);
+            playerEmber.value = playerEmberTarget;
             StartCoroutine(UpdateHealthSequence());
         }
         else
         {
-            gasTarget = Mathf.Clamp(input, 0f, 1f);
-            gas.value = gasTarget;
+            playerEmberTarget = Mathf.Clamp(input, 0f, 1f);
+            playerEmber.value = playerEmberTarget;
         }
     }
 
-    IEnumerator UpdateGasSequence()
+    IEnumerator UpdatePlayerEmberSequence()
     {
-        updatingGas = true;
+        updatingPlayerEmber = true;
         //health.value = healthTarget;
 
         float catchupCount = 0f;
 
-        while (updatingGas)
+        while (updatingPlayerEmber)
         {
-            if (catchupCount < gasCatchUpTiming)
+            if (catchupCount < playerEmberCatchUpTiming)
             {
                 catchupCount += Time.deltaTime;
 
-                gasCatchUp.value = Mathf.SmoothStep(gasOrigin, gasTarget, (float)(catchupCount / gasCatchUpTiming));
+                playerEmberCatchUp.value = Mathf.SmoothStep(emberOrigin, playerEmberTarget, (float)(catchupCount / playerEmberCatchUpTiming));
                 yield return new WaitForSeconds(Time.deltaTime);
             }
             else
             {
-                updatingGas = false;
-                gasCatchUp.value = gasTarget;
+                updatingPlayerEmber = false;
+                playerEmberCatchUp.value = playerEmberTarget;
             }
         }
         yield break;
@@ -178,22 +182,22 @@ public class HUDController : Singleton<HUDController>
     #endregion
 
     #region Payload Gas
-    public void SetPayloadGas(float input)
+    public void SetPayloadEmber(float input)
     {
 
         //Debug.Log($"Updating Payload Gas Input is {input}");
 
-        if (updatingPayloadGas == false)
+        if (updatingPayloadEmber == false)
         {
-            payloadGasOrigin = payloadGas.value;
-            payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
-            payloadGas.value = payloadGasTarget;
-            StartCoroutine(UpdatePayloadGasSequence());
+            payloadEmberOrigin = payloadEmber.value;
+            payloadEmberTarget = Mathf.Clamp(input, 0f, 1f);
+            payloadEmber.value = payloadEmberTarget;
+            StartCoroutine(UpdatePayloadEmberSequence());
         }
         else
         {
-            payloadGasTarget = Mathf.Clamp(input, 0f, 1f);
-            payloadGas.value = payloadGasTarget;
+            payloadEmberTarget = Mathf.Clamp(input, 0f, 1f);
+            payloadEmber.value = payloadEmberTarget;
         }
 
         if (input <= warningThreshold)
@@ -209,26 +213,26 @@ public class HUDController : Singleton<HUDController>
         }
     }
 
-    IEnumerator UpdatePayloadGasSequence()
+    IEnumerator UpdatePayloadEmberSequence()
     {
         //Debug.Log("Start Setting Payload Gas");
-        updatingPayloadGas = true;
+        updatingPayloadEmber = true;
 
         float catchupCount = 0f;
 
-        while (updatingPayloadGas)
+        while (updatingPayloadEmber)
         {
-            if (catchupCount < payloadGasCatchUpTiming)
+            if (catchupCount < payloadEmberCatchUpTiming)
             {
                 catchupCount += Time.deltaTime;
 
-                payloadGasCatchUp.value = Mathf.SmoothStep(payloadGasOrigin, payloadGasTarget, (float)(catchupCount / payloadGasCatchUpTiming));
+                payloadGasCatchUp.value = Mathf.SmoothStep(payloadEmberOrigin, payloadEmberTarget, (float)(catchupCount / payloadEmberCatchUpTiming));
                 yield return new WaitForSeconds(Time.deltaTime);
             }
             else
             {
-                updatingPayloadGas = false;
-                payloadGasCatchUp.value = payloadGasTarget;
+                updatingPayloadEmber = false;
+                payloadGasCatchUp.value = payloadEmberTarget;
             }
         }
 
@@ -300,7 +304,6 @@ public class HUDController : Singleton<HUDController>
         highlight.alpha = 0f;
     }
 
-
     IEnumerator HighlightFadeTo(float target)
     {
         Debug.Log("Highlight fade done");
@@ -324,6 +327,22 @@ public class HUDController : Singleton<HUDController>
         float clamped = Mathf.Clamp(input, 0f, 1f);
         progressText.text = $"{Mathf.Round(clamped * 10000)/100}%";
         progress.value = clamped;
+    }
+    #endregion
+
+    #region Death Zone Progress
+
+    public void SetDeathBar(float input)
+    {
+        //Debug.Log($"Setting progress to {input}");
+        if (!death.gameObject.activeSelf)
+        {
+            death.gameObject.SetActive(true);
+        }
+        float clamped = Mathf.Clamp(input, 0f, 1f);
+        deathText.text = $"{Mathf.Round(clamped * 10000) / 100}%";
+        death.value = clamped;
+
     }
     #endregion
 
