@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a0577b18a6a7f40bc7c5fe25e25c31, type: 3}
   m_Name: WBR_00
   m_EditorClassIdentifier: 
-  spawnFrequency: 0
-  enemyPerSpawn: 0
+  durationBetweenSpawns: 0
+  enemyPerGroup: 0
+  spawnMarkers: []
+  spawnCooldown: 0
   minSpawnDistance: 5
   maxSpawnDistance: 100
   checkpoint: {x: 0, y: 0, z: 44.4}
