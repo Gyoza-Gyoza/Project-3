@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public abstract class Stage : ScriptableObject
@@ -20,6 +21,7 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
     private float progress = 0f;
+    private float distanceFromPrevious;
 
     public float DurationBetweenSpawns
     { get { return durationBetweenSpawns; } }
@@ -39,6 +41,10 @@ public abstract class Stage : ScriptableObject
     { get { return minSpawnDistance; } }
     public virtual float Progress
     { get { return progress; } private set { progress = Mathf.Clamp01(value); } } // Default progression, can be overridden by specific stages
+    public virtual float Distance
+    { get { return distanceFromPrevious; } set { distanceFromPrevious = value; }}
+
+
     public abstract void StartStage();
     public abstract void DoPayloadBehaviour();
     public abstract void PlayerInRange();

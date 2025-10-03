@@ -49,7 +49,8 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         for (int i = 1; i < stages.Length; i++)
         {
-            levelLength += calculateCheckpointLength(i);
+            stages[i].Distance = calculateCheckpointLength(i);
+            levelLength += stages[i].Distance;
         }
     }
 
@@ -59,7 +60,6 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             return Vector3.Magnitude(escort2.Checkpoint - escort1.Checkpoint);
         }
-
         return 0f;
     }
 
@@ -72,10 +72,10 @@ public class LevelDirector : Singleton<LevelDirector>
             //float progressionPerStage = 1f / (Stages.Length - 1);
             for (int i = 1; i < currentStage; i++)
             {
-                calc += calculateCheckpointLength(i);
+                calc += stages[i].Distance;
             }
-            calc += stages[currentStage].Progress * calculateCheckpointLength(currentStage);
 
+            calc += stages[currentStage].Progress * stages[currentStage].Distance;
             float result = calc / levelLength;
 
             //Debug.Log($"Stage Progress: {result}");
@@ -83,16 +83,28 @@ public class LevelDirector : Singleton<LevelDirector>
             return Mathf.Clamp01(result); 
         } 
     }
-    #region
+
+    #region ---- Death Zone Manipulation ----
 
     [Tooltip("Units per second that the death zone moves at")]
     [SerializeField] private float deathZoneRate = 0f;
+    [SerializeField] private NavMeshAgent deathZoneChaser;
     [SerializeField] private float deathZoneStartDelay = 3f;
-    private float deathZoneProgress = 0f; 
+    private float deathZoneTraveled = 0f; 
     private bool deathZoneActive = false;
+    private int deathZoneStage = 1; 
 
     private void StartDeathZone()
     {
+
+        if (stages[1] is Escort escort)
+        {
+            deathZoneChaser.Warp((stages[0] as Escort).Checkpoint); //This is temp. We need to clean up the code and change stages to something else
+            deathZoneChaser.SetDestination(escort.Checkpoint);
+        }
+        deathZoneChaser.speed = deathZoneRate;
+        deathZoneChaser.isStopped = false;
+
         StartCoroutine(DeathZoneCoroutine());
     }
 
@@ -101,19 +113,48 @@ public class LevelDirector : Singleton<LevelDirector>
         deathZoneActive = false;
     }
 
+    public void DeathCompletedStage()
+    {
+        deathZoneStage++;
+        deathZoneStage = Mathf.Clamp(currentStage, 0, Stages.Length - 1);
+    }
 
     IEnumerator DeathZoneCoroutine()
     {
         //float count = 0f;
         deathZoneActive = true;
-        float rate = deathZoneRate / 1f;
+        //float rate = deathZoneRate / 1f;
+        float previousRemaining = deathZoneChaser.remainingDistance;
 
+        Debug.Log($"DeathZone STARTED: previous is {previousRemaining}");
 
         while (deathZoneActive)
         {
             //count += Time.deltaTime;
-            
-            deathZoneProgress += rate * Time.deltaTime;
+            if (previousRemaining > 0)
+            {
+                deathZoneTraveled += (previousRemaining - deathZoneChaser.remainingDistance);
+            }
+            if (deathZoneChaser.remainingDistance <= 0.05f)
+            {
+                DeathCompletedStage();
+            }
+
+            Debug.Log($"DeathZone STARTED: previous is {previousRemaining}, current is {deathZoneChaser.remainingDistance}");
+
+
+            previousRemaining = deathZoneChaser.remainingDistance;
+
+            Debug.Log($"DeathZone travelled: {deathZoneTraveled}");
+
+            if ((deathZoneTraveled / levelLength) >= StageProgress)
+            {
+
+                Debug.Log($"Lost! Death progress: {(deathZoneTraveled / levelLength)}, Stage Progress: {StageProgress}");
+                LoseGame();
+            }
+
+            UpdateDeathZone();
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
@@ -122,7 +163,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
     private void UpdateDeathZone()
     {
-        HUDController.Instance.SetDeathBar(deathZoneProgress / levelLength);
+        HUDController.Instance.SetDeathBar(deathZoneTraveled / levelLength);
     }
 
     #endregion
@@ -141,6 +182,8 @@ public class LevelDirector : Singleton<LevelDirector>
         if (spawnEnemies) SpawnEnemies();
     }
     #endregion
+
+    #region ---- Enemy Spawning ----
 
     private float timer;
 
@@ -271,11 +314,18 @@ public class LevelDirector : Singleton<LevelDirector>
     }
 
     public void MarkLocation(Transform pos) => spawnMarker.Add(pos);
+    #endregion
+
     public void CompletedStage()
     {
         currentStage++;
         currentStage = Mathf.Clamp(currentStage, 0, Stages.Length - 1);
+        if (currentStage == 2)
+        {
+            StartDeathZone();
+        }
     }
+
     public void CompleteLevel()
     {
         // Handle level completion logic here
@@ -284,7 +334,7 @@ public class LevelDirector : Singleton<LevelDirector>
         WinGame();
     }
 
-    private void AssignEscortStages()
+    private void AssignEscortStages() // might become obselete when the baymax stops going backwards
     {
         //Debug.Log("Assign Escorts called");
         for(int i = 1; i < stages.Length; i++)
@@ -292,19 +342,19 @@ public class LevelDirector : Singleton<LevelDirector>
             if (stages[i] is Escort escort1)
             {
                 if (stages[i -1] is Escort escort2)
-                {
-                    escort1.PreviousCheckpoint = escort2.Checkpoint;
-                }
+                {   escort1.PreviousCheckpoint = escort2.Checkpoint;}
                 else
-                {
-                    escort1.PreviousCheckpoint = escort1.Checkpoint;
-
-                }
-
+                {   escort1.PreviousCheckpoint = escort1.Checkpoint;}
                 //Debug.Log($"Escorts point {i}, Previous: {escort1.PreviousCheckpoint}, Current: {escort1.Checkpoint}");
             }
         }
     }
+
+    #region 
+
+
+
+    #endregion
 
     #region ------ Game State Manipulation ------
     public void WinGame()
@@ -314,6 +364,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
     public void LoseGame()
     {
+        StopDeathZone();
         HUDController.Instance.LoseScreen();
     }
 
@@ -351,10 +402,13 @@ public class LevelDirector : Singleton<LevelDirector>
                     Gizmos.color = Color.white;
                     break;
             }
-            foreach (Vector3 marker in stage.SpawnMarkers)
+            if (stage.SpawnMarkers.Length > 0)
             {
-                Gizmos.color = new Color(0, 1, 0, 0.5f);
-                Gizmos.DrawSphere(marker, spawnSpread);
+                foreach (Vector3 marker in stage.SpawnMarkers)
+                {
+                    Gizmos.color = new Color(0, 1, 0, 0.5f);
+                    Gizmos.DrawSphere(marker, spawnSpread);
+                }
             }
         }
     }

@@ -154,8 +154,10 @@ public class PayloadBehaviour : Entity
     {
         //Debug.Log("Stop Burning");
         burningGas = false;
-        BackwardFacing();
-        agent.speed = returnSpeed + extraReturnSpeed;
+        //BackwardFacing();
+        //agent.speed = returnSpeed + extraReturnSpeed;
+        animator.SetBool("Walking", false);
+        agent.isStopped = true;
     }
 
     IEnumerator burnGas()

@@ -58,6 +58,7 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private TextMeshProUGUI progressText;
 
     [Header("Death Bar")]
+    [SerializeField] private GameObject deathObject;
     [SerializeField] private Slider death;
     [SerializeField] private TextMeshProUGUI deathText;
 
@@ -334,10 +335,10 @@ public class HUDController : Singleton<HUDController>
 
     public void SetDeathBar(float input)
     {
-        //Debug.Log($"Setting progress to {input}");
-        if (!death.gameObject.activeSelf)
+        //Debug.Log($"Setting Death Progress called, is active: {death.gameObject.activeSelf}");
+        if (!deathObject.activeSelf)
         {
-            death.gameObject.SetActive(true);
+            deathObject.SetActive(true);
         }
         float clamped = Mathf.Clamp(input, 0f, 1f);
         deathText.text = $"{Mathf.Round(clamped * 10000) / 100}%";
