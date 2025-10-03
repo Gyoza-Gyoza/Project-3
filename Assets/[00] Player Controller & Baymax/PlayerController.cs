@@ -110,7 +110,6 @@ public class PlayerController3P : Entity
     [Header("VFX")]
     [SerializeField] private Transform VFXZeroPoint;
     [SerializeField] private VFX[] slashVFX;
-    [SerializeField] private VFX[] impactVFX;
     [SerializeField] private VFX[] dashVFX;
     private LensDistortion lensDistortion;
 

@@ -63,7 +63,7 @@ public class PayloadBehaviour : Entity
         else Destroy(Instance);
 
         agent = GetComponent<NavMeshAgent>();
-        interactRadius = GetComponent<SphereCollider>().radius;
+        interactRadius = GetComponent<CapsuleCollider>().radius;
         IniLineRenderer();
     }
     protected override void Start()

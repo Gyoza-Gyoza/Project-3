@@ -27,15 +27,15 @@ public class AttackHitBox : MonoBehaviour
     [Range(0.01f, 0.2f)] public float decisionWindow = 0.08f;
 
     [Header("Aggregated VFX (one VFX per swing at avg hit position)")]
-    [Tooltip("Randomized pool of VFX prefabs to choose from when the swing results in a single-hit")]
+    [Tooltip("Randomized pool used when the swing resolves as a SINGLE hit")]
     public List<GameObject> singleHitVFXList = new List<GameObject>();
     public float singleHitVFXDuration = 0.9f;
 
-    [Tooltip("Randomized pool of VFX prefabs to choose from when the swing results in a multi-hit")]
+    [Tooltip("Randomized pool used when the swing resolves as a MULTI hit")]
     public List<GameObject> multiHitVFXList = new List<GameObject>();
     public float multiHitVFXDuration = 1.2f;
 
-    [Tooltip("If true, multi-hit spawns the multi VFX; single-hit will spawn the single VFX. If false, no aggregated VFX will spawn.")]
+    [Tooltip("Enable/disable spawning the aggregated VFX at the average sampled position")]
     public bool spawnAggregatedVFX = true;
 
     [Header("Debug")]
@@ -48,9 +48,9 @@ public class AttackHitBox : MonoBehaviour
     BoxCollider _box;
     Rigidbody _rb;
 
-    // sfx decision internals
+    // sfx/vfx decision internals
     int _normalHitCount;
-    Vector3 _posSum;
+    Vector3 _posSum;                 // sum of sampled hit positions (ClosestPoint)
     bool _decidedThisSwing;
     Coroutine _decideRoutine;
 
@@ -73,7 +73,7 @@ public class AttackHitBox : MonoBehaviour
         _active = true;
         _box.enabled = true;
 
-        // reset sfx decision state
+        // reset decision state
         _normalHitCount = 0;
         _posSum = Vector3.zero;
         _decidedThisSwing = false;
@@ -96,10 +96,10 @@ public class AttackHitBox : MonoBehaviour
             ApplyHitIfValid(hits[i]);
     }
 
-    /// Close the hit window and finalize sfx choice if needed.
+    /// Close the hit window and finalize sfx/vfx choice if needed.
     public void End()
     {
-        // finalize single vs multi decision with whatever we’ve collected
+        // finalize with whatever we’ve collected in this swing
         FinalizeHitSfxDecision();
 
         _active = false;
@@ -132,8 +132,11 @@ public class AttackHitBox : MonoBehaviour
         // apply damage (and any knockback you already do)
         eh.TakeDamage(damage, (_attacker ? _attacker.position : transform.position));
 
-        // collect data for sfx decision
-        Vector3 sfxPos = other.bounds.center;
+        // --- Option A: sample hit position using closest point to this hitbox (tighter feel)
+        // Using the hitbox transform position as the source point for ClosestPoint.
+        Vector3 sampleFrom = transform.position;
+        Vector3 sfxPos = other.ClosestPoint(sampleFrom);
+
         _normalHitCount++;
         _posSum += sfxPos;
 
@@ -169,22 +172,22 @@ public class AttackHitBox : MonoBehaviour
             return; // nothing hit → no SFX/VFX
         }
 
-        // choose single or multi key
-        string keyToPlay = (_normalHitCount >= minMultiCount) ? multiHitSfxKey : singleHitSfxKey;
+        bool isMulti = (_normalHitCount >= minMultiCount);
+        string keyToPlay = isMulti ? multiHitSfxKey : singleHitSfxKey;
+
+        // average of sampled positions (closest-point samples)
         Vector3 avgPos = _posSum / Mathf.Max(1, _normalHitCount);
 
-        // Play SFX (global by key). If you have a spatialized version in AudioManager, replace this call with that.
+        // ---- SFX (unchanged from your original contract) ----
         if (!string.IsNullOrEmpty(keyToPlay))
         {
-            AudioManager.Instance?.PlaySFX(keyToPlay, avgPos); // simple global play (keeps compatibility)
-            // If you have spatialized overload: AudioManager.Play(keyToPlay, avgPos);
-            // Or if you have AudioManager.PlayAtPosition(AudioClip, Vector3), use that by looking up the clip.
+            // Keep using your existing AudioManager API. No changes made.
+            AudioManager.Instance?.PlaySFX(keyToPlay, avgPos);
         }
 
-        // Spawn aggregated VFX (randomized from the corresponding list)
+        // ---- Aggregated VFX with random selection ----
         if (spawnAggregatedVFX)
         {
-            bool isMulti = (_normalHitCount >= minMultiCount);
             GameObject chosenPrefab = null;
             float destroyAfter = 0.5f;
 
@@ -204,7 +207,7 @@ public class AttackHitBox : MonoBehaviour
             if (chosenPrefab != null)
             {
                 var go = Instantiate(chosenPrefab, avgPos, Quaternion.identity);
-                Destroy(go, Mathf.Max(0.05f, destroyAfter)); // use pooling in production
+                Destroy(go, Mathf.Max(0.05f, destroyAfter)); // swap to pooling in production
             }
         }
 
