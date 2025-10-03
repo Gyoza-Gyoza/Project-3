@@ -208,8 +208,8 @@ public class PlayerController3P : Entity
 
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
-        HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
-
+        HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
+        //mainAudioSource = this.GetComponent<AudioSource>();
         bool groundedNow = controller.isGrounded;
         wasGrounded = groundedNow;
         if (groundedNow) lastGroundedTime = Time.time;
@@ -1118,7 +1118,7 @@ public class PlayerController3P : Entity
         else
         {
             currentGas += amount;
-            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
             return true;
         }
         //Add the rest of effects that relies on this
@@ -1134,7 +1134,7 @@ public class PlayerController3P : Entity
         else
         {
             currentGas -= amount;
-            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
             return true;
         }
     }

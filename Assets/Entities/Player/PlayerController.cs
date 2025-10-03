@@ -43,7 +43,7 @@ public class PlayerController : Entity
         InitializeHitboxs();
         currentGas = startingGas;
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
-        HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+        HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
     }
     private void Update()
     {
@@ -262,7 +262,7 @@ public class PlayerController : Entity
         else
         {
             currentGas += amount;
-            HUDController.Instance.SetGas((float) currentGas / (float)maxGas);
+            HUDController.Instance.SetPlayerEmber((float) currentGas / (float)maxGas);
             return true;
         }
         //Add the rest of effects that relies on this
@@ -279,7 +279,7 @@ public class PlayerController : Entity
         else
         {
             currentGas -= amount;
-            HUDController.Instance.SetGas((float)currentGas / (float)maxGas);
+            HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
             return true;
         }
     }

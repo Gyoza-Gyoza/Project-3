@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   durationBetweenSpawns: 0
   enemyPerGroup: 0
-  spawnMarkers: []
+  spawnMarkers:
+  - {x: 47.9, y: 0, z: 264.4}
+  - {x: 47.9, y: 0, z: 264.4}
   spawnCooldown: 10
+  maxEnemies: 0
+  resumeThreshold: 0
   minSpawnDistance: 5
   maxSpawnDistance: 100
   checkpoint: {x: 0, y: 0.325, z: 193.4}
