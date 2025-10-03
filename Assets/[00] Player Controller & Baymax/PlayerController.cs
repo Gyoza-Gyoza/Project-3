@@ -406,7 +406,6 @@ public class PlayerController3P : Entity
             float jumpSpeed = Mathf.Sqrt(jumpHeight * -2f * gravity);
             velocity.y = jumpSpeed;
             jumpImpulseApplied = true;
-            //PlaySFX(SFXs[4]);
             AudioManager.Instance.PlaySFX("Jump");
         }
 
@@ -443,7 +442,6 @@ public class PlayerController3P : Entity
         float jumpSpeed = Mathf.Sqrt(doubleJumpHeight * -2f * gravity);
         velocity.y = jumpSpeed;
 
-        //PlaySFX(SFXs[5]);
         AudioManager.Instance.PlaySFX("DoubleJump");
 
         if (animator)
