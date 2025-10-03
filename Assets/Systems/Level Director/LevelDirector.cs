@@ -90,13 +90,16 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private float deathZoneRate = 0f;
     [SerializeField] private NavMeshAgent deathZoneChaser;
     [SerializeField] private float deathZoneStartDelay = 3f;
+    [SerializeField] private float deathBuffer = 1f;
+    private Vector3 dir = Vector3.zero;
     private float deathZoneTraveled = 0f; 
     private bool deathZoneActive = false;
+    private bool deathCountdown = false;
     private int deathZoneStage = 1; 
 
     private void StartDeathZone()
     {
-
+        /*
         if (stages[1] is Escort escort)
         {
             deathZoneChaser.Warp((stages[0] as Escort).Checkpoint); //This is temp. We need to clean up the code and change stages to something else
@@ -104,6 +107,11 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         deathZoneChaser.speed = deathZoneRate;
         deathZoneChaser.isStopped = false;
+        */
+
+        deathZoneChaser.Warp((stages[0] as Escort).Checkpoint);
+
+        dir = (stages[deathZoneStage] as Escort).Checkpoint - (stages[deathZoneStage - 1] as Escort).Checkpoint;
 
         StartCoroutine(DeathZoneCoroutine());
     }
@@ -115,22 +123,54 @@ public class LevelDirector : Singleton<LevelDirector>
 
     public void DeathCompletedStage()
     {
+        Debug.Log("Death completed called");
         deathZoneStage++;
         deathZoneStage = Mathf.Clamp(currentStage, 0, Stages.Length - 1);
+
+        if (deathZoneStage < stages.Length && stages[deathZoneStage] is Escort nextStage)
+        {
+            //deathZoneChaser.SetDestination(nextStage.Checkpoint);
+            dir = (stages[deathZoneStage] as Escort).Checkpoint - (stages[deathZoneStage - 1] as Escort).Checkpoint;
+        }
+        else
+        {
+            LoseGame();
+        }
     }
 
     IEnumerator DeathZoneCoroutine()
     {
         //float count = 0f;
         deathZoneActive = true;
-        //float rate = deathZoneRate / 1f;
+        float rate = deathZoneRate / 1f;
         float previousRemaining = deathZoneChaser.remainingDistance;
 
-        Debug.Log($"DeathZone STARTED: previous is {previousRemaining}");
+        //Debug.Log($"DeathZone STARTED: previous is {previousRemaining}");
 
         while (deathZoneActive)
         {
             //count += Time.deltaTime;
+
+            deathZoneTraveled += rate * Time.deltaTime;
+
+            //Escort previous = stages[deathZoneStage - 1] as Escort;
+
+            Escort current = stages[deathZoneStage] as Escort;
+
+            Vector3 currentPos = deathZoneChaser.gameObject.transform.position + (dir.normalized * rate * Time.deltaTime);
+
+            deathZoneChaser.gameObject.transform.position = currentPos;
+
+            float distanceLeft = Vector3.Distance(deathZoneChaser.gameObject.transform.position, current.Checkpoint);
+
+            Debug.Log($"Death distance left: {distanceLeft}");
+
+            if ( distanceLeft <= 0.6f)
+            {
+                DeathCompletedStage();
+            }
+
+            /*
             if (previousRemaining > 0)
             {
                 deathZoneTraveled += (previousRemaining - deathZoneChaser.remainingDistance);
@@ -139,13 +179,19 @@ public class LevelDirector : Singleton<LevelDirector>
             {
                 DeathCompletedStage();
             }
+            */
+            //Debug.Log($"DeathZone STARTED: previous is {previousRemaining}, current is {deathZoneChaser.remainingDistance}");
 
-            Debug.Log($"DeathZone STARTED: previous is {previousRemaining}, current is {deathZoneChaser.remainingDistance}");
+
+            //previousRemaining = deathZoneChaser.remainingDistance;
+
+            //Debug.Log($"DeathZone travelled: {deathZoneTraveled}");
 
 
-            previousRemaining = deathZoneChaser.remainingDistance;
-
-            Debug.Log($"DeathZone travelled: {deathZoneTraveled}");
+            //if (!deathZoneChaser.hasPath)
+            //{
+            //    Debug.Log($"Invalid Path. {deathZoneChaser.remainingDistance}");
+            //}
 
             if ((deathZoneTraveled / levelLength) >= StageProgress)
             {
@@ -160,6 +206,9 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         yield break;
     }
+
+
+
 
     private void UpdateDeathZone()
     {
@@ -402,7 +451,7 @@ public class LevelDirector : Singleton<LevelDirector>
                     Gizmos.color = Color.white;
                     break;
             }
-            if (stage.SpawnMarkers.Length > 0)
+            if (stage.SpawnMarkers != null &&  stage.SpawnMarkers.Length > 0)
             {
                 foreach (Vector3 marker in stage.SpawnMarkers)
                 {
