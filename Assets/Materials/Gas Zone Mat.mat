@@ -98,7 +98,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BottomDistance: 0.1
+    - _BottomDistance: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -128,16 +128,16 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 1
-    - _TopDistance: 1
+    - _TopDistance: 0.45
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 0.9798687, b: 0, a: 0.2627451}
     - _Color: {r: 0.89625555, g: 1, b: 0.37421376, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GasColor: {r: 0.32285607, g: 2.421851, b: 3.4258614, a: 0.18431373}
-    - _PerlinScrollSpeed: {r: 0, g: -0.93, b: 0, a: 0}
-    - _PerlinTiling: {r: 0.53, g: 0.11, b: 0, a: 0}
+    - _GasColor: {r: 4.573794, g: 0.8077416, b: 0, a: 0.18431373}
+    - _PerlinScrollSpeed: {r: 0, g: 0.34, b: 0, a: 0}
+    - _PerlinTiling: {r: -1.49, g: -1, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _VoronoiScrollSpeed: {r: 0, g: 0.15, b: 0, a: 0}
     - _VoronoiTiling: {r: 0.08, g: -0.03, b: 0, a: 0}

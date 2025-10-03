@@ -56,6 +56,7 @@ public class PayloadBehaviour : Entity
     { get { return interactRadius * transform.localScale.z; } } // Hard coding :( //Its okay Hard coding is fine
     private bool playerInRange = false;
     public static PayloadBehaviour Instance;
+    private PayloadStepper stepper;
 
     private void Awake()
     {
@@ -63,6 +64,14 @@ public class PayloadBehaviour : Entity
         else Destroy(Instance);
 
         agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.updatePosition = false;
+            agent.updateRotation = false;
+        }
+
+        stepper = GetComponent<PayloadStepper>();
+
         interactRadius = GetComponent<CapsuleCollider>().radius;
         IniLineRenderer();
     }
@@ -142,22 +151,69 @@ public class PayloadBehaviour : Entity
 
     public void StartBurningGas()
     {
-        Debug.Log("Starting to burn playerEmber");
+        // Debug.Log("Starting to burn playerEmber");
+        // burningGas = true;
+        // ForwardFacing();
+        // agent.speed = MovementSpeed - hinderedMovementSpeed;
+        // animator.SetBool("Walking", true);
+        // StartCoroutine(burnGas());
+
+        // existing logic to start burning
         burningGas = true;
-        ForwardFacing();
-        agent.speed = MovementSpeed - hinderedMovementSpeed;
-        animator.SetBool("Walking", true);
-        StartCoroutine(burnGas());
+
+        // start walking animation flag
+        if (animator != null)
+        {
+            animator.SetBool("Walking", true);
+        }
+
+        // resume the stepper (unpause agent movement)
+        if (stepper != null)
+        {
+            stepper.ResumeStepper();
+        }
+        else
+        {
+            // fallback: un-stop agent so old code still moves (not preferred)
+            if (agent != null) agent.isStopped = false;
+        }
     }
 
     public void StopBurningGas()
     {
-        //Debug.Log("Stop Burning");
-        burningGas = false;
-        //BackwardFacing();
-        //agent.speed = returnSpeed + extraReturnSpeed;
-        animator.SetBool("Walking", false);
-        agent.isStopped = true;
+        // //Debug.Log("Stop Burning");
+        // burningGas = false;
+        // //BackwardFacing();
+        // //agent.speed = returnSpeed + extraReturnSpeed;
+        // animator.SetBool("Walking", false);
+        // agent.isStopped = true;
+
+            burningGas = false;
+
+        // clear walking animation flag
+        if (animator != null)
+            animator.SetBool("Walking", false);
+
+        // Pause the stepper and stop pathing so the golem stands still
+        if (stepper != null)
+        {
+            stepper.StopStepperImmediate();
+            // clear agent path to ensure it doesn't later automatically go to previous checkpoint
+            if (agent != null)
+            {
+                agent.ResetPath();
+                agent.isStopped = true;
+            }
+        }
+        else
+        {
+            // fallback: stop the agent
+            if (agent != null)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+        }
     }
 
     IEnumerator burnGas()
