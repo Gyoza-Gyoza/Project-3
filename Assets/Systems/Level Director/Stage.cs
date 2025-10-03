@@ -5,18 +5,34 @@ using UnityEngine;
 
 public abstract class Stage : ScriptableObject
 {
-    [Tooltip("How many enemies the director will spawn per second")]
-    [SerializeField] private float spawnFrequency;
+    [Tooltip("The amount of time the director will wait before spawning the next group")]
+    [SerializeField] private float durationBetweenSpawns;
     [Tooltip("Amount of enemies that the director will spawn each time")]
-    [SerializeField] private int enemyPerSpawn;
+    [SerializeField] private int enemyPerGroup;
+    [Tooltip("List of spawn points for the checkpoint")]
+    [SerializeField] private Vector3[] spawnMarkers;
+    [Tooltip("Cooldown for spawning after hitting cap")]
+    [SerializeField] private float spawnCooldown;
+    [Tooltip("Maximum amount of enemies allowed in the scene before stopping spawns")]
+    [SerializeField] private int maxEnemies;
+    [Tooltip("Amount of enemies allowed in the scene before resuming spawns")]
+    [SerializeField] private int resumeThreshold;
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
     private float progress = 0f;
 
-    public float SpawnFrequency
-    { get { return spawnFrequency; } }
-    public int EnemyPerSpawn
-    { get { return enemyPerSpawn; } }
+    public float DurationBetweenSpawns
+    { get { return durationBetweenSpawns; } }
+    public int EnemyPerGroup
+    { get { return enemyPerGroup; } }
+    public Vector3[] SpawnMarkers
+    { get { return spawnMarkers; } }
+    public float SpawnCooldown
+    { get { return spawnCooldown; } }
+    public int MaxEnemies
+    { get { return maxEnemies; } }
+    public int ResumeThreshold
+    { get { return resumeThreshold; } }
     public float MaxSpawnDistance
     { get { return maxSpawnDistance; } }
     public float MinSpawnDistance
