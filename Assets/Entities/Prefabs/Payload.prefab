@@ -269,14 +269,14 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
-  m_Height: 1
+  m_Radius: 8.46
+  m_Height: 25.9
   m_Direction: 1
-  m_Center: {x: -5.4, y: 0, z: -36.1}
+  m_Center: {x: 0, y: 5.57, z: -1.01}
 --- !u!1 &486433859282615580
 GameObject:
   m_ObjectHideFlags: 0

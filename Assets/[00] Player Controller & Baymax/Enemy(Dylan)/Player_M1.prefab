@@ -191,7 +191,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: af3c3617886ac4119893c0277110ed24, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.3
+  m_Volume: 0.162
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1203,8 +1203,8 @@ Transform:
   m_GameObject: {fileID: 3629376823445563932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.49, z: -0}
-  m_LocalScale: {x: 2.22, y: 3.67, z: 2.27}
+  m_LocalPosition: {x: 0, y: 3.25, z: -0}
+  m_LocalScale: {x: 2.22, y: 5, z: 2.27}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2165694854814109797}
@@ -1277,9 +1277,13 @@ MonoBehaviour:
   multiHitSfxKey: Hit_Slime.Multi
   minMultiCount: 4
   decisionWindow: 0.05
-  singleHitVFXList: []
+  singleHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   singleHitVFXDuration: 0.9
-  multiHitVFXList: []
+  multiHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   multiHitVFXDuration: 1.2
   spawnAggregatedVFX: 1
   drawHitEvents: 0
@@ -1636,8 +1640,8 @@ Transform:
   m_GameObject: {fileID: 4717305751326797023}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.49, z: -0}
-  m_LocalScale: {x: 2.22, y: 3.67, z: 2.27}
+  m_LocalPosition: {x: 0, y: 3.25, z: -0}
+  m_LocalScale: {x: 2.22, y: 5, z: 2.27}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2165694854814109797}
@@ -1710,9 +1714,13 @@ MonoBehaviour:
   multiHitSfxKey: Hit_Slime.Multi
   minMultiCount: 4
   decisionWindow: 0.05
-  singleHitVFXList: []
+  singleHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   singleHitVFXDuration: 0.9
-  multiHitVFXList: []
+  multiHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   multiHitVFXDuration: 1.2
   spawnAggregatedVFX: 1
   drawHitEvents: 0
@@ -1818,9 +1826,13 @@ MonoBehaviour:
   multiHitSfxKey: Hit_Slime.Multi
   minMultiCount: 4
   decisionWindow: 0.05
-  singleHitVFXList: []
+  singleHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   singleHitVFXDuration: 0.9
-  multiHitVFXList: []
+  multiHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   multiHitVFXDuration: 1.2
   spawnAggregatedVFX: 1
   drawHitEvents: 0
@@ -2562,9 +2574,13 @@ MonoBehaviour:
   multiHitSfxKey: Hit_Slime.Multi
   minMultiCount: 4
   decisionWindow: 0.05
-  singleHitVFXList: []
+  singleHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   singleHitVFXDuration: 0.9
-  multiHitVFXList: []
+  multiHitVFXList:
+  - {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
+  - {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
   multiHitVFXDuration: 1.2
   spawnAggregatedVFX: 1
   drawHitEvents: 0
@@ -3171,6 +3187,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1330839295798266682}
+  - component: {fileID: 665670662006301356}
   - component: {fileID: 4593335020869183117}
   - component: {fileID: 4563402284226776312}
   - component: {fileID: 6886843657780469280}
@@ -3200,6 +3217,24 @@ Transform:
   - {fileID: 457225499647024528}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &665670662006301356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8832224516698119203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70e86801ad09234c9563b19b0734dd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  requiredUpNormal: 0.4
+  detachDelay: 0.12
+  debugLogs: 1
 --- !u!143 &4593335020869183117
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3285,7 +3320,7 @@ MonoBehaviour:
   atk2LungeDuration: 0.12
   atk2LungeDelay: 0.3
   atk3ImpulseDelay: 0.25
-  atk3ForwardSpeed: 15
+  atk3ForwardSpeed: 6
   atk3UpwardSpeed: 25
   atk3ForwardDuration: 0.65
   atk3UpwardDuration: 0.5
@@ -3307,13 +3342,6 @@ MonoBehaviour:
     offset: {x: 0, y: 0, z: 0}
   - vfxPrefab: {fileID: 4747255061412231293, guid: 6ba0aeb444735d341985080d7c58d41d, type: 3}
     delay: 0
-    offset: {x: 0, y: 0, z: 0}
-  impactVFX:
-  - vfxPrefab: {fileID: 7531284559651684636, guid: be64738f063d3874fa31ad779809d4f6, type: 3}
-    delay: 0.05
-    offset: {x: 0, y: 0, z: 0}
-  - vfxPrefab: {fileID: 498800005043137863, guid: 1c6607245ac5b7b41a1186683fa36ccd, type: 3}
-    delay: 0.15
     offset: {x: 0, y: 0, z: 0}
   dashVFX:
   - vfxPrefab: {fileID: 7891826638842234386, guid: ffc2596ca558e7e4f8ed6bc5a12a324d, type: 3}
