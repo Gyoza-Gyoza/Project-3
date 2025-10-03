@@ -30,11 +30,12 @@ public class LevelDirector : Singleton<LevelDirector>
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private bool spawnEnemies = true;
+    private bool spawnCoolingDown = false;
+    private bool startCooldown = false;
 
     private Vector3 currentPosition; // Used for drawing gizmos
     private PayloadBehaviour payload;
 
-    [SerializeField] private int maxEnemies = 0;
     [SerializeField] private int enemyCount = 0;
     public int EnemyCount
     { get { return enemyCount; } 
@@ -99,8 +100,7 @@ public class LevelDirector : Singleton<LevelDirector>
     }
     private void SpawnEnemies()
     {
-        timer += Stages[currentStage].SpawnFrequency * Time.deltaTime;
-        if (timer >= 1f)
+        if (CanSpawn())
         {
             //if (GetSpawnLocation(out Vector3 spawnPosition))
             //{
@@ -115,22 +115,61 @@ public class LevelDirector : Singleton<LevelDirector>
             //    Debug.Log("Failed to find a location, spawn cancelled");
             //}
 
-            Vector3 pos = GetSpawnMarkerLocation();
-
-            for (int i = 0; i < Stages[currentStage].EnemyPerSpawn; i++)
+            foreach(Vector3 marker in Stages[currentStage].SpawnMarkers)
             {
-                if (enemyCount > maxEnemies)
+                for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
                 {
-                    break;
+                    NavMeshAgent enemy = GameObjectPool.GetObject(enemyPrefab).GetComponent<NavMeshAgent>();
+                    enemy.Warp(marker + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
+                    EnemyCount += 1;
                 }
-                NavMeshAgent enemy = GameObjectPool.GetObject(enemyPrefab).GetComponent<NavMeshAgent>();
-                enemy.Warp(pos + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
-                EnemyCount += 1;
             }
 
             timer = 0;
         }
     }
+    private bool CanSpawn()
+    {
+        timer += Time.deltaTime;
+
+        if (spawnCoolingDown) // Checks if the spawn is on cooldown
+        {
+            if(!startCooldown) // Checks if the cooldown can be started
+            {
+                if (enemyCount <= Stages[currentStage].ResumeThreshold) // Checks if the enemy count is below the resume threshold and removes the spawn cooldown
+                {
+                    startCooldown = true;
+                    timer = 0f; // Starts the timer when the enemy goes below the threshold
+                    Debug.Log("Enemy count below threshold, starting spawn cooldown");
+                }
+            }
+            else // If it is cooling down, it starts the timer
+            {
+                if (timer >= stages[CurrentStage].SpawnCooldown)
+                {
+                    startCooldown = false;
+                    spawnCoolingDown = false;
+                    timer = 0f;
+                }
+            }
+            Debug.Log($"Spawning on cooldown, timer: {timer}");
+            return false; 
+        }
+        if (enemyCount >= Stages[currentStage].MaxEnemies) // Checks if the enemy count is at max and sets the spawn on cooldown
+        {
+            spawnCoolingDown = true;
+            Debug.Log("Enemy cap reached, spawning on cooldown");
+            return false;
+        }
+        if (timer <= stages[currentStage].DurationBetweenSpawns) // Checks if the timer has reached the spawn frequency
+        {
+            Debug.Log("Waiting for spawn timer");
+            return false;
+        }
+        timer = 0f;
+        return true;
+    }
+    // Getting a random spawn location around the player that has line of sight to the player
     private bool GetSpawnLocation(out Vector3 randomPosition)
     {
         Vector3 randomDirection = Vector3.zero;
@@ -158,6 +197,7 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         return false;
     }
+    // Gets a spawn location from the list of spawn markers that has line of sight to the player
     private Vector3 GetSpawnMarkerLocation()
     {
         Vector3 pos = Vector3.zero;
@@ -180,9 +220,10 @@ public class LevelDirector : Singleton<LevelDirector>
                 continue;
             }
         }
-        //Debug.Log($"{pos.x}, {pos.y}, {pos.z}");
+
         return pos;
     }
+
     public void MarkLocation(Transform pos) => spawnMarker.Add(pos);
     public void CompletedStage()
     {
@@ -204,7 +245,7 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             if (stages[i] is Escort escort1)
             {
-                if (stages[i -1 ] is Escort escort2)
+                if (stages[i -1] is Escort escort2)
                 {
                     escort1.PreviousCheckpoint = escort2.Checkpoint;
                 }
@@ -261,6 +302,11 @@ public class LevelDirector : Singleton<LevelDirector>
                 default:
                     Gizmos.color = Color.white;
                     break;
+            }
+            foreach (Vector3 marker in stage.SpawnMarkers)
+            {
+                Gizmos.color = new Color(0, 1, 0, 0.5f);
+                Gizmos.DrawSphere(marker, spawnSpread);
             }
         }
     }

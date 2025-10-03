@@ -49,19 +49,33 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DissolveAmount: 0.619
+    - _Bounds: 0
+    - _CorruptionAmount: 0
+    - _DissolveAmount: 0.459
     - _DissolveEdge: -5.73
-    - _DissolveEdgeLength: 1.7
+    - _DissolveEdgeLength: 13.2
+    - _DissolveMax: 3
+    - _DissolveMin: -0.54
     - _DissolveSoftness: 0.2
     - _Float: 0.12
     - _MaxDissolve: 13
     - _MaxY: 0.19
     - _MinY: 0
-    - _NoiseStrength: 26.5
+    - _NoiseAmount: 0.31
+    - _NoiseScale: 10.72
+    - _NoiseStrength: 94.32
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _ScrollSpeedScale: 0.01
     m_Colors:
+    - _BaseColor: {r: 1, g: 0.042452775, b: 0.042452775, a: 1}
+    - _Color: {r: 1, g: 0, b: 0, a: 1}
+    - _CorruptionColor: {r: 0.13472001, g: 0, b: 0.23584908, a: 1}
+    - _DissolveRange: {r: 8.31, g: 10.91, b: 0, a: 0}
     - _EdgeColor: {r: 0.036828652, g: 0, b: 0.4245283, a: 1}
+    - _PerlinScrollSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _Smoothstep: {r: 0.4, g: 0.4, b: 0, a: 0}
+    - _VoronoiScrollSpeed: {r: 0, g: 3, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &3229876161791389020
 MonoBehaviour:
