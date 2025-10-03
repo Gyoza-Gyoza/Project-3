@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,32 @@ public class AttackHitBox : MonoBehaviour
     public int damage = 1;
 
     [Header("Filtering")]
-    public LayerMask targetLayers; // set to Enemy
+    public LayerMask targetLayers; // set this to Enemy
+
+    [Header("Hit SFX (contextual)")]
+    [Tooltip("AudioManager key for a single-enemy hit")]
+    public string singleHitSfxKey = "enemy_hit_single";
+
+    [Tooltip("AudioManager key for a multi-enemy sweep")]
+    public string multiHitSfxKey = "enemy_hit_multi";
+
+    [Tooltip("Minimum enemies in the swing to count as 'multi'")]
+    [Range(2, 10)] public int minMultiCount = 2;
+
+    [Tooltip("Time to wait (seconds) after the first hit to decide single vs multi")]
+    [Range(0.01f, 0.2f)] public float decisionWindow = 0.08f;
+
+    [Header("Aggregated VFX (one VFX per swing at avg hit position)")]
+    [Tooltip("Randomized pool of VFX prefabs to choose from when the swing results in a single-hit")]
+    public List<GameObject> singleHitVFXList = new List<GameObject>();
+    public float singleHitVFXDuration = 0.9f;
+
+    [Tooltip("Randomized pool of VFX prefabs to choose from when the swing results in a multi-hit")]
+    public List<GameObject> multiHitVFXList = new List<GameObject>();
+    public float multiHitVFXDuration = 1.2f;
+
+    [Tooltip("If true, multi-hit spawns the multi VFX; single-hit will spawn the single VFX. If false, no aggregated VFX will spawn.")]
+    public bool spawnAggregatedVFX = true;
 
     [Header("Debug")]
     public bool drawHitEvents = false;
@@ -22,18 +48,24 @@ public class AttackHitBox : MonoBehaviour
     BoxCollider _box;
     Rigidbody _rb;
 
+    // sfx decision internals
+    int _normalHitCount;
+    Vector3 _posSum;
+    bool _decidedThisSwing;
+    Coroutine _decideRoutine;
+
     void Awake()
     {
         _box = GetComponent<BoxCollider>();
         _box.isTrigger = true;
-        _box.enabled = false;     // hard gate off by default
+        _box.enabled = false;
 
         _rb = GetComponent<Rigidbody>();
         _rb.isKinematic = true;
         _rb.useGravity = false;
     }
 
-    /// Open the hit window; hit anything already overlapping immediately.
+    /// Open the hit window; also sweeps for overlaps immediately.
     public void Begin(Transform attackerTransform)
     {
         _attacker = attackerTransform;
@@ -41,14 +73,20 @@ public class AttackHitBox : MonoBehaviour
         _active = true;
         _box.enabled = true;
 
-        // Immediate sweep for targets already inside
+        // reset sfx decision state
+        _normalHitCount = 0;
+        _posSum = Vector3.zero;
+        _decidedThisSwing = false;
+        if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
+
+        // sweep anything already inside
         Vector3 worldCenter = transform.TransformPoint(_box.center);
         Vector3 halfExtents = Vector3.Scale(_box.size * 0.5f, transform.lossyScale);
         Quaternion rot = transform.rotation;
 
         var hits = Physics.OverlapBox(
             worldCenter,
-            halfExtents + Vector3.one * 0.005f, // tiny pad
+            halfExtents + Vector3.one * 0.005f,
             rot,
             targetLayers,
             QueryTriggerInteraction.Ignore
@@ -58,13 +96,18 @@ public class AttackHitBox : MonoBehaviour
             ApplyHitIfValid(hits[i]);
     }
 
-    /// Close the hit window; silence the collider.
+    /// Close the hit window and finalize sfx choice if needed.
     public void End()
     {
+        // finalize single vs multi decision with whatever we’ve collected
+        FinalizeHitSfxDecision();
+
         _active = false;
         _attacker = null;
         _hitThisWindow.Clear();
         _box.enabled = false;
+
+        if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
     }
 
     void OnTriggerEnter(Collider other) { ApplyHitIfValid(other); }
@@ -74,45 +117,114 @@ public class AttackHitBox : MonoBehaviour
     {
         if (!_active) return;
 
-        // Layer mask filter
+        // layer mask
         if (((1 << other.gameObject.layer) & targetLayers) == 0) return;
 
-        // Find EnemyHealth
+        // find EnemyHealth once
         if (!other.TryGetComponent(out EnemyHealth eh))
             eh = other.GetComponentInParent<EnemyHealth>();
         if (eh == null) return;
 
-        // One hit per swing
+        // one hit per enemy per swing
         if (_hitThisWindow.Contains(eh)) return;
         _hitThisWindow.Add(eh);
 
-        // Apply damage/knockback
-        Vector3 atkPos = _attacker ? _attacker.position : transform.position;
+        // apply damage (and any knockback you already do)
         eh.TakeDamage(damage, (_attacker ? _attacker.position : transform.position));
-        
+
+        // collect data for sfx decision
+        Vector3 sfxPos = other.bounds.center;
+        _normalHitCount++;
+        _posSum += sfxPos;
+
+        // start short decision window on first hit
+        if (_normalHitCount == 1 && !_decidedThisSwing)
+        {
+            if (_decideRoutine != null) StopCoroutine(_decideRoutine);
+            _decideRoutine = StartCoroutine(DecideSfxAfterWindow());
+        }
+
         if (drawHitEvents)
-            Debug.DrawLine(transform.position, other.bounds.center, Color.magenta, 0.2f);
+            Debug.DrawLine(transform.position, sfxPos, Color.magenta, 0.2f);
     }
 
-    #if UNITY_EDITOR
+    IEnumerator DecideSfxAfterWindow()
+    {
+        float t = decisionWindow;
+        while (t > 0f && !_decidedThisSwing)
+        {
+            t -= Time.deltaTime;
+            yield return null;
+        }
+        FinalizeHitSfxDecision();
+    }
+
+    void FinalizeHitSfxDecision()
+    {
+        if (_decidedThisSwing) return;
+
+        if (_normalHitCount <= 0)
+        {
+            _decidedThisSwing = true;
+            return; // nothing hit → no SFX/VFX
+        }
+
+        // choose single or multi key
+        string keyToPlay = (_normalHitCount >= minMultiCount) ? multiHitSfxKey : singleHitSfxKey;
+        Vector3 avgPos = _posSum / Mathf.Max(1, _normalHitCount);
+
+        // Play SFX (global by key). If you have a spatialized version in AudioManager, replace this call with that.
+        if (!string.IsNullOrEmpty(keyToPlay))
+        {
+            AudioManager.Instance?.PlaySFX(keyToPlay, avgPos); // simple global play (keeps compatibility)
+            // If you have spatialized overload: AudioManager.Play(keyToPlay, avgPos);
+            // Or if you have AudioManager.PlayAtPosition(AudioClip, Vector3), use that by looking up the clip.
+        }
+
+        // Spawn aggregated VFX (randomized from the corresponding list)
+        if (spawnAggregatedVFX)
+        {
+            bool isMulti = (_normalHitCount >= minMultiCount);
+            GameObject chosenPrefab = null;
+            float destroyAfter = 0.5f;
+
+            if (isMulti && multiHitVFXList != null && multiHitVFXList.Count > 0)
+            {
+                int idx = Random.Range(0, multiHitVFXList.Count);
+                chosenPrefab = multiHitVFXList[idx];
+                destroyAfter = multiHitVFXDuration;
+            }
+            else if (!isMulti && singleHitVFXList != null && singleHitVFXList.Count > 0)
+            {
+                int idx = Random.Range(0, singleHitVFXList.Count);
+                chosenPrefab = singleHitVFXList[idx];
+                destroyAfter = singleHitVFXDuration;
+            }
+
+            if (chosenPrefab != null)
+            {
+                var go = Instantiate(chosenPrefab, avgPos, Quaternion.identity);
+                Destroy(go, Mathf.Max(0.05f, destroyAfter)); // use pooling in production
+            }
+        }
+
+        _decidedThisSwing = true;
+        if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
+    }
+
+#if UNITY_EDITOR
     void OnDrawGizmos()
     {
         if (_box == null) _box = GetComponent<BoxCollider>();
-
-        // Draw box volume in world space
         Gizmos.matrix = transform.localToWorldMatrix;
 
-        // Color depends on state
-        if (!_box.enabled)
-            Gizmos.color = new Color(0f, 0f, 1f, 0.5f);   // blue transparent when collider off
-        else if (_active)
-            Gizmos.color = new Color(1f, 0f, 0f, 1f);    // red semi-transparent when attack window open
-        else
-            Gizmos.color = new Color(1f, 1f, 0f, 1f);    // yellow transparent when collider on but inactive (shouldn’t normally happen)
+        Gizmos.color = (_active && _box.enabled) ? new Color(1f, 0f, 0f, 0.3f)
+                    : _box.enabled ? new Color(1f, 1f, 0f, 0.2f)
+                    : new Color(0f, 0f, 1f, 0.15f);
 
         Gizmos.DrawCube(_box.center, _box.size);
         Gizmos.color = Color.black;
         Gizmos.DrawWireCube(_box.center, _box.size);
     }
-    #endif
+#endif
 }

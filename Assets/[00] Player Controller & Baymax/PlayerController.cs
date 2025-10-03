@@ -10,6 +10,7 @@ public class PlayerController3P : Entity
     public ThirdPersonCamera camRig;
     public Animator animator;
     [SerializeField] private Volume globalVolume;
+    private bool dead = false;
 
     [Header("Movement")]
     public float walkSpeed = 3.5f;
@@ -27,6 +28,16 @@ public class PlayerController3P : Entity
     private bool enableDoubleJump = true;
     public float doubleJumpHeight = 1.2f;
     private bool resetYOnDoubleJump = true;
+
+    // --- Ground / landing debounce ----
+    [SerializeField, Tooltip("Minimum time in seconds the player must be airborne to trigger a landing effect")]
+    private float minAirTimeForLanding = 0.06f;   // tune 0.04 - 0.12 to taste
+
+    [SerializeField, Tooltip("Minimum time between landed SFX/VFX plays (seconds)")]
+    private float landCooldown = 0.08f;           // prevents immediate retriggering
+
+    private float lastAirTime = float.NegativeInfinity;
+    private float lastLandTime = float.NegativeInfinity;
 
     // ------------------ DASH ------------------------------------------------------------------------------------------
     [Header("Dash (Common)")]
@@ -94,19 +105,6 @@ public class PlayerController3P : Entity
     public float plungeDownwardSpeed = 15f;
     public float plungeDuration = 0.5f;
     public string plungeTrigger = "Plunge";
-
-    // ------------------ ATTACK FIELDS ------------------------------------------------------------------------------------------
-    [Header("Attack Parameters")]
-    [SerializeField] private HitBox attack1HB;
-    [SerializeField] private HitBox attack2HB;
-    [SerializeField] private HitBox attack3HB_sweep;
-    [SerializeField] private HitBox attack3HB_slam;
-    [SerializeField] private HitBox plungeHB;
-    [SerializeField] private int attack1Damage = 1;
-    [SerializeField] private int attack2Damage = 1;
-    [SerializeField] private int attack3Damage_sweep = 1;
-    [SerializeField] private int attack3Damage_slam = 1;
-    [SerializeField] private int plungeDamage = 1;
 
     // ------------------ VFX ------------------------------------------------------------------------------------------
     [Header("VFX")]
@@ -193,8 +191,6 @@ public class PlayerController3P : Entity
         if (!animator) animator = GetComponentInChildren<Animator>();
         lastJumpPressedTime = float.NegativeInfinity;
         lastGroundedTime = float.NegativeInfinity;
-
-        //InitializeHitboxs();
 
         if (Instance == null) Instance = this;
         else Destroy(Instance);
@@ -337,22 +333,37 @@ public class PlayerController3P : Entity
 
         if (wasGrounded && !grounded)
         {
+            lastAirTime = Time.time; // mark when airborne
             if (animator) animator.SetBool("Grounded", false);
         }
 
         if (!wasGrounded && grounded)
         {
-            AudioManager.Play("Land");
+            // Only trigger landing if we were in the air at least minAirTimeForLanding
+            bool longEnoughAir = (Time.time - lastAirTime) >= minAirTimeForLanding;
+            bool cooldownOK = (Time.time - lastLandTime) >= landCooldown;
+
+            if (longEnoughAir && cooldownOK)
+            {
+                AudioManager.Instance.PlaySFX("Land");
+                lastLandTime = Time.time;
+
+                if (animator)
+                {
+                    animator.ResetTrigger("Land");
+                    animator.SetTrigger("Land");
+                    animator.SetBool("Grounded", true);
+                }
+            }
+            else
+            {
+                // still update animator grounded bool so we don't get stuck in 'air' state
+                if (animator) animator.SetBool("Grounded", true);
+            }
+
             doubleJumpAvailable = enableDoubleJump;
             jumpRequested = false;
             jumpImpulseApplied = false;
-
-            if (animator)
-            {
-                animator.ResetTrigger("Land");
-                animator.SetTrigger("Land");
-                animator.SetBool("Grounded", true);
-            }
         }
 
         // Jump input disabled during attacks
@@ -396,7 +407,7 @@ public class PlayerController3P : Entity
             velocity.y = jumpSpeed;
             jumpImpulseApplied = true;
             //PlaySFX(SFXs[4]);
-            AudioManager.Play("Jump");
+            AudioManager.Instance.PlaySFX("Jump");
         }
 
         // Gravity
@@ -433,7 +444,7 @@ public class PlayerController3P : Entity
         velocity.y = jumpSpeed;
 
         //PlaySFX(SFXs[5]);
-        AudioManager.Play("DoubleJump");
+        AudioManager.Instance.PlaySFX("DoubleJump");
 
         if (animator)
         {
@@ -540,7 +551,7 @@ public class PlayerController3P : Entity
             }
         }
 
-        AudioManager.Play("Dash");                      //Play Dash SFX
+        AudioManager.Instance.PlaySFX("Dash");                    //Play Dash SFX
         StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
         DashEffects();                                  //Lens Distortion
 
@@ -580,7 +591,7 @@ public class PlayerController3P : Entity
             }
         }
 
-        AudioManager.Play("Dash");                      //Play Dash SFX
+        AudioManager.Instance.PlaySFX("Dash");                     //Play Dash SFX
         StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
         DashEffects();                                  //Lens Distortion
 
@@ -725,21 +736,21 @@ public class PlayerController3P : Entity
                 animator.ResetTrigger(atk1Trigger);
                 animator.SetTrigger(atk1Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[0]));
-                AudioManager.Play("A1");
+                AudioManager.Instance.PlaySFX("A1");
             }
             else if (index == 2)
             {
                 animator.ResetTrigger(atk2Trigger);
                 animator.SetTrigger(atk2Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[1]));
-                AudioManager.Play("A2");
+                AudioManager.Instance.PlaySFX("A2");
             }
             else
             {
                 animator.ResetTrigger(atk3Trigger);
                 animator.SetTrigger(atk3Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[2]));
-                AudioManager.Play("A3");
+                AudioManager.Instance.PlaySFX("A3");
             }
             animator.SetBool("IsAttacking", true);
         }
@@ -975,8 +986,7 @@ public class PlayerController3P : Entity
 
     void BeginPlunge()
     {
-        //PlaySFX(SFXs[7]);
-        AudioManager.Play("Plunge");
+        AudioManager.Instance.PlaySFX("Plunge");
         isPlunging = true;
         plungeTimer = 0f;
         plungeImpulseStarted = false;
@@ -1092,67 +1102,11 @@ public class PlayerController3P : Entity
         return false;
     }
 
-    // -------------------- HitBox Attack ------------------------------------------------------------------------------------------
-    #region Attack Fields
-
-    // private void InitializeHitboxs()
-    // {
-    //     attack1HB.HitBoxListeners += Attack1;
-    //     attack2HB.HitBoxListeners += Attack2;
-    //     attack3HB_sweep.HitBoxListeners += Attack3Sweep;
-    //     attack3HB_slam.HitBoxListeners += Attack3Slam;
-    //     plungeHB.HitBoxListeners += AttackPlunge;
-    // }
-
-    // public void Attack1(GameObject toDamage)
-    // {
-    //     if (toDamage.tag == "Enemy")
-    //     {
-    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack1Damage);
-    //         StartCoroutine(SpawnVFX(impactVFX[0]));
-    //     }
-    // }
-
-    // public void Attack2(GameObject toDamage)
-    // {
-    //     if (toDamage.tag == "Enemy")
-    //     {
-    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack2Damage);
-    //         StartCoroutine(SpawnVFX(impactVFX[1]));
-    //     }
-    // }
-
-    // public void Attack3Sweep(GameObject toDamage)
-    // {
-    //     if (toDamage.tag == "Enemy")
-    //     {
-    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_sweep);
-    //     }
-    // }
-
-    // public void Attack3Slam(GameObject toDamage)
-    // {
-    //     if (toDamage.tag == "Enemy")
-    //     {
-    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(attack3Damage_slam);
-    //     }
-    //     camRig.Shake(40.0f, 0.5f);
-    // }
-
-    // public void AttackPlunge(GameObject toDamage)
-    // {
-    //     if (toDamage.tag == "Enemy")
-    //     {
-    //         toDamage.GetComponent<EnemyBehaviour>().TakeDamage(plungeDamage);
-    //     }
-    // }
     private IEnumerator SpawnVFX(VFX vfxToSpawn)
     {
         yield return new WaitForSeconds(vfxToSpawn.delay);
         Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation);
     }
-
-    #endregion
 
     // -------------------- Ember ------------------------------------------------------------------------------------------
     #region Ember
@@ -1222,14 +1176,10 @@ public class PlayerController3P : Entity
     protected override void OnDamage()
     {
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
-        HUDController.Instance.DamageFlicker();
     }
-
-    private bool dead = false;
 
     public override void OnDeath()
     {
-        //throw new System.NotImplementedException();
         if (dead != true)
         {
             LevelDirector.Instance.LoseGame();
