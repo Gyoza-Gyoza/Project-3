@@ -4,7 +4,7 @@ using UnityEngine;
 /// Receives Animation Events to open/close specific hitboxes per attack.
 /// Keep all timing in the animation clips.
 /// </summary>
-public class PlayerAttackHitboxes : MonoBehaviour
+public class PlayerAttackHitbox : MonoBehaviour
 {
     [Header("References")]
     public Transform attackerOrigin; // usually the player root or weapon handle

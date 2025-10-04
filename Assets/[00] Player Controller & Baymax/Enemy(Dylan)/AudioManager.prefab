@@ -1,0 +1,182 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5957150056744779868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2465746601176090162}
+  - component: {fileID: 1137109031793740135}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2465746601176090162
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5957150056744779868}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1137109031793740135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5957150056744779868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7edd4344022fe49e5a8b6c738dfd3b49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PoolSize: 32
+  SfxList:
+  - Key: A1
+    Clips:
+    - {fileID: 8300000, guid: d4529c1bdd83e3d49893290395270fea, type: 3}
+    Volume: 0.7
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: A2
+    Clips:
+    - {fileID: 8300000, guid: 6d2fc922d3a6b2c42a08e3b233167eaf, type: 3}
+    Volume: 0.6
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: A3
+    Clips:
+    - {fileID: 8300000, guid: bc3cc3ffa0fa24e459be777012090213, type: 3}
+    Volume: 0.7
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Jump
+    Clips:
+    - {fileID: 8300000, guid: 0d8409a995f576547b752e254f14bdec, type: 3}
+    Volume: 1
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: DoubleJump
+    Clips:
+    - {fileID: 8300000, guid: 9c6e2037948ddf94cb3edabd0d2d4a14, type: 3}
+    Volume: 1
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Land
+    Clips:
+    - {fileID: 8300000, guid: 3e7504b08ee674845a05aa46de296f38, type: 3}
+    Volume: 1
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Plunge
+    Clips:
+    - {fileID: 8300000, guid: 63a6eb7ede7402a43ab4f8d3966e8942, type: 3}
+    Volume: 1
+    MaxInstances: 1
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Hit_Slime.Single
+    Clips:
+    - {fileID: 8300000, guid: e5c6d631bba3dc540a4589f5e968c373, type: 3}
+    - {fileID: 8300000, guid: 989138bcb26c3424eb9cf6fa4ca47141, type: 3}
+    Volume: 0.733
+    MaxInstances: 3
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Hit_Slime.Multi
+    Clips:
+    - {fileID: 8300000, guid: 10c682f2f7d2f3f4aa88c6ca55d13b97, type: 3}
+    Volume: 0.605
+    MaxInstances: 3
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Dash
+    Clips:
+    - {fileID: 8300000, guid: d3e97246b518b084b80ee1598bd3c229, type: 3}
+    Volume: 1
+    MaxInstances: 3
+    Spatial: 0
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  - Key: Death
+    Clips:
+    - {fileID: 8300000, guid: 186d2db4a80194c4eb158b67adce351e, type: 3}
+    Volume: 0.758
+    MaxInstances: 3
+    Spatial: 1
+    SpatialBlend: 0
+    MinDistance: 1
+    MaxDistance: 30
+    Rolloff: 0
+    _lastPlayed: -999
+    MinInterval: 0
+  MasterVolume: 0.576
