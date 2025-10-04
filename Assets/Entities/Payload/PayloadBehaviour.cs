@@ -351,6 +351,8 @@ public class PayloadBehaviour : Entity
         }
     }
 
+    #region ------------------ Golem Step ----------------
+
     // --- Step Locomotion (manual stride timing) ---
     [Header("Step Locomotion")]
     [SerializeField] private float strideDistance = 0.8f;
@@ -425,5 +427,12 @@ public class PayloadBehaviour : Entity
     {
         AudioManager.Instance.PlaySFX("Golem_PreStop", transform.position);
     }
+
+    public void PlayStandSFX()
+    {
+        AudioManager.Instance.PlaySFX("Golem_Stand", transform.position);
+    }
+
+    #endregion
 
 }

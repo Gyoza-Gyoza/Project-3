@@ -21,5 +21,6 @@ public class PayloadAnimEventForwarder : MonoBehaviour
     public void PlayStepLeftSFX() { if (payload) payload.PlayStepLeftSFX(); }
     public void PlayStopSFX() { if (payload) payload.PlayStopSFX(); }
     public void PlayPreStopSFX() { if (payload) payload.PlayPreStopSFX(); }
+    public void PlayStandSFX() { if (payload) payload.PlayStandSFX(); }
     
 }
