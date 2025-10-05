@@ -5,6 +5,7 @@ using UnityEditor;
 
 public class UnparentKeepWorld : MonoBehaviour
 {
+    /*
     [MenuItem("GameObject/Reparent", false, 0)]
     private static void Reparent()
     {
@@ -40,4 +41,5 @@ public class UnparentKeepWorld : MonoBehaviour
             //GameObject.DestroyImmediate(oldParent);
         }
     }
+    */
 }

@@ -282,22 +282,22 @@ public class PayloadBehaviour : Entity
     #endregion
 
     #region ------------------Enemy Surrounding Behaviour----------------
-    public void EnemyPushing(float burnAdj, float moveSpeedAdj, float returnSpeedAdj)
+    public void EnemyPushing(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
     {
         Debug.Log("Enemy Pushing");
         extraBurningRate += burnAdj;
         hinderedMovementSpeed += moveSpeedAdj;
-        extraReturnSpeed += returnSpeedAdj;
+        //extraReturnSpeed += returnSpeedAdj;
         HUDController.Instance.StartHighlight();
     }
 
 
-    public void EnemyExit(float burnAdj, float moveSpeedAdj, float returnSpeedAdj)
+    public void EnemyExit(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
     {
         Debug.Log("Enemy Stop Pushing");
         extraBurningRate -= burnAdj;
         hinderedMovementSpeed -= moveSpeedAdj;
-        extraReturnSpeed -= returnSpeedAdj;
+        //extraReturnSpeed -= returnSpeedAdj;
         HUDController.Instance.StopHighlight();
     }
     #endregion

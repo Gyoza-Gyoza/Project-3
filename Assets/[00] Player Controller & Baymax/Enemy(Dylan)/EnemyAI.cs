@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(CapsuleCollider))]
 public class EnemyAI : MonoBehaviour
 {
-    public enum State { Chase, Attack, Hit, Death }
+    public enum State { Chase, Attack, Hit, Death , PayLoad, Totem}
     public State CurrentState = State.Chase;
     [SerializeField] private bool chargerEnemy = false;
 
@@ -20,6 +20,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Ranges")]
     public float aggroRange = 8f;
     public float attackRange = 1.8f;
+    public float payloadAffectRange = 5f;
 
     [Header("Navigation")]
     public float repathInterval = 0.3f;
@@ -59,6 +60,10 @@ public class EnemyAI : MonoBehaviour
     public Color flashColor = Color.white;
     public float flashDuration = 0.08f;
 
+    [Header("Payload Pushing Adjustments")]
+    public float extraBurnAmt = 0.1f;
+    public float moveSlowAmt = 0.1f;
+
     // internals
     NavMeshAgent agent;
     Transform currentTarget;
@@ -71,6 +76,9 @@ public class EnemyAI : MonoBehaviour
     bool deathQueued = false;
 
     CapsuleCollider bodyCol;
+
+    bool attractedToTotem = false;
+    bool pushingPayload = false;
 
     // flash data
     Renderer[] rends;
@@ -131,11 +139,57 @@ public class EnemyAI : MonoBehaviour
 
         switch (CurrentState)
         {
+            case State.PayLoad: UpdatePayload(); break;
             case State.Chase: UpdateChase(); break;
             case State.Attack: UpdateAttack(); break;
             case State.Hit: break;
         }
     }
+    // ---------- Payload ---------
+    void UpdatePayload()
+    {
+        if (!chargerEnemy)
+        {
+            float distToPlayer = player ? Vector3.Distance(transform.position, player.position) : float.MaxValue;
+            currentTarget = (distToPlayer <= aggroRange && player) ? player : payload;
+            ExitPushing();
+        }
+
+        if (Time.time - lastRepathTime >= repathInterval)
+        {
+            if (!EnsureOnNavMesh(3f)) { lastRepathTime = Time.time; return; }
+
+            Vector3 tgt = currentTarget.position;
+            if ((tgt - lastTargetPos).sqrMagnitude > 0.25f)
+            {
+                if (agent.enabled) agent.SetDestination(tgt);
+                lastTargetPos = tgt;
+            }
+            lastRepathTime = Time.time;
+        }
+
+        if (!pushingPayload)
+        {
+            EnterPushing();
+        }
+    }
+
+    void EnterPushing()
+    {
+        pushingPayload = true;
+        PayloadBehaviour.Instance.EnemyPushing(extraBurnAmt, moveSlowAmt);
+    }
+
+    void ExitPushing()
+    {
+        pushingPayload = false;
+        PayloadBehaviour.Instance.EnemyExit(extraBurnAmt, moveSlowAmt);
+        CurrentState = State.Chase;
+    }
+
+    // ---------- Taunted ---------
+    //public void 
+
 
     // ---------- Chase ----------
     void UpdateChase()
@@ -163,8 +217,10 @@ public class EnemyAI : MonoBehaviour
             lastRepathTime = Time.time;
         }
 
-        if (Vector3.Distance(transform.position, currentTarget.position) <= attackRange)
+        if (Vector3.Distance(transform.position, currentTarget.position) <= attackRange && currentTarget == player)
             EnterAttack();
+        else if (Vector3.Distance(transform.position, currentTarget.position) <= payloadAffectRange && currentTarget == payload)
+            CurrentState = State.PayLoad;
     }
 
     // ---------- Attack ----------

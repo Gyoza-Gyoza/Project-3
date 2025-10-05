@@ -195,7 +195,9 @@ public class LevelDirector : Singleton<LevelDirector>
             //    Debug.Log($"Invalid Path. {deathZoneChaser.remainingDistance}");
             //}
 
-            if ((deathZoneTraveled / levelLength) >= StageProgress)
+            float progress = Mathf.Clamp( (deathZoneTraveled / levelLength), 0f, 1f);
+
+            if (progress != 0f && progress != 1f &&  progress >= StageProgress)
             {
 
                 Debug.Log($"Lost! Death progress: {(deathZoneTraveled / levelLength)}, Stage Progress: {StageProgress}");

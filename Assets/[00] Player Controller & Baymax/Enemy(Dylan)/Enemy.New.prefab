@@ -187,11 +187,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentState: 0
+  chargerEnemy: 0
   anim: {fileID: 8329712318061699537}
   player: {fileID: 0}
   payload: {fileID: 0}
   aggroRange: 20
   attackRange: 5
+  payloadAffectRange: 10
   repathInterval: 0.3
   faceTurnSpeed: 720
   contactHitbox: {fileID: 2407165391327627969}
@@ -220,6 +222,8 @@ MonoBehaviour:
   skin: 0.02
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashDuration: 0.16
+  extraBurnAmt: 0.1
+  moveSlowAmt: 0.1
 --- !u!114 &2890315129694520129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bd59be0c9fd60b488c6b830c6c7c256, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 5
 --- !u!65 &6976582180127544304
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -440,7 +444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0244df9194e176042adabd724661ec2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 10
   tickInterval: 1
   playerTag: Player
 --- !u!65 &1503587115583553046

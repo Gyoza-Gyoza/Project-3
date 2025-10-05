@@ -114,7 +114,7 @@ public class EnemyPayloadState : EnemyState
         if (d <= enemy.aggroRange) ReachTargetAction();
         else if (pushing == false)
         {
-            PayloadBehaviour.Instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount, enemy.retreatAdjAmount);
+            PayloadBehaviour.Instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
             pushing = true;
         }
 
@@ -123,7 +123,7 @@ public class EnemyPayloadState : EnemyState
     {
         if (pushing == true)
         {
-            PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount, enemy.retreatAdjAmount);
+            PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
         }
         enemy.state = new EnemyAttackState(enemy);
     }
