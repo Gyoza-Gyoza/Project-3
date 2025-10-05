@@ -79,6 +79,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void Update()
     {
+        if (LevelDirector.Instance.lost) return;
         if (Input.GetKeyDown(KeyCode.Escape)) LockCursor(false);
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) LockCursor(true);
 

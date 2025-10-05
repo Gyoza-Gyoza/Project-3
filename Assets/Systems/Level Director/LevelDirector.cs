@@ -16,6 +16,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private GameObject test;
     [SerializeField] private float spawnSpread;
     [SerializeField] private LayerMask environmentMask;
+    public bool lost = false;
 
     private LineRenderer lineRenderer;
 
@@ -419,15 +420,20 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         StopDeathZone();
         HUDController.Instance.LoseScreen();
+        lost = true;
+        UnityEngine.Cursor.visible = true;
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
     }
 
     public void Restart()
     {
+        lost = false;
         SceneManager.LoadScene("Level 1 White Box", LoadSceneMode.Single);
     }
 
     public void Quit()
     {
+        Debug.Log("Quitted game");
         Application.Quit();
     }
     #endregion
