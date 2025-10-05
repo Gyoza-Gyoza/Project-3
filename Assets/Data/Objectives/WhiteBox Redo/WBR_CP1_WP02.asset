@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: WBR_CP1_WP02
   m_EditorClassIdentifier: 
   durationBetweenSpawns: 0
-  enemyPerGroup: 0
-  spawnMarkers: []
+  enemyPerGroup: 10
+  spawnMarkers:
+  - {x: 79, y: 42, z: 39}
+  - {x: 33, y: 12, z: 202}
   spawnCooldown: 0
-  maxEnemies: 0
+  maxEnemies: 20
   resumeThreshold: 0
   minSpawnDistance: 5
   maxSpawnDistance: 100

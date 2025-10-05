@@ -1127,7 +1127,8 @@ public class PlayerController3P : Entity
     private IEnumerator SpawnVFX(VFX vfxToSpawn, bool parent = false)
     {
         yield return new WaitForSeconds(vfxToSpawn.delay);
-        Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation, parent? transform : null);
+        var go = Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation, parent ? transform : null);
+        Destroy(go, 5f);
     }
 
     // -------------------- Ember ------------------------------------------------------------------------------------------
