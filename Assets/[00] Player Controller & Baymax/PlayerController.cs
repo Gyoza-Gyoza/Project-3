@@ -236,6 +236,7 @@ public class PlayerController3P : Entity
 
     void Update()
     {
+        if (LevelDirector.Instance.lost) return;
         HandleDashInput();   // RMB cancels attacks
         HandleAttackInput(); // LMB starts/queues
         HandleDeviceInput(); // Device inputs

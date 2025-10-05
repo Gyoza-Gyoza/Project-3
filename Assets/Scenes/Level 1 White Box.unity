@@ -4595,6 +4595,7 @@ MonoBehaviour:
   environmentMask:
     serializedVersion: 2
     m_Bits: 192
+  lost: 0
   enemyPrefab: {fileID: 6260911112667375902, guid: 732bf2a29057a1345b76fce096495831, type: 3}
   specialEnemyPrefabs:
   - {fileID: 6260911112667375902, guid: cae3c7814e496a5459f69a5103f9082e, type: 3}
@@ -5827,7 +5828,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5738418298985328574, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -844
       objectReference: {fileID: 0}
     - target: {fileID: 5945811677356642258, guid: 460e247ff6f7eff4bb2d5ad418b08303, type: 3}
       propertyPath: m_Name
@@ -17080,74 +17081,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0.040000003, y: -0.046000004, z: -0.068}
   m_TimeToStationary: 0.5
---- !u!1 &1451839024
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1451839027}
-  - component: {fileID: 1451839026}
-  - component: {fileID: 1451839025}
-  m_Layer: 0
-  m_Name: EventSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1451839025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1451839024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
---- !u!114 &1451839026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1451839024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!4 &1451839027
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1451839024}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1463304261
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17724,7 +17657,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1537188938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27173,7 +27106,6 @@ SceneRoots:
   - {fileID: 2023637313}
   - {fileID: 354849554}
   - {fileID: 1537188941}
-  - {fileID: 1451839027}
   - {fileID: 1887385073}
   - {fileID: 791987422}
   - {fileID: 25483077}

@@ -22,8 +22,8 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
 
     private void Start()
     {
-        screenCover.gameObject.SetActive(false);
-        notification.gameObject.SetActive(false);
+        //screenCover.gameObject.SetActive(false);
+        //notification.gameObject.SetActive(false);
     }
     private void Update()
     {
