@@ -165,6 +165,9 @@ public class PayloadBehaviour : Entity
         // existing logic to start burning
         burningGas = true;
 
+        // #EZE -- Coroutine to start burning gas 
+        StartCoroutine(burnGas());
+
         // start walking animation flag
         if (animator != null)
         {

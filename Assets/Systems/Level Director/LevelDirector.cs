@@ -451,14 +451,19 @@ public class LevelDirector : Singleton<LevelDirector>
                     Gizmos.color = Color.white;
                     break;
             }
-            if (stage.SpawnMarkers != null &&  stage.SpawnMarkers.Length > 0)
+
+            if (stage?.SpawnMarkers != null)
             {
-                foreach (Vector3 marker in stage.SpawnMarkers)
+                if (stage.SpawnMarkers.Length > 0)
                 {
-                    Gizmos.color = new Color(0, 1, 0, 0.5f);
-                    Gizmos.DrawSphere(marker, spawnSpread);
+                    foreach (Vector3 marker in stage.SpawnMarkers)
+                    {
+                        Gizmos.color = new Color(0, 1, 0, 0.5f);
+                        Gizmos.DrawSphere(marker, spawnSpread);
+                    }
                 }
             }
+
         }
     }
 }
