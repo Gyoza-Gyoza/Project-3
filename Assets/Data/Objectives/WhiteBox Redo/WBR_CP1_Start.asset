@@ -10,12 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22a0577b18a6a7f40bc7c5fe25e25c31, type: 3}
-  m_Name: WBR_02
+  m_Name: WBR_CP1_Start
   m_EditorClassIdentifier: 
-  spawnFrequency: 0.8
-  enemyPerSpawn: 1
+  durationBetweenSpawns: 2
+  enemyPerGroup: 5
+  spawnMarkers:
+  - {x: -9.33, y: 0, z: 26.66}
+  - {x: -23.18, y: 0, z: 88.99}
+  - {x: 19.9, y: 0, z: 177.5}
+  spawnCooldown: 10
+  maxEnemies: 100
+  resumeThreshold: 60
   minSpawnDistance: 5
   maxSpawnDistance: 100
-  checkpoint: {x: -85.4, y: 0.205, z: 210.2}
-  payloadSpeed: 40
-  isCheckpoint: 0
+  checkpoint: {x: 60.7, y: 12.15, z: 193.4}
+  payloadSpeed: 10
+  isCheckpoint: 1
