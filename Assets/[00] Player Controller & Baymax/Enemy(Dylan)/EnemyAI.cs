@@ -348,7 +348,7 @@ public class EnemyAI : MonoBehaviour
         if (attackHitbox) attackHitbox.Disable();
         if (agent) agent.enabled = false;
 
-        if (anim) anim.SetTrigger("Die");
+        if (anim) anim.SetTrigger("Death");
 
         AudioManager.Instance.PlaySFX("Death");
 

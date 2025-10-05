@@ -136,7 +136,7 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         else
         {
-            LoseGame();
+            //LoseGame();
         }
     }
 
@@ -165,7 +165,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
             float distanceLeft = Vector3.Distance(deathZoneChaser.gameObject.transform.position, current.Checkpoint);
 
-            Debug.Log($"Death distance left: {distanceLeft}");
+            //Debug.Log($"Death distance left: {distanceLeft}");
 
             if ( distanceLeft <= 0.6f)
             {
@@ -264,6 +264,7 @@ public class LevelDirector : Singleton<LevelDirector>
                     NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
                     enemy.Warp(marker + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
                     EnemyCount += 1;
+                    Debug.Log("Enemy count being added");
                 }
             }
 
@@ -282,7 +283,7 @@ public class LevelDirector : Singleton<LevelDirector>
                 {
                     startCooldown = true;
                     timer = 0f; // Starts the timer when the enemy goes below the threshold
-                    Debug.Log("Enemy count below threshold, starting spawn cooldown");
+                    //Debug.Log("Enemy count below threshold, starting spawn cooldown");
                 }
             }
             else // If it is cooling down, it starts the timer
@@ -294,18 +295,18 @@ public class LevelDirector : Singleton<LevelDirector>
                     timer = 0f;
                 }
             }
-            Debug.Log($"Spawning on cooldown, timer: {timer}");
+            //Debug.Log($"Spawning on cooldown, timer: {timer}");
             return false; 
         }
         if (enemyCount >= Stages[currentStage].MaxEnemies) // Checks if the enemy count is at max and sets the spawn on cooldown
         {
             spawnCoolingDown = true;
-            Debug.Log("Enemy cap reached, spawning on cooldown");
+            //Debug.Log("Enemy cap reached, spawning on cooldown");
             return false;
         }
         if (timer <= stages[currentStage].DurationBetweenSpawns) // Checks if the timer has reached the spawn frequency
         {
-            Debug.Log("Waiting for spawn timer");
+            //Debug.Log("Waiting for spawn timer");
             return false;
         }
         timer = 0f;

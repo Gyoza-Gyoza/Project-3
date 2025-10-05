@@ -58,6 +58,7 @@ public class EnemyBehaviour : Entity
     public override void OnDeath()
     {
         //Do something else
+        Debug.LogError("Enemy on death called");
         LevelDirector.Instance.EnemyCount -= 1;
         StartCoroutine(DeathCouroutine());
     }
@@ -87,6 +88,7 @@ public class EnemyBehaviour : Entity
 
     protected override void OnDamage()
     {
+        Debug.LogError("Enemy on damage called");
         StartCoroutine(DamageFlicker());
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
         Stunned();

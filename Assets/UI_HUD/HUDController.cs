@@ -142,7 +142,7 @@ public class HUDController : Singleton<HUDController>
     #region Player Ember
     public void SetPlayerEmber(float input)
     {
-        Debug.Log($"Inputing Player Ember as {input}");
+        //Debug.Log($"Inputing Player Ember as {input}");
         if (updatingPlayerEmber == false)
         {
             emberOrigin = playerEmber.value;
