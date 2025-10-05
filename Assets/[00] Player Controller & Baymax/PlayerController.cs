@@ -468,7 +468,6 @@ public class PlayerController3P : Entity
     #region Dash
     void HandleDashInput()
     {
-        if (Input.GetKeyDown(KeyCode.M)) LevelDirector.Instance.LoseGame();
         if (!Input.GetMouseButtonDown(1)) return;
 
         bool groundedNow = controller.isGrounded;
