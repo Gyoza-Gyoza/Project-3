@@ -14,10 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   durationBetweenSpawns: 2
   enemyPerGroup: 5
-  spawnMarkers:
-  - {x: -9.33, y: 0, z: 26.66}
-  - {x: -23.18, y: 0, z: 88.99}
-  - {x: 19.9, y: 0, z: 177.5}
+  spawnMarkers: []
   spawnCooldown: 10
   maxEnemies: 100
   resumeThreshold: 60
