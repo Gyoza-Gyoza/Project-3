@@ -14,7 +14,7 @@ public class SpawnMarker : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.red;
         Gizmos.DrawCube(this.transform.position, new Vector3(5f, 5f, 5f));
     }
 

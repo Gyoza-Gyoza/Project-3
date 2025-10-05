@@ -27,7 +27,7 @@ public class PayloadBehaviour : Entity
     private int currentGas;
 
     public int CurrentGas
-    { 
+    {
         get { return currentGas; }
         set { currentGas = value; UpdateGasSlider(); }
     }
@@ -94,11 +94,15 @@ public class PayloadBehaviour : Entity
         }
 
         gasSlider.transform.parent.transform.LookAt(PlayerController3P.Instance.transform, Vector3.up);
-        
+
         if (agent.hasPath)
         {
             DrawPath();
         }
+
+        TickStep(Time.deltaTime);           // drive manual movement if a step is active
+        agent.nextPosition = transform.position; // keep agent synced to our manual motion
+
     }
 
     #region --------------------------Gas--------------------------------
@@ -109,7 +113,7 @@ public class PayloadBehaviour : Entity
     }
 
     public void StartFillingGas()
-    { fillingGas = true; StartCoroutine(fillGas());}
+    { fillingGas = true; StartCoroutine(fillGas()); }
 
     public void StopFillingGas()
     { fillingGas = false; }
@@ -123,7 +127,7 @@ public class PayloadBehaviour : Entity
         {
             HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
-            if (count > 1f / fillingRate) 
+            if (count > 1f / fillingRate)
             {
                 count -= (1f / fillingRate);
                 if (PlayerController3P.Instance.RemoveGas(1) == false)
@@ -225,7 +229,7 @@ public class PayloadBehaviour : Entity
         {
             PayloadBehaviour.Instance.agent.isStopped = false;
             //Debug.Log($"Payload Moving, current Gas {CurrentGas}");
-            HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float) maxGas);
+            HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
             if (count > 1f / (burningRate + extraBurningRate))
             {
@@ -275,7 +279,7 @@ public class PayloadBehaviour : Entity
     #endregion
 
     #region ------------------Enemy Surrounding Behaviour----------------
-    public void EnemyPushing(float burnAdj, float moveSpeedAdj , float returnSpeedAdj)
+    public void EnemyPushing(float burnAdj, float moveSpeedAdj, float returnSpeedAdj)
     {
         Debug.Log("Enemy Pushing");
         extraBurningRate += burnAdj;
@@ -301,6 +305,9 @@ public class PayloadBehaviour : Entity
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         agent.speed = MovementSpeed;
         agent.angularSpeed = turnSpeed;
+
+        agent.updatePosition = false;
+
         if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.Checkpoint);
         CompleteStage(); //Complete the beginning one
         agent.isStopped = true;
@@ -342,15 +349,15 @@ public class PayloadBehaviour : Entity
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             playerInRange = true;
-            stages[LevelDirector.Instance.CurrentStage].PlayerInRange(); 
+            stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             playerInRange = false;
             stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
@@ -375,7 +382,7 @@ public class PayloadBehaviour : Entity
     private void DrawPath()
     {
         lineRenderer.positionCount = agent.path.corners.Length;
-        lineRenderer.SetPosition(0, transform.position + new Vector3(0,verticleOffset,0));
+        lineRenderer.SetPosition(0, transform.position + new Vector3(0, verticleOffset, 0));
 
         if (isFacingForward)
         {
@@ -393,11 +400,143 @@ public class PayloadBehaviour : Entity
             return;
         }
 
-        for (int i = 0; i < agent.path.corners.Length; i++) 
+        for (int i = 0; i < agent.path.corners.Length; i++)
         {
             Vector3 pointPosition = new Vector3(agent.path.corners[i].x, agent.path.corners[i].y, agent.path.corners[i].z);
             lineRenderer.SetPosition(i, pointPosition + new Vector3(0, verticleOffset, 0));
         }
     }
+
+    #region ------------------ Golem Step ----------------
+
+    // --- Step Locomotion (manual stride timing) ---
+    [Header("Step Locomotion")]
+    [SerializeField] private float strideDistance = 0.8f;
+    [SerializeField] private float strideDuration = 0.35f;
+
+    private bool _isStepping;
+    private Vector3 _stepDir;
+    private Vector3 _stepStartPos;
+    private Vector3 _stepTarget;
+    private float _stepTimer;
+    [SerializeField] private float navSampleMaxDist = 2f; // how far to look for the surface
+    [SerializeField] float rotationSpeed = 6f; // 4–10 feels good for a heavy golem
+
+    public void StepStart_L() => BeginStep();
+    public void StepEnd_L() => EndStep();
+    public void StepStart_R() => BeginStep();
+    public void StepEnd_R() => EndStep();
+
+    private void BeginStep()
+    {
+        if (!burningGas || !agent.hasPath) { _isStepping = false; return; }
+
+        // Use next corner for direction (includes turns on ramps)
+        Vector3 toCorner = agent.steeringTarget - transform.position;
+        toCorner.y = 0f;
+        if (toCorner.sqrMagnitude < 0.0001f) toCorner = transform.forward;
+        toCorner.Normalize();
+
+        float maxAllowed = Mathf.Max(0f, agent.remainingDistance - agent.stoppingDistance);
+        float thisStep = Mathf.Min(strideDistance, maxAllowed);
+
+        _stepStartPos = transform.position;
+        var flatTarget = _stepStartPos + toCorner * thisStep;
+
+        // *** critical: put the target ON the navmesh/ramp ***
+        _stepTarget = SnapToNavMeshY(flatTarget);
+
+        _stepTimer = 0f;
+        _isStepping = thisStep > 0f;
+    }
+
+    private void EndStep()
+    {
+        if (_isStepping)
+        {
+            transform.position = _stepTarget;
+            _isStepping = false;
+            agent.nextPosition = transform.position;
+        }
+    }
+
+    private void TickStep(float dt)
+    {
+        if (!_isStepping) return;
+
+        _stepTimer += dt;
+        float t = Mathf.Clamp01(_stepTimer / strideDuration);
+
+        // your existing movement (snapped to navmesh)
+        Vector3 p = Vector3.Lerp(_stepStartPos, _stepTarget, t);
+        p = SnapToNavMeshY(p);
+        transform.position = p;
+
+        // NEW: face the agent’s steering target
+        FaceSteeringTarget(dt);
+
+        // keep agent synced to your manual movement
+        agent.nextPosition = transform.position;
+
+        if (t >= 1f) EndStep();
+    }
+
+
+    private Vector3 SnapToNavMeshY(Vector3 pos)
+    {
+        if (NavMesh.SamplePosition(pos, out var hit, navSampleMaxDist, NavMesh.AllAreas))
+            pos.y = hit.position.y;
+        else
+        {
+            // Fallback: raycast against level colliders if no NavMesh found (optional)
+            if (Physics.Raycast(pos + Vector3.up * 2f, Vector3.down, out var rh, 10f))
+                pos.y = rh.point.y;
+        }
+        return pos;
+    }
+
+    private void FaceSteeringTarget(float dt)
+    {
+        // If the agent has a path, look toward its steering target (next corner)
+        if (agent != null && !agent.pathPending)
+        {
+            Vector3 lookDir = agent.steeringTarget - transform.position;
+            lookDir.y = 0f; // keep yaw-only rotation
+
+            // Fallback: if steering target is on top of us (e.g., end of path), keep current forward
+            if (lookDir.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, dt * rotationSpeed);
+            }
+        }
+    }
+
+    public void PlayStepLeftSFX()
+    {
+        AudioManager.Instance.PlaySFX("Golem_LeftStomp", transform.position);
+    }
+
+    public void PlayStepRightSFX()
+    {
+        AudioManager.Instance.PlaySFX("Golem_RightStomp", transform.position);
+    }
+
+    public void PlayStopSFX()
+    {
+        AudioManager.Instance.PlaySFX("Golem_Stop", transform.position);
+    }
+
+    public void PlayPreStopSFX()
+    {
+        AudioManager.Instance.PlaySFX("Golem_PreStop", transform.position);
+    }
+
+    public void PlayStandSFX()
+    {
+        AudioManager.Instance.PlaySFX("Golem_Stand", transform.position);
+    }
+
+    #endregion
 
 }
