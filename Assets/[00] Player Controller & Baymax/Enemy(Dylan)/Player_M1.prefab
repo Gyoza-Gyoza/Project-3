@@ -3332,7 +3332,7 @@ MonoBehaviour:
   VFXZeroPoint: {fileID: 8925998371724270034}
   slashVFX:
   - vfxPrefab: {fileID: 3243457357590951956, guid: 1152ee87544ebd94db9a5adc33670c71, type: 3}
-    delay: 0.05
+    delay: 0.1
     offset: {x: 0, y: 0, z: 0}
   - vfxPrefab: {fileID: 6122071356068926262, guid: 2db808806f82acc409a0f338be469c4f, type: 3}
     delay: 0.15
@@ -3347,6 +3347,8 @@ MonoBehaviour:
   - vfxPrefab: {fileID: 7891826638842234386, guid: ffc2596ca558e7e4f8ed6bc5a12a324d, type: 3}
     delay: 0
     offset: {x: 0, y: 2, z: 0}
+  lensDistortionDuration: 0.5
+  playerGlowDuration: 0.5
   maxGas: 150
   startingGas: 0
   tauntDevicePrefab: {fileID: 4603723585979238004, guid: 54b4e801c5a0da24cb6c3a223ccc8106, type: 3}

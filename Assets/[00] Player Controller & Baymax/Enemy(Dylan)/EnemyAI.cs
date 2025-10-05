@@ -8,6 +8,7 @@ public class EnemyAI : MonoBehaviour
 {
     public enum State { Chase, Attack, Hit, Death }
     public State CurrentState = State.Chase;
+    [SerializeField] private bool chargerEnemy = false;
 
     [Header("Animator")]
     [SerializeField] Animator anim;
@@ -139,8 +140,15 @@ public class EnemyAI : MonoBehaviour
     // ---------- Chase ----------
     void UpdateChase()
     {
-        float distToPlayer = player ? Vector3.Distance(transform.position, player.position) : float.MaxValue;
-        currentTarget = (distToPlayer <= aggroRange && player) ? player : payload;
+        if(!chargerEnemy)
+        {
+            float distToPlayer = player ? Vector3.Distance(transform.position, player.position) : float.MaxValue;
+            currentTarget = (distToPlayer <= aggroRange && player) ? player : payload;
+        }
+        else
+        {
+            currentTarget = payload;
+        }
 
         if (Time.time - lastRepathTime >= repathInterval)
         {

@@ -4332,7 +4332,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f77be23f98d2f9349a27712068e513fa, type: 2}
   - {fileID: 11400000, guid: d7f6d504cafcaa7409e8e9301189b267, type: 2}
   - {fileID: 11400000, guid: bd468797a3c6bcd45a5aaa11210ead9a, type: 2}
-  - {fileID: 11400000, guid: ad3aaf2857e91c94e915801e6a14572d, type: 2}
   - {fileID: 11400000, guid: f7f016b0de7b50144bd79072e9250fae, type: 2}
   - {fileID: 11400000, guid: 2a3a76e72e215fc42b46d461088f9fc2, type: 2}
   - {fileID: 11400000, guid: de4c1714834f484408e3a906c1e9739e, type: 2}
@@ -4347,6 +4346,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   enemyPrefab: {fileID: 6260911112667375902, guid: 732bf2a29057a1345b76fce096495831, type: 3}
+  specialEnemyPrefabs:
+  - {fileID: 6260911112667375902, guid: cae3c7814e496a5459f69a5103f9082e, type: 3}
+  specialEnemyChance: 0.1
   spawnEnemies: 1
   enemyCount: 0
   deathZoneRate: 2
@@ -10173,14 +10175,6 @@ PrefabInstance:
       propertyPath: globalVolume
       value: 
       objectReference: {fileID: 3062140}
-    - target: {fileID: 4563402284226776312, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
-      propertyPath: playerGlowDuration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4563402284226776312, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
-      propertyPath: lensDistortionDuration
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 7866669384431691078, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.y
       value: -2.6

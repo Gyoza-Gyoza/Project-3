@@ -29,6 +29,8 @@ public class LevelDirector : Singleton<LevelDirector>
 
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject[] specialEnemyPrefabs;
+    [SerializeField] private float specialEnemyChance = 0.1f;
     [SerializeField] private bool spawnEnemies = true;
     private bool spawnCoolingDown = false;
     private bool startCooldown = false;
@@ -257,7 +259,9 @@ public class LevelDirector : Singleton<LevelDirector>
             {
                 for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
                 {
-                    NavMeshAgent enemy = GameObjectPool.GetObject(enemyPrefab).GetComponent<NavMeshAgent>();
+                    GameObject enemyToSpawn = enemyPrefab;
+                    if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
+                    NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
                     enemy.Warp(marker + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
                     EnemyCount += 1;
                 }

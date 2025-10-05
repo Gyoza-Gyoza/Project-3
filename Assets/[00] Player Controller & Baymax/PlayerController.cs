@@ -116,6 +116,7 @@ public class PlayerController3P : Entity
     private Coroutine dashEffectsCoroutine;
     private LensDistortion lensDistortion;
     private List<MeshRenderer> playerMat = new List<MeshRenderer>();
+    private bool dashBackwards = false;
 
     // ------------------ EMBER ------------------------------------------------------------------------------------------
     [Header("Ember")]
