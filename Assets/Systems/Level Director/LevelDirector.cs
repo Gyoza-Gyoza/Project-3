@@ -100,6 +100,7 @@ public class LevelDirector : Singleton<LevelDirector>
     private bool deathCountdown = false;
     private int deathZoneStage = 1; 
 
+
     private void StartDeathZone()
     {
         /*
@@ -198,11 +199,13 @@ public class LevelDirector : Singleton<LevelDirector>
 
             float progress = Mathf.Clamp( (deathZoneTraveled / levelLength), 0f, 1f);
 
-            if (progress != 0f && progress != 1f &&  progress >= StageProgress)
+            if (progress != 0f && progress != 1f &&  progress >= StageProgress && !deathCountdown)
             {
-
-                Debug.Log($"Lost! Death progress: {(deathZoneTraveled / levelLength)}, Stage Progress: {StageProgress}");
-                LoseGame();
+                StartCoroutine(DeathCountdown());
+            }
+            else
+            {
+                deathCountdown = false;
             }
 
             UpdateDeathZone();
@@ -212,7 +215,25 @@ public class LevelDirector : Singleton<LevelDirector>
         yield break;
     }
 
+    IEnumerator DeathCountdown()
+    {
+        float count = 0f;
+        deathCountdown = true;
 
+        while(deathCountdown)
+        {
+            count += Time.deltaTime;
+            if (count >= deathBuffer)
+            {
+                Debug.Log($"Lost! Death progress: {(deathZoneTraveled / levelLength)}, Stage Progress: {StageProgress}");
+                LoseGame();
+            }
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+
+        yield break;
+    }
 
 
     private void UpdateDeathZone()
@@ -376,7 +397,7 @@ public class LevelDirector : Singleton<LevelDirector>
     public void CompletedStage()
     {
         currentStage++;
-        currentStage = Mathf.Clamp(currentStage, 0, Stages.Length - 1);
+        currentStage = Mathf.Clamp(currentStage, 0, Stages.Length);
         if (currentStage == 2)
         {
             StartDeathZone();

@@ -304,6 +304,7 @@ public class HUDController : Singleton<HUDController>
             yield return StartCoroutine(HighlightFadeTo(0f));
         }
         highlight.alpha = 0f;
+        yield break;
     }
 
     IEnumerator HighlightFadeTo(float target)
