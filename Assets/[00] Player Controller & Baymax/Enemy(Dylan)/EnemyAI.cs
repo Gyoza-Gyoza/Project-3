@@ -363,7 +363,8 @@ public class EnemyAI : MonoBehaviour
             yield return null;
         }
 
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
 
     // ---------- Flash ----------

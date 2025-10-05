@@ -52,7 +52,7 @@ public class Escort : Stage
         {
             //Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
 
-            if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 0.05f)
+            if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 1f)
             {
                 //Debug.Log($"Super Close to point, completing point");
                 PayloadBehaviour.Instance.CompleteStage();
