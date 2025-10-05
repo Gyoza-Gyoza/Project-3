@@ -98,7 +98,7 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BottomDistance: 0.1
+    - _BottomDistance: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -110,11 +110,14 @@ Material:
     - _DstBlend: 10
     - _DstBlendAlpha: 10
     - _EnvironmentReflections: 1
+    - _FlameIntensity: 0.79
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Hardness: 0.75
     - _Metallic: 0.428
+    - _Noise1Rotation: 0.08
+    - _Noise2Rotation: 0.73
     - _Noise_Size: 1.65
     - _OcclusionStrength: 1
     - _OuterGlowIntensity: 1.96
@@ -128,17 +131,21 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 1
-    - _TopDistance: 0.54
+    - _TopDistance: 0.45
     - _WorkflowMode: 1
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 0.9798687, b: 0, a: 0.2627451}
     - _Color: {r: 0.89625555, g: 1, b: 0.37421376, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GasColor: {r: 3.4981902, g: 0.9151564, b: 0, a: 0.18431373}
-    - _PerlinScrollSpeed: {r: 0, g: -0.93, b: 0, a: 0}
-    - _PerlinTiling: {r: 0.53, g: 0.11, b: 0, a: 0}
+    - _GasColor: {r: 2.2544255, g: 0.3981363, b: 0, a: 0.64705884}
+    - _Noise1ScrollSpeed: {r: 0, g: -0.22, b: 0, a: 0}
+    - _Noise1Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise2ScrollSpeed: {r: 0, g: -0.29, b: 0, a: 0}
+    - _Noise2Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _PerlinScrollSpeed: {r: 0, g: 0.34, b: 0, a: 0}
+    - _PerlinTiling: {r: -1.49, g: -1, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _VoronoiScrollSpeed: {r: 0, g: 0.15, b: 0, a: 0}
-    - _VoronoiTiling: {r: 0.04, g: 0.12, b: 0, a: 0}
+    - _VoronoiTiling: {r: 0.08, g: -0.03, b: 0, a: 0}
   m_BuildTextureStacks: []
