@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a0577b18a6a7f40bc7c5fe25e25c31, type: 3}
   m_Name: WBR_CP1_WP01
   m_EditorClassIdentifier: 
-  durationBetweenSpawns: 0
-  enemyPerGroup: 0
+  durationBetweenSpawns: 2
+  enemyPerGroup: 5
   spawnMarkers: []
-  spawnCooldown: 0
-  maxEnemies: 0
-  resumeThreshold: 0
+  spawnCooldown: 10
+  maxEnemies: 100
+  resumeThreshold: 60
   minSpawnDistance: 5
   maxSpawnDistance: 100
-  checkpoint: {x: 89.4, y: 26.3, z: 131.4}
-  payloadSpeed: 40
+  checkpoint: {x: 71.8, y: 11.7, z: 191.1}
+  payloadSpeed: 10
   isCheckpoint: 0

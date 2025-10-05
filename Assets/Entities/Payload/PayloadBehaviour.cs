@@ -419,6 +419,8 @@ public class PayloadBehaviour : Entity
     private Vector3 _stepStartPos;
     private Vector3 _stepTarget;
     private float _stepTimer;
+    [SerializeField] private float navSampleMaxDist = 2f; // how far to look for the surface
+    [SerializeField] float rotationSpeed = 6f; // 4–10 feels good for a heavy golem
 
     public void StepStart_L() => BeginStep();
     public void StepEnd_L() => EndStep();
@@ -429,15 +431,21 @@ public class PayloadBehaviour : Entity
     {
         if (!burningGas || !agent.hasPath) { _isStepping = false; return; }
 
-        _stepDir = agent.desiredVelocity; _stepDir.y = 0f;
-        if (_stepDir.sqrMagnitude < 0.0001f) _stepDir = transform.forward;
-        _stepDir.Normalize();
+        // Use next corner for direction (includes turns on ramps)
+        Vector3 toCorner = agent.steeringTarget - transform.position;
+        toCorner.y = 0f;
+        if (toCorner.sqrMagnitude < 0.0001f) toCorner = transform.forward;
+        toCorner.Normalize();
 
         float maxAllowed = Mathf.Max(0f, agent.remainingDistance - agent.stoppingDistance);
         float thisStep = Mathf.Min(strideDistance, maxAllowed);
 
         _stepStartPos = transform.position;
-        _stepTarget = _stepStartPos + _stepDir * thisStep;
+        var flatTarget = _stepStartPos + toCorner * thisStep;
+
+        // *** critical: put the target ON the navmesh/ramp ***
+        _stepTarget = SnapToNavMeshY(flatTarget);
+
         _stepTimer = 0f;
         _isStepping = thisStep > 0f;
     }
@@ -458,10 +466,50 @@ public class PayloadBehaviour : Entity
 
         _stepTimer += dt;
         float t = Mathf.Clamp01(_stepTimer / strideDuration);
-        transform.position = Vector3.Lerp(_stepStartPos, _stepTarget, t);
 
-        if (t >= 1f)
-            EndStep();
+        // your existing movement (snapped to navmesh)
+        Vector3 p = Vector3.Lerp(_stepStartPos, _stepTarget, t);
+        p = SnapToNavMeshY(p);
+        transform.position = p;
+
+        // NEW: face the agent’s steering target
+        FaceSteeringTarget(dt);
+
+        // keep agent synced to your manual movement
+        agent.nextPosition = transform.position;
+
+        if (t >= 1f) EndStep();
+    }
+
+
+    private Vector3 SnapToNavMeshY(Vector3 pos)
+    {
+        if (NavMesh.SamplePosition(pos, out var hit, navSampleMaxDist, NavMesh.AllAreas))
+            pos.y = hit.position.y;
+        else
+        {
+            // Fallback: raycast against level colliders if no NavMesh found (optional)
+            if (Physics.Raycast(pos + Vector3.up * 2f, Vector3.down, out var rh, 10f))
+                pos.y = rh.point.y;
+        }
+        return pos;
+    }
+
+    private void FaceSteeringTarget(float dt)
+    {
+        // If the agent has a path, look toward its steering target (next corner)
+        if (agent != null && !agent.pathPending)
+        {
+            Vector3 lookDir = agent.steeringTarget - transform.position;
+            lookDir.y = 0f; // keep yaw-only rotation
+
+            // Fallback: if steering target is on top of us (e.g., end of path), keep current forward
+            if (lookDir.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, dt * rotationSpeed);
+            }
+        }
     }
 
     public void PlayStepLeftSFX()
