@@ -13,6 +13,10 @@ public class PlayerController3P : Entity
     [SerializeField] private Volume globalVolume;
     private bool dead = false;
 
+    [Header("Regen")]
+    public float healthRegenRate = 0.5f;
+    public float healthRegenCooldown = 5f;
+
     [Header("Movement")]
     public float walkSpeed = 3.5f;
     public float rotationSpeed = 12f;
@@ -186,6 +190,9 @@ public class PlayerController3P : Entity
     private Vector3 plungeDir = Vector3.zero;
     private bool plungeImpulseStarted = false;
 
+    // Health runtime
+    private bool regeneratingHealth = false;
+
     // Instance
     public static PlayerController3P Instance;
 
@@ -245,6 +252,52 @@ public class PlayerController3P : Entity
         HandleMovement();    // Movement depends on dash/attack
         HandleJump();        // Blocked during attacks
         UpdatePlunge();      // Timers
+        //UpdateHealth();
+    }
+
+    // -------------------- Health NOT USED ------------------------------------
+    public void UpdateHealth()
+    {
+        if (Health <= MaxHealth && !regeneratingHealth)
+        {
+            StartCoroutine(RegenHealth());
+        }
+        else
+        {
+            StopRegen();
+        }
+    }
+
+    public void StopRegen()
+    {   regeneratingHealth = false;}
+
+    IEnumerator RegenHealth()
+    {
+
+        regeneratingHealth = true;
+        float count = 0f;
+        float buffercount = 0f;
+
+        while(regeneratingHealth)
+        {
+            if (buffercount < healthRegenCooldown)
+            {
+                buffercount += Time.deltaTime;
+            }
+            else
+            {
+                count += Time.deltaTime;
+                if (count > 1f / healthRegenRate)
+                {
+                    Heal(1);
+                    count = 0f;
+                }
+            }
+        }
+
+        regeneratingHealth = false;
+
+        yield break;
     }
 
     // -------------------- Movement ------------------------------------------------------------------------------------------
@@ -1196,11 +1249,13 @@ public class PlayerController3P : Entity
     protected override void OnHeal()
     {
         //throw new System.NotImplementedException();
+        HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
     }
 
     protected override void OnDamage()
     {
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
+        StopRegen();
     }
 
     public override void OnDeath()

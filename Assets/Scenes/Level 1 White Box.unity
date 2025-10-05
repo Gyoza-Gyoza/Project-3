@@ -4582,8 +4582,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f77be23f98d2f9349a27712068e513fa, type: 2}
   - {fileID: 11400000, guid: d7f6d504cafcaa7409e8e9301189b267, type: 2}
   - {fileID: 11400000, guid: bd468797a3c6bcd45a5aaa11210ead9a, type: 2}
-  - {fileID: 11400000, guid: f7f016b0de7b50144bd79072e9250fae, type: 2}
   - {fileID: 11400000, guid: 2a3a76e72e215fc42b46d461088f9fc2, type: 2}
+  - {fileID: 11400000, guid: f7f016b0de7b50144bd79072e9250fae, type: 2}
   - {fileID: 11400000, guid: de4c1714834f484408e3a906c1e9739e, type: 2}
   - {fileID: 11400000, guid: 3a6392588d242ba458ccc4d1433bcbc7, type: 2}
   - {fileID: 11400000, guid: c135e35b06516694192b5cd705116b62, type: 2}
@@ -27046,8 +27046,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 749253374}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: turnSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: burningRate
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: returnSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: rotationSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: strideDistance
@@ -27059,7 +27071,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: verticleOffset
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: navSampleMaxDist

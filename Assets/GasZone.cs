@@ -7,7 +7,9 @@ public class GasZone : MonoBehaviour
 {
 
     [SerializeField] private float addRate; //per second
+    [SerializeField] private float regenRate = 0.5f; //per second
     private bool addingGas = false;
+    private bool addingHealth = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -15,6 +17,9 @@ public class GasZone : MonoBehaviour
         {
             addingGas = true;
             StartCoroutine(addGas());
+
+            addingHealth = true;
+            StartCoroutine(addHealth());
         }
     }
 
@@ -24,6 +29,8 @@ public class GasZone : MonoBehaviour
         {
             
             addingGas = false;
+
+            addingHealth = false;
         }
     }
 
@@ -37,10 +44,28 @@ public class GasZone : MonoBehaviour
             if (count > 1f / addRate)
             {
                 count -= (1f / addRate);
-               if ( PlayerController3P.Instance.AddGas(1) == false)
+                if (PlayerController3P.Instance.AddGas(1) == false)
                 {
                     addingGas = false;
                 }
+            }
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        yield break;
+    }
+
+    IEnumerator addHealth()
+    {
+        float count = 0f;
+
+        while (addingHealth)
+        {
+            count += Time.deltaTime;
+            if (count > 1f / regenRate)
+            {
+                count -= (1f / regenRate);
+                PlayerController3P.Instance.Heal(1);
             }
             yield return new WaitForSeconds(Time.deltaTime);
         }
