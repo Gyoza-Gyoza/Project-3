@@ -112,6 +112,7 @@ public class PlayerController3P : Entity
     [SerializeField] private Transform VFXZeroPoint;
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] dashVFX;
+    [SerializeField] private float lensDistortionDuration, playerGlowDuration;
     private Coroutine dashEffectsCoroutine;
     private LensDistortion lensDistortion;
     private List<MeshRenderer> playerMat = new List<MeshRenderer>();
@@ -643,14 +644,14 @@ public class PlayerController3P : Entity
     {
         lensDistortion.intensity.value = -0.8f;
         float timer = 0f;
-        while (timer <= 1f)
+        while (timer <= Mathf.Max(lensDistortionDuration, playerGlowDuration))
         {
             timer += Time.deltaTime;
-            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer);
+            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer/lensDistortionDuration);
 
             foreach (MeshRenderer mr in playerMat)
             {
-                mr.material.SetFloat("_GlowAmount", Mathf.Lerp(1, 0, timer));
+                mr.material.SetFloat("_GlowAmount", Mathf.Lerp(1, 0, timer/playerGlowDuration));
             }
 
             yield return null;
