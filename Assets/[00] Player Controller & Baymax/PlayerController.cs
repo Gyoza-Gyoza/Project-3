@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -111,7 +112,9 @@ public class PlayerController3P : Entity
     [SerializeField] private Transform VFXZeroPoint;
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] dashVFX;
+    private Coroutine dashEffectsCoroutine;
     private LensDistortion lensDistortion;
+    private List<MeshRenderer> playerMat = new List<MeshRenderer>();
 
     // ------------------ EMBER ------------------------------------------------------------------------------------------
     [Header("Ember")]
@@ -200,6 +203,11 @@ public class PlayerController3P : Entity
             lensDistortion.active = true;
         }
         else Debug.LogWarning ("LensDistortion not found.");
+        foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
+        {
+            playerMat.Add(mr);
+            Debug.Log("Added mat " + mr.material.name);
+        }
     }
 
     protected override void Start()
@@ -548,10 +556,15 @@ public class PlayerController3P : Entity
             }
         }
 
-        AudioManager.Instance.PlaySFX("Dash");                    //Play Dash SFX
+        AudioManager.Instance.PlaySFX("Dash");          //Play Dash SFX
         StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
-        DashEffects();                                  //Lens Distortion
-
+        if (dashEffectsCoroutine != null)
+        {
+            StopCoroutine(dashEffectsCoroutine);
+            dashEffectsCoroutine = null;
+        }
+        dashEffectsCoroutine = StartCoroutine(DashEffects());                  
+                                                        // Someone forgot to start their coroutines :(
         camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);    //Camera FOV
         camRig.Shake(10f, 0.12f);                       //Camera Shake
     }
@@ -588,9 +601,14 @@ public class PlayerController3P : Entity
             }
         }
 
-        AudioManager.Instance.PlaySFX("Dash");                     //Play Dash SFX
+        AudioManager.Instance.PlaySFX("Dash");          //Play Dash SFX
         StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
-        DashEffects();                                  //Lens Distortion
+        if (dashEffectsCoroutine != null)
+        {
+            StopCoroutine(dashEffectsCoroutine);
+            dashEffectsCoroutine = null;
+        }
+        dashEffectsCoroutine = StartCoroutine(DashEffects());
 
         camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);    //Camera FOV
         camRig.Shake(10f, 0.12f);                       //Camera Shake
@@ -629,6 +647,12 @@ public class PlayerController3P : Entity
         {
             timer += Time.deltaTime;
             lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer);
+
+            foreach (MeshRenderer mr in playerMat)
+            {
+                mr.material.SetFloat("_GlowAmount", Mathf.Lerp(1, 0, timer));
+            }
+
             yield return null;
         }
     }
@@ -1099,10 +1123,10 @@ public class PlayerController3P : Entity
         return false;
     }
 
-    private IEnumerator SpawnVFX(VFX vfxToSpawn)
+    private IEnumerator SpawnVFX(VFX vfxToSpawn, bool parent = false)
     {
         yield return new WaitForSeconds(vfxToSpawn.delay);
-        Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation);
+        Instantiate(vfxToSpawn.vfxPrefab, VFXZeroPoint.position, VFXZeroPoint.rotation, parent? transform : null);
     }
 
     // -------------------- Ember ------------------------------------------------------------------------------------------
