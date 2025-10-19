@@ -44,7 +44,7 @@ public class AttackHitBox : MonoBehaviour
     // internals
     bool _active;
     Transform _attacker;
-    readonly HashSet<EnemyHealth> _hitThisWindow = new HashSet<EnemyHealth>();
+    HashSet<EnemyBehaviour> _hitThisWindow = new HashSet<EnemyBehaviour>();
     BoxCollider _box;
     Rigidbody _rb;
 
@@ -118,19 +118,29 @@ public class AttackHitBox : MonoBehaviour
         if (!_active) return;
 
         // layer mask
-        if (((1 << other.gameObject.layer) & targetLayers) == 0) return;
+        //if (((1 << other.gameObject.layer) & targetLayers) == 0) return;
 
         // find EnemyHealth once
-        if (!other.TryGetComponent(out EnemyHealth eh))
-            eh = other.GetComponentInParent<EnemyHealth>();
-        if (eh == null) return;
+        //if (!other.TryGetComponent(out EnemyHealth eh))
+        //    eh = other.GetComponentInParent<EnemyHealth>();
+        //if (eh == null) return;
 
         // one hit per enemy per swing
-        if (_hitThisWindow.Contains(eh)) return;
-        _hitThisWindow.Add(eh);
+        //if (_hitThisWindow.Contains(eh)) return;
+        //_hitThisWindow.Add(eh);
 
         // apply damage (and any knockback you already do)
-        eh.TakeDamage(damage, (_attacker ? _attacker.position : transform.position));
+        //eh.TakeDamage(damage, (_attacker ? _attacker.position : transform.position));
+
+        if (other.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        {
+            if (_hitThisWindow.Contains(enemy)) return; 
+            else
+            {
+                enemy.TakeDamage(damage);
+                _hitThisWindow.Add(enemy);
+            }
+        }
 
         // --- Option A: sample hit position using closest point to this hitbox (tighter feel)
         // Using the hitbox transform position as the source point for ClosestPoint.
