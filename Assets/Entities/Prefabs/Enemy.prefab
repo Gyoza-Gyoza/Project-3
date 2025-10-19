@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 9097011396309068352}
   - component: {fileID: 2687843969462325557}
   - component: {fileID: 8622548690234649692}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1
-  m_BaseOffset: 0
+  m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &2613800612817234358
@@ -131,21 +131,20 @@ MonoBehaviour:
   initialDamage: 5
   initialMovementSpeed: 100
   flickerSign: {fileID: 2775048984678454219}
+  hitUpforce: 500
+  hitHorforce: 500
+  damageAmount: 5
   hb: {fileID: 361636551238153991}
   deathTime: 1
   burnAdjAmount: 0.1
   speedAdjAmount: 0.1
   retreatAdjAmount: 0.1
-  hitUpforce: 5
-  hitHorforce: 5
-  fallForce: 0.2
-  knockupDuration: 0.5
+  agent: {fileID: 0}
   ball: {fileID: 7242094643601931924}
   meshOffset: {fileID: 1657219682364904867}
   deathParticleSystem: {fileID: 3929770318114016586}
   hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   oriMat: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
-  agent: {fileID: 0}
   payloadRange: 10
   aggroRange: 15
   attackRange: 3
@@ -157,7 +156,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255745766610047194}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -189,7 +188,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
