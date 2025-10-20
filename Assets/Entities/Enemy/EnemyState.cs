@@ -23,6 +23,7 @@ public class EnemyChaseState : EnemyState
     public EnemyChaseState(EnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Chase State");
+        enemy.Animator.Play("Walk");
     }
     public override void DoEnemyAction()
     {
@@ -61,6 +62,7 @@ public class EnemyAttackState : EnemyState
     public EnemyAttackState(EnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Attack State");
+        enemy.Animator.Play("Attack");
     }
     public override void DoEnemyAction()
     {
@@ -155,6 +157,7 @@ public class EnemyStunState : EnemyState
         timer = 0f;
         this.duration = duration;
         stunned = true;
+        enemy.Animator.Play("Idle");
     }
     public override void DoEnemyAction()
     {

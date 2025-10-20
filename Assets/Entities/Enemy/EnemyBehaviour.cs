@@ -6,6 +6,9 @@ using UnityEngine.AI;
 
 public class EnemyBehaviour : Entity
 {
+    [SerializeField] private Animator animator;
+    public Animator Animator
+    { get { return animator; } }
     [SerializeField] private GameObject flickerSign;
     [SerializeField] private HitBox hb;
     [SerializeField] private float deathTime = 1f;
@@ -32,7 +35,6 @@ public class EnemyBehaviour : Entity
     private Rigidbody rb;
     public Rigidbody Rb
     { get { return rb; } }
-    private Animator animator;
     private bool flying = false;
     private bool isAttacking = false;
     public bool IsAttacking
