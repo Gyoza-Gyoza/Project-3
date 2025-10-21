@@ -11,7 +11,7 @@ public class Defend : Stage
     private float timer;
     public float DefendDuration
     { get { return defendDuration; } }
-    public override float Progress     
+    public override float StageProgress     
     { get { return Mathf.Clamp01(timer / defendDuration); } }
     public override void StartStage()
     {
@@ -22,7 +22,7 @@ public class Defend : Stage
     {
         LevelDirector.Instance.testText.text =
         $"Current Stage is {LevelDirector.Instance.CurrentStage} " +
-        $"\n Defense progress is {Progress * 100}% " +
+        $"\n Defense progress is {StageProgress * 100}% " +
         $"\n Total progress is {LevelDirector.Instance.StageProgress * 100}%"; 
         if (playerInRange)
         {

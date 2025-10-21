@@ -56,6 +56,7 @@ public class HUDController : Singleton<HUDController>
     [Header("Progress Bar")]
     [SerializeField] private Slider progress;
     [SerializeField] private TextMeshProUGUI progressText;
+    [SerializeField] private GameObject checkpointMarker;
 
     [Header("Death Bar")]
     [SerializeField] private GameObject deathObject;
@@ -324,6 +325,31 @@ public class HUDController : Singleton<HUDController>
     #endregion
 
     #region Progress Bar
+
+    public void SetUpProgressBar(Stage[] stages, float levelLength)
+    {
+        float count = 0f;
+        foreach (Stage stage in stages)
+        {
+            count += stage.Length;
+            if (stage != null && stage.IsCheckpoint == true)
+            {
+                SpawnCheckpointMarker(count / levelLength);
+            }
+        }
+    }
+
+    public void SpawnCheckpointMarker(float percentage)
+    {
+        GameObject justSpawned = GameObject.Instantiate(checkpointMarker, progress.transform);
+
+        float width = progress.GetComponent<RectTransform>().rect.width;
+
+        float calc = -(width / 2) + (width * percentage);
+
+        justSpawned.GetComponent<RectTransform>().anchoredPosition = new Vector3(calc, 0f, 0f);
+    }
+
     public void SetProgressBar(float input)
     {
         //Debug.Log($"Setting progress to {input}");
@@ -337,7 +363,7 @@ public class HUDController : Singleton<HUDController>
 
     public void SetDeathBar(float input)
     {
-        //Debug.Log($"Setting Death Progress called, is active: {death.gameObject.activeSelf}");
+        //Debug.Log($"Setting Death StageProgress called, is active: {death.gameObject.activeSelf}");
         if (!deathObject.activeSelf)
         {
             deathObject.SetActive(true);
