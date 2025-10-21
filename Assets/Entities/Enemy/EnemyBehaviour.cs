@@ -59,7 +59,6 @@ public class EnemyBehaviour : Entity
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         hb.HitBoxListeners += DamagePlayer;
-        animator = GetComponent<Animator>();
     }
     private void Update()
     {
