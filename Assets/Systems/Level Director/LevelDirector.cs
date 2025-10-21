@@ -174,29 +174,6 @@ public class LevelDirector : Singleton<LevelDirector>
                 DeathCompletedStage();
             }
 
-            /*
-            if (previousRemaining > 0)
-            {
-                deathZoneTraveled += (previousRemaining - deathZoneChaser.remainingDistance);
-            }
-            if (deathZoneChaser.remainingDistance <= 0.05f)
-            {
-                DeathCompletedStage();
-            }
-            */
-            //Debug.Log($"DeathZone STARTED: previous is {previousRemaining}, current is {deathZoneChaser.remainingDistance}");
-
-
-            //previousRemaining = deathZoneChaser.remainingDistance;
-
-            //Debug.Log($"DeathZone travelled: {deathZoneTraveled}");
-
-
-            //if (!deathZoneChaser.hasPath)
-            //{
-            //    Debug.Log($"Invalid Path. {deathZoneChaser.remainingDistance}");
-            //}
-
             float progress = Mathf.Clamp( (deathZoneTraveled / levelLength), 0f, 1f);
 
             if (progress != 0f && progress != 1f &&  progress >= StageProgress && !deathCountdown)
