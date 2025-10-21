@@ -52,8 +52,10 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         for (int i = 1; i < stages.Length; i++)
         {
-            stages[i].Distance = calculateCheckpointLength(i);
-            levelLength += stages[i].Distance;
+            stages[i].Length = calculateCheckpointLength(i);
+            //Debug.Log($"Checkpoint Length: {stages[i].Length}");
+            //Debug.Log($"Current Length: {levelLength}");
+            levelLength += stages[i].Length;
         }
     }
 
@@ -61,7 +63,7 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         if (stages[index - 1] is Escort escort1 && stages[index] is Escort escort2)
         {
-            return Vector3.Magnitude(escort2.Checkpoint - escort1.Checkpoint);
+            return Vector3.Magnitude(escort2.EscortPosition - escort1.EscortPosition);
         }
         return 0f;
     }
@@ -70,18 +72,28 @@ public class LevelDirector : Singleton<LevelDirector>
     { 
         get 
         {
-            // Subtracting by one to ignore the first checkpoint as it's the starting point
-            float calc = 0f;
+            // Subtracting by one to ignore the first escortPosition as it's the starting point
+            float calc = 0.0001f;
+            Debug.Log($"calc was {calc}");
             //float progressionPerStage = 1f / (Stages.Length - 1);
             for (int i = 1; i < currentStage; i++)
             {
-                calc += stages[i].Distance;
+                if (stages[i].Length > 0f)
+                {
+                    Debug.Log($"Length is  {stages[i].Length}");
+                    calc += stages[i].Length;
+                }
+                else
+                {
+                    Debug.Log("No length");
+                    calc += 0f;
+                }
             }
 
-            calc += stages[currentStage].Progress * stages[currentStage].Distance;
+            calc += stages[currentStage].StageProgress * stages[currentStage].Length;
             float result = calc / levelLength;
 
-            //Debug.Log($"Stage Progress: {result}");
+            Debug.Log($"Stage StageProgress: {result}, calc was {calc}, levelLength was {levelLength}");
 
             return Mathf.Clamp01(result); 
         } 
@@ -106,16 +118,16 @@ public class LevelDirector : Singleton<LevelDirector>
         /*
         if (stages[1] is Escort escort)
         {
-            deathZoneChaser.Warp((stages[0] as Escort).Checkpoint); //This is temp. We need to clean up the code and change stages to something else
-            deathZoneChaser.SetDestination(escort.Checkpoint);
+            deathZoneChaser.Warp((stages[0] as Escort).EscortPosition); //This is temp. We need to clean up the code and change stages to something else
+            deathZoneChaser.SetDestination(escort.EscortPosition);
         }
         deathZoneChaser.speed = deathZoneRate;
         deathZoneChaser.isStopped = false;
         */
 
-        deathZoneChaser.Warp((stages[0] as Escort).Checkpoint);
+        deathZoneChaser.Warp((stages[0] as Escort).EscortPosition);
 
-        dir = (stages[deathZoneStage] as Escort).Checkpoint - (stages[deathZoneStage - 1] as Escort).Checkpoint;
+        dir = (stages[deathZoneStage] as Escort).EscortPosition - (stages[deathZoneStage - 1] as Escort).EscortPosition;
 
         StartCoroutine(DeathZoneCoroutine());
     }
@@ -133,8 +145,8 @@ public class LevelDirector : Singleton<LevelDirector>
 
         if (deathZoneStage < stages.Length && stages[deathZoneStage] is Escort nextStage)
         {
-            //deathZoneChaser.SetDestination(nextStage.Checkpoint);
-            dir = (stages[deathZoneStage] as Escort).Checkpoint - (stages[deathZoneStage - 1] as Escort).Checkpoint;
+            //deathZoneChaser.SetDestination(nextStage.EscortPosition);
+            dir = (stages[deathZoneStage] as Escort).EscortPosition - (stages[deathZoneStage - 1] as Escort).EscortPosition;
         }
         else
         {
@@ -165,7 +177,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
             deathZoneChaser.gameObject.transform.position = currentPos;
 
-            float distanceLeft = Vector3.Distance(deathZoneChaser.gameObject.transform.position, current.Checkpoint);
+            float distanceLeft = Vector3.Distance(deathZoneChaser.gameObject.transform.position, current.EscortPosition);
 
             //Debug.Log($"Death distance left: {distanceLeft}");
 
@@ -225,7 +237,7 @@ public class LevelDirector : Singleton<LevelDirector>
             count += Time.deltaTime;
             if (count >= deathBuffer)
             {
-                Debug.Log($"Lost! Death progress: {(deathZoneTraveled / levelLength)}, Stage Progress: {StageProgress}");
+                Debug.Log($"Lost! Death progress: {(deathZoneTraveled / levelLength)}, Stage StageProgress: {StageProgress}");
                 LoseGame();
             }
             yield return new WaitForSeconds(Time.deltaTime);
@@ -250,6 +262,7 @@ public class LevelDirector : Singleton<LevelDirector>
         payload = PayloadBehaviour.Instance;
         AssignEscortStages();
         calculateLevelLength();
+        HUDController.Instance.SetUpProgressBar(stages, levelLength);
         lineRenderer = new LineRenderer();
     }
     private void Update()
@@ -407,7 +420,7 @@ public class LevelDirector : Singleton<LevelDirector>
     public void CompleteLevel()
     {
         // Handle level completion logic here
-        //testText.text = $"Level Completed! Total Progress: 100%";
+        //testText.text = $"Level Completed! Total StageProgress: 100%";
         Debug.Log("Complete level called");
         WinGame();
     }
@@ -420,10 +433,10 @@ public class LevelDirector : Singleton<LevelDirector>
             if (stages[i] is Escort escort1)
             {
                 if (stages[i -1] is Escort escort2)
-                {   escort1.PreviousCheckpoint = escort2.Checkpoint;}
+                {   escort1.PreviousStage = escort2.EscortPosition;}
                 else
-                {   escort1.PreviousCheckpoint = escort1.Checkpoint;}
-                //Debug.Log($"Escorts point {i}, Previous: {escort1.PreviousCheckpoint}, Current: {escort1.Checkpoint}");
+                {   escort1.PreviousStage = escort1.EscortPosition;}
+                //Debug.Log($"Escorts point {i}, Previous: {escort1.PreviousStage}, Current: {escort1.EscortPosition}");
             }
         }
     }
@@ -470,7 +483,7 @@ public class LevelDirector : Singleton<LevelDirector>
             {
                 case Escort escort:
                     Gizmos.color = Color.red;
-                    currentPosition = escort.Checkpoint;
+                    currentPosition = escort.EscortPosition;
                     Gizmos.DrawWireSphere(currentPosition, 5f);
                     break;
                 case Defend defend:

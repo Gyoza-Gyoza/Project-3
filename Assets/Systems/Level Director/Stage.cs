@@ -6,11 +6,13 @@ using UnityEngine;
 
 public abstract class Stage : ScriptableObject
 {
+    [Tooltip("If this is a escortPosition")]
+    [SerializeField] private bool isCheckpoint;
     [Tooltip("The amount of time the director will wait before spawning the next group")]
     [SerializeField] private float durationBetweenSpawns;
     [Tooltip("Amount of enemies that the director will spawn each time")]
     [SerializeField] private int enemyPerGroup;
-    [Tooltip("List of spawn points for the checkpoint")]
+    [Tooltip("List of spawn points for the escortPosition")]
     [SerializeField] private Vector3[] spawnMarkers;
     [Tooltip("Cooldown for spawning after hitting cap")]
     [SerializeField] private float spawnCooldown;
@@ -21,7 +23,7 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
     private float progress = 0f;
-    private float distanceFromPrevious;
+    private float lengthFromPrevious;
 
     public float DurationBetweenSpawns
     { get { return durationBetweenSpawns; } }
@@ -39,10 +41,12 @@ public abstract class Stage : ScriptableObject
     { get { return maxSpawnDistance; } }
     public float MinSpawnDistance
     { get { return minSpawnDistance; } }
-    public virtual float Progress
+    public virtual float StageProgress
     { get { return progress; } private set { progress = Mathf.Clamp01(value); } } // Default progression, can be overridden by specific stages
-    public virtual float Distance
-    { get { return distanceFromPrevious; } set { distanceFromPrevious = value; }}
+    public virtual float Length
+    { get { return lengthFromPrevious; } set { lengthFromPrevious = value; }}
+    public bool IsCheckpoint
+    { get { return isCheckpoint; }}
 
 
     public abstract void StartStage();

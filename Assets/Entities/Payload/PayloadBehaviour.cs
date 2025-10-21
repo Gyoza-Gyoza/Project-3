@@ -205,7 +205,7 @@ public class PayloadBehaviour : Entity
         if (stepper != null)
         {
             stepper.StopStepperImmediate();
-            // clear agent path to ensure it doesn't later automatically go to previous checkpoint
+            // clear agent path to ensure it doesn't later automatically go to previous escortPosition
             if (agent != null)
             {
                 agent.ResetPath();
@@ -253,33 +253,33 @@ public class PayloadBehaviour : Entity
 
     #endregion
 
-    #region -----------------------Facing--------------------------------
+    //#region -----------------------Facing--------------------------------
 
-    private bool isFacingForward = true;
-    public void ForwardFacing()
-    {
-        Debug.Log("Front Facing on payload called");
-        //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
-        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
-        {
-            Debug.Log("Front Facing Success");
-            stage.FaceForward();
-            isFacingForward = true;
-            //agent.SetDestination(stage.Checkpoint);
-        }
-    }
-    public void BackwardFacing()
-    {
-        Debug.Log("Back Facing on payload called");
-        if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
-        {
-            Debug.Log("Back Success");
-            stage.FaceBackwards();
-            isFacingForward = false;
-            //agent.SetDestination(stage.PreviousCheckpoint);
-        }
-    }
-    #endregion
+    //private bool isFacingForward = true;
+    //public void ForwardFacing()
+    //{
+    //    Debug.Log("Front Facing on payload called");
+    //    //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
+    //    if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
+    //    {
+    //        Debug.Log("Front Facing Success");
+    //        stage.FaceForward();
+    //        isFacingForward = true;
+    //        //agent.SetDestination(stage.EscortPosition);
+    //    }
+    //}
+    //public void BackwardFacing()
+    //{
+    //    Debug.Log("Back Facing on payload called");
+    //    if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
+    //    {
+    //        Debug.Log("Back Success");
+    //        stage.FaceBackwards();
+    //        isFacingForward = false;
+    //        //agent.SetDestination(stage.PreviousStage);
+    //    }
+    //}
+    //#endregion
 
     #region ------------------Enemy Surrounding Behaviour----------------
     public void EnemyPushing(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
@@ -311,7 +311,7 @@ public class PayloadBehaviour : Entity
 
         agent.updatePosition = false;
 
-        if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.Checkpoint);
+        if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.EscortPosition);
         CompleteStage(); //Complete the beginning one
         agent.isStopped = true;
     }
@@ -387,16 +387,19 @@ public class PayloadBehaviour : Entity
         lineRenderer.positionCount = agent.path.corners.Length;
         lineRenderer.SetPosition(0, transform.position + new Vector3(0, verticleOffset, 0));
 
-        if (isFacingForward)
-        {
-            lineRenderer.startColor = forwardStartColor;
-            lineRenderer.endColor = forwardEndColor;
-        }
-        else
-        {
-            lineRenderer.startColor = backwardStartColor;
-            lineRenderer.endColor = backwardEndColor;
-        }
+        lineRenderer.startColor = forwardStartColor;
+        lineRenderer.endColor = forwardEndColor;
+
+        //if (isFacingForward)
+        //{
+        //    lineRenderer.startColor = forwardStartColor;
+        //    lineRenderer.endColor = forwardEndColor;
+        //}
+        //else
+        //{
+        //    lineRenderer.startColor = backwardStartColor;
+        //    lineRenderer.endColor = backwardEndColor;
+        //}
 
         if (agent.path.corners.Length < 2)
         {

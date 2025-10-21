@@ -6,21 +6,19 @@ using UnityEngine.AI;
 [CreateAssetMenu(fileName = "Escort", menuName = "ScriptableObjects/Stages/Escort", order = 1)]
 public class Escort : Stage
 {
-    [Tooltip("Location of the checkpoint that the payload will travel to")]
-    [SerializeField] private Vector3 checkpoint;
+    [Tooltip("Location of the escortPosition that the payload will travel to")]
+    [SerializeField] private Vector3 escortPosition;
     [Tooltip("Speed of the payload")]
     [SerializeField] private float payloadSpeed;
-    [Tooltip("If this is a checkpoint")]
-    [SerializeField] private bool isCheckpoint;
     private float escortDistance;
-    private Vector3 previousCheckpoint;
-    public Vector3 PreviousCheckpoint
+    private Vector3 previousStage;
+    public Vector3 PreviousStage
     {
-        get { return previousCheckpoint; }
-        set { previousCheckpoint = value; }
+        get { return previousStage; }
+        set { previousStage = value; }
     }
-    public Vector3 Checkpoint
-    { get { return checkpoint; } }
+    public Vector3 EscortPosition
+    { get { return escortPosition; } }
     public float PayloadSpeed
     { get { return payloadSpeed; } }
     public float EscortDistance
@@ -28,21 +26,34 @@ public class Escort : Stage
         get { return escortDistance; }
         set { escortDistance = value; }
     }
-    public override float Progress
+    public override float StageProgress
     { get 
         {
-            if (PayloadBehaviour.Instance.Agent.destination == checkpoint)
+            //I think its inefficient since this is being called like almost every tick.
+            //Its either calculating like crazy or storing the progress like crazy
+
+            if (PayloadBehaviour.Instance.Agent.destination == escortPosition)
+            {
+                Debug.Log("Position is correct");
                 return PayloadBehaviour.Instance.Agent.remainingDistance;
+            }
+
             else
+            {
+                Debug.Log($"Position is incorrect, {escortDistance}, {PayloadBehaviour.Instance.Agent.remainingDistance}");
+
                 return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; 
+
+            }
         } 
     }
 
-    private float storedProgress;
+    //private float storedProgress;
 
     public override void StartStage()
     {
-        FaceForward();
+        //FaceForward();
+        PayloadBehaviour.Instance.Agent.SetDestination(EscortPosition);
     }
     public override void DoPayloadBehaviour()
     {
@@ -50,7 +61,7 @@ public class Escort : Stage
         //Basically check if the 
         if (PayloadBehaviour.Instance.Agent.hasPath && PayloadBehaviour.Instance.Agent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            //Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
+            Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
 
             if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 1f)
             {
@@ -61,7 +72,7 @@ public class Escort : Stage
         }
         else
         {
-            //Debug.LogWarning("Path incomplete or invalid!");
+            Debug.LogWarning("Path incomplete or invalid!");
         }
 
     }
@@ -81,21 +92,24 @@ public class Escort : Stage
 
     }
 
-    #region Facing
-    public void FaceForward()
-    {
-        Debug.Log("Facing Forward");
-        storedProgress = 0;
-        PayloadBehaviour.Instance.Agent.SetDestination(Checkpoint);
-    }
+    //Kind of obsolete
 
-    public void FaceBackwards()
-    {
-        Debug.Log("Facing Backward");
-        storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
-        //Eze's note to self
-        //This stored progress is very wrong btw. It does not go down when the player goes backwards.
-        PayloadBehaviour.Instance.Agent.SetDestination(previousCheckpoint);
-    }
-    #endregion
+    //#region Facing
+    //public void FaceForward()
+    //{
+    //    Debug.Log("Facing Forward");
+    //    storedProgress = 0;
+    //    PayloadBehaviour.Instance.Agent.SetDestination(EscortPosition);
+    //}
+
+    //public void FaceBackwards()
+    //{
+    //    Debug.Log("Facing Backward");
+    //    storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
+    //    //Eze's note to self
+    //    //This stored progress is very wrong btw. It does not go down when the player goes backwards.
+    //    PayloadBehaviour.Instance.Agent.SetDestination(previousStage);
+    //}
+    //#endregion
+
 }

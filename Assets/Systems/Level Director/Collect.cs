@@ -20,7 +20,7 @@ public class Collect : Stage
     { get { return amountToCollect; } }
     public int AmountCollected
     { get { return amountCollected; } private set { amountCollected = value; } }
-    public override float Progress
+    public override float StageProgress
     { get { return AmountCollected / AmountToCollect; } }
     public override void StartStage()
     {
