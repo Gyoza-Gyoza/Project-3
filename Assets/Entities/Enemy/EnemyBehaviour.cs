@@ -40,9 +40,11 @@ public class EnemyBehaviour : Entity
     public bool IsAttacking
     { get { return isAttacking; } }
 
+    [Header("Enemy Stats")]
     public float payloadRange = 1f;
     public float aggroRange = 1f;
     public float attackRange = 1f;
+    public float attackCooldown = 1f;
 
     private GameObject target;
 
@@ -55,14 +57,16 @@ public class EnemyBehaviour : Entity
     protected override void Start()
     {
         base.Start();
-        state = new EnemyChaseState(this);
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         hb.HitBoxListeners += DamagePlayer;
+        state = new EnemyChaseState(this);
     }
     private void Update()
     {
         state.DoEnemyAction();
+
+
         if (Input.GetKeyDown(KeyCode.M)) KnockbackFromPlayer();
     }
     private void InitializeStats()
@@ -75,7 +79,7 @@ public class EnemyBehaviour : Entity
         agent.enabled = false;
         deathParticleSystem.SetActive(true);
         ball.SetActive(false);
-        KnockbackFromPlayer();
+        //KnockbackFromPlayer();
         float count = 0f;
         while (count <=  deathTime)
         {
@@ -109,8 +113,9 @@ public class EnemyBehaviour : Entity
 
     private void KnockbackFromPlayer()
     {
-        if (state is EnemyStunState) return;
-        else
+        // Uncomment if else to prevent knockups in the air
+        //if (state is EnemyStunState) return;
+        //else
         {
             // Calculate force and direction 
             Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
@@ -124,9 +129,9 @@ public class EnemyBehaviour : Entity
 
     IEnumerator DamageFlicker()
     {
-        meshOffset.GetComponent<MeshRenderer>().material = hitMat;
+        meshOffset.GetComponent<SkinnedMeshRenderer>().material = hitMat;
         yield return new WaitForSeconds(.1f);
-        meshOffset.GetComponent<MeshRenderer>().material = oriMat;
+        meshOffset.GetComponent<SkinnedMeshRenderer>().material = oriMat;
         yield break;
     }
 
@@ -146,11 +151,10 @@ public class EnemyBehaviour : Entity
     public void Attack()
     {
         Debug.Log("Enemy Attack Called");
-        //agent.isStopped = true;
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
         agent.updateRotation = false;
-        this.gameObject.transform.LookAt(PlayerController3P.Instance.transform);
-        //this.transform.rotation;
-        animator.SetTrigger("Attacking");
+        animator.Play("Attack");
     }
 
     public void StopAttack()
@@ -161,8 +165,9 @@ public class EnemyBehaviour : Entity
     public override void OnDeath()
     {
         //Do something else
-        Debug.LogError("Enemy on death called");
+        Debug.Log("Enemy on death called");
         LevelDirector.Instance.EnemyCount -= 1;
+        state = new EnemyDeathState(this);
         StartCoroutine(DeathCouroutine());
     }
 

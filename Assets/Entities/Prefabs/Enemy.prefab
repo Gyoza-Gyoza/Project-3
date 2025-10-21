@@ -93,9 +93,10 @@ MonoBehaviour:
   hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   oriMat: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
   agent: {fileID: 0}
-  payloadRange: 10
+  payloadRange: 1
   aggroRange: 15
-  attackRange: 3
+  attackRange: 5
+  attackCooldown: 1
 --- !u!54 &9097011396309068352
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5247,7 +5248,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5399272218880723207, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 3.5240269
       objectReference: {fileID: 0}
     - target: {fileID: -5399272218880723207, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -5255,27 +5256,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5399272218880723207, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 2.549264e-14
       objectReference: {fileID: 0}
+    - target: {fileID: -496703243754914968, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
     - target: {fileID: 919132149155446097, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Name
       value: Enemy_Basic
       objectReference: {fileID: 0}
+    - target: {fileID: 2321523695958950486, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 90b8e02e8452e3e4c8f7d04df7bcc73a, type: 2}
     - target: {fileID: 2770353567578568485, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3436248342685271414, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 89.98021
+      value: 86.78947
       objectReference: {fileID: 0}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -0.000013660382
+      value: -0.00024352821
       objectReference: {fileID: 0}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -0.00024391107
       objectReference: {fileID: 0}
     - target: {fileID: 6657560127643677590, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_IsActive

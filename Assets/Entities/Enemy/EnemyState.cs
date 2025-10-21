@@ -19,11 +19,12 @@ public abstract class EnemyState
 
 public class EnemyChaseState : EnemyState
 {
-
     public EnemyChaseState(EnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Chase State");
         enemy.Animator.Play("Walk");
+        enemy.agent.isStopped = false;
+        enemy.agent.updateRotation = true;
     }
     public override void DoEnemyAction()
     {
@@ -31,24 +32,37 @@ public class EnemyChaseState : EnemyState
         if (enemy.agent.isActiveAndEnabled)
         {
             //Debug.Log("Agent is active and enabled, resuming chase");
-            enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+            enemy.agent.SetDestination(GetTarget().position);
         }
 
         if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
         {
-            ReachTargetAction();
+            enemy.state = new EnemyPayloadState(enemy);
         }
 
-        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.aggroRange)
+        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
         {
             //Debug.Log("Player in Aggro range");
             enemy.state = new EnemyAttackState(enemy);
-
+        }
+    }
+    private Transform GetTarget()
+    {
+        // Chooses target based on aggro range 
+        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.aggroRange)
+        {
+            Debug.Log("Targetting player");
+            return PlayerController3P.Instance.transform;
+        }
+        else
+        {
+            Debug.Log("Targetting payload");
+            return PayloadBehaviour.Instance.transform;
         }
     }
     public override void ReachTargetAction()
     { 
-        enemy.state = new EnemyPayloadState(enemy);
+
     }
 
     public override void OnLanding()
@@ -59,34 +73,47 @@ public class EnemyChaseState : EnemyState
 
 public class EnemyAttackState : EnemyState
 {
+    private float timer = 0f;
     public EnemyAttackState(EnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Attack State");
-        enemy.Animator.Play("Attack");
+        enemy.Attack();
     }
     public override void DoEnemyAction()
     {
-        if (enemy.agent.isActiveAndEnabled)
-            enemy.agent.SetDestination(PlayerController3P.Instance.transform.position);
+        //if (enemy.agent.isActiveAndEnabled)
+        //    enemy.agent.SetDestination(PlayerController3P.Instance.transform.position);
 
-        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) > enemy.aggroRange)
+        //if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) > enemy.aggroRange)
+        //{
+        //    enemy.StopAttack();
+        //    enemy.state = new EnemyChaseState(enemy);
+        //}
+        //else if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
+        //{
+        //    ReachTargetAction();
+        //}
+        //else
+        //{
+        //    enemy.StopAttack();
+        //}
+
+        // Keeps enemy facing player while attacking
+        enemy.gameObject.transform.LookAt(new Vector3(PlayerController3P.Instance.transform.position.x,
+            enemy.gameObject.transform.position.y, PlayerController3P.Instance.transform.position.z), Vector3.up);
+
+        // Cools down before starting to chase again 
+        timer += Time.deltaTime;
+        if (timer >= enemy.attackCooldown)
         {
-            enemy.StopAttack();
-            enemy.state = new EnemyChaseState(enemy);
-        }
-        else if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
-        {
+            timer = 0f;
             ReachTargetAction();
-        }
-        else
-        {
-            enemy.StopAttack();
         }
     }
 
     public override void ReachTargetAction()
     {
-        enemy.Attack();
+        enemy.state = new EnemyChaseState(enemy);
     }
     public override void OnLanding()
     {
@@ -211,5 +238,22 @@ public class EnemyKnockUpState : EnemyStunState
         Debug.Log("Landed");
 
         enemy.state = new EnemyChaseState(enemy);
+    }
+}
+public class EnemyDeathState : EnemyState
+{
+    public EnemyDeathState(EnemyBehaviour enemy) : base(enemy)
+    {
+        Debug.Log("Enemy entering Death State");
+    }
+    public override void DoEnemyAction()
+    {
+        
+    }
+    public override void ReachTargetAction()
+    {
+    }
+    public override void OnLanding()
+    {
     }
 }
