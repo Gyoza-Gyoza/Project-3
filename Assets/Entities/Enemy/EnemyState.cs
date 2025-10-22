@@ -22,7 +22,8 @@ public class EnemyChaseState : EnemyState
     public EnemyChaseState(EnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Chase State");
-        enemy.Animator.Play("Walk");
+        if (enemy.PreviousState is not EnemyKnockUpState) enemy.Animator.Play("Walk");
+        else enemy.Animator.SetTrigger("Recover");
         enemy.agent.isStopped = false;
         enemy.agent.updateRotation = true;
     }
@@ -37,13 +38,13 @@ public class EnemyChaseState : EnemyState
 
         if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
         {
-            enemy.state = new EnemyPayloadState(enemy);
+            enemy.State = new EnemyPayloadState(enemy);
         }
 
         if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
         {
             //Debug.Log("Player in Aggro range");
-            enemy.state = new EnemyAttackState(enemy);
+            enemy.State = new EnemyAttackState(enemy);
         }
     }
     private Transform GetTarget()
@@ -113,7 +114,7 @@ public class EnemyAttackState : EnemyState
 
     public override void ReachTargetAction()
     {
-        enemy.state = new EnemyChaseState(enemy);
+        enemy.State = new EnemyChaseState(enemy);
     }
     public override void OnLanding()
     {
@@ -144,7 +145,7 @@ public class EnemyPayloadState : EnemyState
         {
             PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
         }
-        enemy.state = new EnemyAttackState(enemy);
+        enemy.State = new EnemyAttackState(enemy);
     }
     public override void OnLanding()
     {
@@ -176,8 +177,8 @@ public class EnemyTauntState : EnemyState
 
 public class EnemyStunState : EnemyState
 {
-    private float timer;
-    private float duration;
+    protected float timer;
+    protected float duration;
     protected bool stunned;
     public EnemyStunState(EnemyBehaviour enemy, float duration) : base(enemy)
     {
@@ -197,7 +198,7 @@ public class EnemyStunState : EnemyState
     }
     public override void ReachTargetAction()
     {
-        enemy.state = new EnemyChaseState(enemy);
+        enemy.State = new EnemyChaseState(enemy);
     }
     public override void OnLanding()
     {
@@ -207,10 +208,14 @@ public class EnemyStunState : EnemyState
 public class EnemyKnockUpState : EnemyStunState
 {
     private Vector3 downwardForce;
+    private float recoveryTime;
+    private bool landed;
+    private float initialDrag;
     // Knockup state takes stun state and switches the stun duration to airtime duration
-    public EnemyKnockUpState(EnemyBehaviour enemy, float duration, Vector3 force, float downwardForce) : base(enemy, duration)
+    public EnemyKnockUpState(EnemyBehaviour enemy, float duration, Vector3 force, float downwardForce, float recoveryTime) : base(enemy, duration)
     {
         this.downwardForce = new Vector3(0f, -downwardForce, 0f);
+        this.recoveryTime = recoveryTime;
 
         // Ensures nothing funny happens 
         enemy.agent.enabled = false;
@@ -220,24 +225,55 @@ public class EnemyKnockUpState : EnemyStunState
         enemy.Rb.freezeRotation = true;
 
         // Applies force 
+        enemy.Rb.drag = enemy.upDrag;
         enemy.Rb.AddForce(force, ForceMode.Impulse);
+        stunned = true;
+    }
+    public override void DoEnemyAction()
+    {
+        timer += Time.deltaTime;
+
+        // First stage: in the air
+        // Reusing stun bool for airtime
+        if (stunned)
+        {
+            if (timer >= duration)
+            {
+                enemy.Rb.drag = enemy.downDrag;
+                enemy.Rb.AddForce(downwardForce, ForceMode.Impulse);
+                stunned = false;
+            }
+        }
+        // Second stage: landed and recovering 
+        else
+        {
+            if (landed)
+            {
+                if (timer >= recoveryTime)
+                {
+                    enemy.agent.nextPosition = enemy.transform.position;
+                    enemy.agent.enabled = true;
+                    enemy.Rb.isKinematic = true;
+                    enemy.Rb.freezeRotation = false;
+                    enemy.Rb.drag = initialDrag;
+
+                    enemy.State = new EnemyChaseState(enemy);
+                }
+            }
+        }
     }
     public override void ReachTargetAction()
     {
-        enemy.Rb.AddForce(downwardForce, ForceMode.Impulse);
+
     }
     public override void OnLanding()
     {
         if (stunned) return;
 
-        // Resets settings upon landing 
-        enemy.agent.nextPosition = enemy.transform.position;
-        enemy.agent.enabled = true;
-        enemy.Rb.isKinematic = true;
-        enemy.Rb.freezeRotation = false;
-        Debug.Log("Landed");
-
-        enemy.state = new EnemyChaseState(enemy);
+        landed = true;
+        timer = 0f;
+        enemy.Rb.velocity = new Vector3(enemy.Rb.velocity.x, 0f, enemy.Rb.velocity.z); // Nullify Y velocity on landing
+        enemy.Animator.Play("Land");
     }
 }
 public class EnemyDeathState : EnemyState

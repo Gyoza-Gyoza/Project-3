@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2613800612817234358}
   - component: {fileID: 9097011396309068352}
   - component: {fileID: 2687843969462325557}
+  - component: {fileID: 567848356574419701}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -73,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb22e14d2e049ef4f814fe7efee2af45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 2147483647
   initialDamage: 5
   initialMovementSpeed: 100
   animator: {fileID: 5169975208432417997}
@@ -83,10 +84,11 @@ MonoBehaviour:
   burnAdjAmount: 0.1
   speedAdjAmount: 0.1
   retreatAdjAmount: 0.1
-  hitUpforce: 5
-  hitHorforce: 5
-  fallForce: 0.2
+  hitUpforce: 8
+  hitHorforce: 10
+  fallForce: 3
   knockupDuration: 0.5
+  recoveryTime: 0.2
   ball: {fileID: 3766540546244074101}
   meshOffset: {fileID: 4457564212201973721}
   deathParticleSystem: {fileID: 3929770318114016586}
@@ -144,7 +146,28 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!65 &567848356574419701
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255745766610047194}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: -0.05, z: 0}
 --- !u!1 &2775048984678454219
 GameObject:
   m_ObjectHideFlags: 0
@@ -5248,7 +5271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5399272218880723207, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 3.5240269
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5399272218880723207, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -5256,12 +5279,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -5399272218880723207, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 2.549264e-14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -496703243754914968, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
+      objectReference: {fileID: 2100000, guid: 5e305ffca4536344ea03fe169925f739, type: 2}
     - target: {fileID: 919132149155446097, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Name
       value: Enemy_Basic
@@ -5277,18 +5300,18 @@ PrefabInstance:
     - target: {fileID: 3436248342685271414, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
+      objectReference: {fileID: 2100000, guid: 5e305ffca4536344ea03fe169925f739, type: 2}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 86.78947
+      value: 89.98021
       objectReference: {fileID: 0}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -0.00024352821
+      value: -0.000013660382
       objectReference: {fileID: 0}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -0.00024391107
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6657560127643677590, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_IsActive

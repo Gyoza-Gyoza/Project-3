@@ -19,8 +19,11 @@ public class EnemyBehaviour : Entity
     [Header("Physics Variables")]
     [SerializeField] private float hitUpforce = 1f;
     [SerializeField] private float hitHorforce = 1f;
+    public float upDrag = 1.5f;
     [SerializeField] private float fallForce = 1f;
+    public float downDrag = 0f;
     [SerializeField] private float knockupDuration = 1f;
+    [SerializeField] private float recoveryTime = 1f;
 
     [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
@@ -31,7 +34,15 @@ public class EnemyBehaviour : Entity
 
     // Internal Variables
     [HideInInspector] public NavMeshAgent agent;
-    public EnemyState state;
+    private EnemyState state;
+    public EnemyState State
+    {
+        get { return state; }
+        set { previousState = state; state = value; }
+    }
+    private EnemyState previousState;
+    public EnemyState PreviousState
+    { get { return previousState; } }
     private Rigidbody rb;
     public Rigidbody Rb
     { get { return rb; } }
@@ -123,7 +134,7 @@ public class EnemyBehaviour : Entity
             Vector3 force = Vector3.up * hitUpforce + direction * hitHorforce;
 
             // Apply it
-            state = new EnemyKnockUpState(this, knockupDuration, force, fallForce);
+            state = new EnemyKnockUpState(this, knockupDuration, force, fallForce, recoveryTime);
         }
     }
 
@@ -173,7 +184,11 @@ public class EnemyBehaviour : Entity
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             state.OnLanding();
         }
