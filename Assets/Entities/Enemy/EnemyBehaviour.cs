@@ -6,33 +6,56 @@ using UnityEngine.AI;
 
 public class EnemyBehaviour : Entity
 {
+    [SerializeField] private Animator animator;
+    public Animator Animator
+    { get { return animator; } }
     [SerializeField] private GameObject flickerSign;
-    [SerializeField] private float hitUpforce = 1f;
-    [SerializeField] private float hitHorforce = 1f;
-    [SerializeField] private int damageAmount = 1;
     [SerializeField] private HitBox hb;
     [SerializeField] private float deathTime = 1f;
     public float burnAdjAmount;
     public float speedAdjAmount;
     public float retreatAdjAmount;
-    [HideInInspector] public NavMeshAgent agent;
-    public EnemyState state;
-    private Rigidbody rb;
-    private Animator animator;
+
+    [Header("Physics Variables")]
+    [SerializeField] private float hitUpforce = 1f;
+    [SerializeField] private float hitHorforce = 1f;
+    public float upDrag = 1.5f;
+    [SerializeField] private float fallForce = 1f;
+    public float downDrag = 0f;
+    [SerializeField] private float knockupDuration = 1f;
+    [SerializeField] private float recoveryTime = 1f;
+
+    [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject meshOffset;
     [SerializeField] private GameObject deathParticleSystem;
     [SerializeField] private Material hitMat;
     [SerializeField] private Material oriMat;
 
+    // Internal Variables
+    [HideInInspector] public NavMeshAgent agent;
+    private EnemyState state;
+    public EnemyState State
+    {
+        get { return state; }
+        set { previousState = state; state = value; }
+    }
+    private EnemyState previousState;
+    public EnemyState PreviousState
+    { get { return previousState; } }
+    private Rigidbody rb;
+    public Rigidbody Rb
+    { get { return rb; } }
     private bool flying = false;
     private bool isAttacking = false;
     public bool IsAttacking
     { get { return isAttacking; } }
 
+    [Header("Enemy Stats")]
     public float payloadRange = 1f;
     public float aggroRange = 1f;
     public float attackRange = 1f;
+    public float attackCooldown = 1f;
 
     private GameObject target;
 
@@ -45,30 +68,29 @@ public class EnemyBehaviour : Entity
     protected override void Start()
     {
         base.Start();
-        state = new EnemyChaseState(this);
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         hb.HitBoxListeners += DamagePlayer;
-        animator = GetComponent<Animator>();
+        state = new EnemyChaseState(this);
     }
     private void Update()
     {
         state.DoEnemyAction();
-    }
-    public override void OnDeath()
-    {
-        //Do something else
-        Debug.LogError("Enemy on death called");
-        LevelDirector.Instance.EnemyCount -= 1;
-        StartCoroutine(DeathCouroutine());
-    }
 
+
+        if (Input.GetKeyDown(KeyCode.M)) KnockbackFromPlayer();
+    }
+    private void InitializeStats()
+    {
+        agent.speed = MovementSpeed; 
+
+    }
     IEnumerator DeathCouroutine()
     {
         agent.enabled = false;
         deathParticleSystem.SetActive(true);
         ball.SetActive(false);
-        KnockbackFromPlayer();
+        //KnockbackFromPlayer();
         float count = 0f;
         while (count <=  deathTime)
         {
@@ -82,38 +104,45 @@ public class EnemyBehaviour : Entity
         {
             yield return new WaitForSeconds(Time.deltaTime);
         }
-        GameObject.Destroy(this.gameObject);
+        GameObjectPool.ReturnObject(gameObject);
         yield break;
     }
 
     protected override void OnDamage()
     {
-        Debug.LogError("Enemy on damage called");
         StartCoroutine(DamageFlicker());
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
-        Stunned();
+        KnockbackFromPlayer();
     }
 
     private void Stunned()
     {
         agent.enabled = false;
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f , this.transform.position.z);
+        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f, this.transform.position.z);
         KnockbackFromPlayer();
     }
 
     private void KnockbackFromPlayer()
     {
-        Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
-        Vector3 horNormed = new Vector3(difference.x, 0, difference.z).normalized;
-        Vector3 force = Vector3.up * hitUpforce + horNormed * hitHorforce;
-        rb.AddForce(force, ForceMode.Impulse);
+        // Uncomment if else to prevent knockups in the air
+        //if (state is EnemyStunState) return;
+        //else
+        {
+            // Calculate force and direction 
+            Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
+            Vector3 direction = new Vector3(difference.x, 0, difference.z).normalized;
+            Vector3 force = Vector3.up * hitUpforce + direction * hitHorforce;
+
+            // Apply it
+            state = new EnemyKnockUpState(this, knockupDuration, force, fallForce, recoveryTime);
+        }
     }
 
     IEnumerator DamageFlicker()
     {
-        meshOffset.GetComponent<MeshRenderer>().material = hitMat;
+        meshOffset.GetComponent<SkinnedMeshRenderer>().material = hitMat;
         yield return new WaitForSeconds(.1f);
-        meshOffset.GetComponent<MeshRenderer>().material = oriMat;
+        meshOffset.GetComponent<SkinnedMeshRenderer>().material = oriMat;
         yield break;
     }
 
@@ -127,17 +156,16 @@ public class EnemyBehaviour : Entity
         if (toDamage.tag == "Player")
         {
             //toDamage.GetComponent<PlayerController>().TakeDamage(damageAmount);
-            toDamage.GetComponent<PlayerController3P>().TakeDamage(damageAmount);
+            toDamage.GetComponent<PlayerController3P>().TakeDamage(Damage);
         }
     }
     public void Attack()
     {
         Debug.Log("Enemy Attack Called");
-        //agent.isStopped = true;
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
         agent.updateRotation = false;
-        this.gameObject.transform.LookAt(PlayerController3P.Instance.transform);
-        //this.transform.rotation;
-        animator.SetTrigger("Attacking");
+        animator.Play("Attack");
     }
 
     public void StopAttack()
@@ -145,12 +173,29 @@ public class EnemyBehaviour : Entity
         agent.updateRotation = true;
         animator.ResetTrigger("Attacking");
     }
-
-private void OnCollisionEnter(Collision collision)
+    public override void OnDeath()
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") && flying == false)
+        //Do something else
+        Debug.Log("Enemy on death called");
+        LevelDirector.Instance.EnemyCount -= 1;
+        state = new EnemyDeathState(this);
+        StartCoroutine(DeathCouroutine());
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            agent.enabled = true;
+            state.OnLanding();
         }
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; 
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

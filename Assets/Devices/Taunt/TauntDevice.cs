@@ -12,8 +12,7 @@ public class TauntDevice : Device
     private SphereCollider col;
     private SphereCollider trigger;
     private Rigidbody rb;
-    //     private List<EnemyBehaviour> enemiesInRange = new List<EnemyBehaviour>();
-    private List<EnemyAI> enemiesInRange = new List<EnemyAI>();
+    private List<EnemyBehaviour> enemiesInRange = new List<EnemyBehaviour>();
 
     private void Awake()
     {
@@ -57,13 +56,13 @@ public class TauntDevice : Device
 
         foreach (Collider hit in hits)
         {
-            EnemyAI enemy = hit.GetComponent<EnemyAI>();
+            EnemyBehaviour enemy = hit.GetComponent<EnemyBehaviour>();
 
             if (enemy != null)
             {
                 enemiesInRange.Add(enemy);
             }
-            //nemy.state = new EnemyTauntState(enemy, transform);
+            enemy.State = new EnemyTauntState(enemy, transform);
         }
 
         isActive = true;
@@ -81,12 +80,11 @@ public class TauntDevice : Device
     private IEnumerator DeactiveCoroutine()
     {
         isActive = false;
-        foreach (EnemyAI enemy in enemiesInRange)
+        foreach (EnemyBehaviour enemy in enemiesInRange)
         {
-            if (enemy != null /*&& enemy.state is EnemyTauntState*/)
+            if (enemy != null && enemy.State is EnemyTauntState)
             {
-                //enemy.state = new EnemyChaseState(enemy);
-
+                enemy.State = new EnemyChaseState(enemy);
             }
         }
         // Play deactivation animation here
@@ -105,13 +103,13 @@ public class TauntDevice : Device
     {
         if (other.CompareTag("Enemy"))
         {
-            EnemyAI enemy = other.GetComponent<EnemyAI>();
+            EnemyBehaviour enemy = other.GetComponent<EnemyBehaviour>();
             if (enemy != null)
             {
                 if (!enemiesInRange.Contains(enemy))
                 {
                     enemiesInRange.Add(enemy);
-                    //enemy.state = new EnemyTauntState(enemy, transform);
+                    enemy.State = new EnemyTauntState(enemy, transform);
                 }
             }
         }
