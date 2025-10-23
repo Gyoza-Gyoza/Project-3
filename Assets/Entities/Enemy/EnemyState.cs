@@ -43,7 +43,6 @@ public class EnemyChaseState : EnemyState
 
         if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
         {
-            //Debug.Log("Player in Aggro range");
             enemy.State = new EnemyAttackState(enemy);
         }
     }

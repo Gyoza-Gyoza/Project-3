@@ -193,4 +193,9 @@ public class EnemyBehaviour : Entity
             state.OnLanding();
         }
     }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; 
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }
