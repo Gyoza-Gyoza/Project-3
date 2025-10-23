@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a0577b18a6a7f40bc7c5fe25e25c31, type: 3}
   m_Name: WBR_CP0_WP01
   m_EditorClassIdentifier: 
+  isCheckpoint: 0
   durationBetweenSpawns: 17
   enemyPerGroup: 12
   spawnMarkers:
@@ -22,6 +23,5 @@ MonoBehaviour:
   resumeThreshold: 5
   minSpawnDistance: 5
   maxSpawnDistance: 100
-  checkpoint: {x: 30.2, y: 2.2, z: 140.1}
+  escortPosition: {x: 30.2, y: 2.2, z: 140.1}
   payloadSpeed: 40
-  isCheckpoint: 0
