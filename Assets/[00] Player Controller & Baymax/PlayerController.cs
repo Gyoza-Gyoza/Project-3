@@ -921,7 +921,7 @@ public class PlayerController3P : Entity
         return isAttacking && attackTimer >= (dur - lead) && attackTimer <= dur;
     }
 
-    float GetCurrentAttackDuration()
+    float GetCurrentAttackDuration() //Used to determine snappiness of next input
     {
         switch (attackIndex)
         {

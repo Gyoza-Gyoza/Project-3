@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Timeline;
 using UnityEngine.UIElements;
 
 
@@ -30,6 +31,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject enemySpawnerPrefab;
     [SerializeField] private GameObject[] specialEnemyPrefabs;
     [SerializeField] private float specialEnemyChance = 0.1f;
     [SerializeField] private bool spawnEnemies = true;
@@ -45,7 +47,7 @@ public class LevelDirector : Singleton<LevelDirector>
       set { enemyCount = value; HUDController.Instance.UpdateTotalEnemyCount(enemyCount); }
     }
 
-
+    #region --- Level Length and Progress ---
     private float levelLength = 0f;
 
     private void calculateLevelLength()
@@ -98,6 +100,7 @@ public class LevelDirector : Singleton<LevelDirector>
             return Mathf.Clamp01(result); 
         } 
     }
+    #endregion
 
     #region ---- Death Zone Manipulation ----
 
@@ -269,19 +272,39 @@ public class LevelDirector : Singleton<LevelDirector>
             //    Debug.Log("Failed to find a location, spawn cancelled");
             //}
 
-            foreach(Vector3 marker in Stages[currentStage].SpawnMarkers)
+            if (spawners != null)
             {
-                for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
+                foreach (EnemySpawn spawn in spawners)
                 {
-                    GameObject enemyToSpawn = enemyPrefab;
-                    if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
-                    NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
-                    enemy.Warp(marker + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
-                    EnemyCount += 1;
-                    Debug.Log("Enemy count being added");
+                    if ( spawn.isSpawning == true)
+                    {
+                        GameObject enemyToSpawn = enemyPrefab;
+                        if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
+                        NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
+                        enemy.Warp(spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
+                        EnemyCount += 1;
+                        Debug.Log("Enemy count being added");
+                    }
                 }
             }
+            else
+            {
+                //Temp removal
 
+                //foreach (Vector3 marker in Stages[currentStage].SpawnMarkers)
+                //{
+                //    for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
+                //    {
+                //        GameObject enemyToSpawn = enemyPrefab;
+                //        if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
+                //        NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
+                //        enemy.Warp(marker + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
+                //        EnemyCount += 1;
+                //        Debug.Log("Enemy count being added");
+                //    }
+                //}
+
+            }
             timer = 0;
         }
     }
@@ -326,6 +349,8 @@ public class LevelDirector : Singleton<LevelDirector>
         timer = 0f;
         return true;
     }
+
+    #region ############################ NOT IN USE #############################
     // Getting a random spawn location around the player that has line of sight to the player
     private bool GetSpawnLocation(out Vector3 randomPosition)
     {
@@ -354,6 +379,7 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         return false;
     }
+
     // Gets a spawn location from the list of spawn markers that has line of sight to the player
     private Vector3 GetSpawnMarkerLocation()
     {
@@ -380,6 +406,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
         return pos;
     }
+    #endregion
 
     public void MarkLocation(Transform pos) => spawnMarker.Add(pos);
     #endregion
@@ -388,6 +415,10 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         currentStage++;
         currentStage = Mathf.Clamp(currentStage, 0, Stages.Length);
+
+        SpawnSpawners();
+
+        //Hardcode to start death zone on 3rd check point
         if (currentStage == 2)
         {
             StartDeathZone();
@@ -418,10 +449,26 @@ public class LevelDirector : Singleton<LevelDirector>
         }
     }
 
-    #region 
+    #region --- Enemy Spawner ---
 
+    private List<EnemySpawn> spawners;
 
+    private void SpawnSpawners()
+    {
+        foreach (EnemySpawn e in spawners) 
+        {
+            GameObject.Destroy(e.gameObject);
+        }
 
+        spawners = new List<EnemySpawn>();
+
+        foreach (Vector3 spawn in stages[currentStage].SpawnMarkers)
+        {
+            EnemySpawn just = GameObject.Instantiate(enemySpawnerPrefab, spawn, Quaternion.identity).GetComponent<EnemySpawn>();
+            spawners.Add(just);
+            just.StartSpawning();
+        }
+    }
     #endregion
 
     #region ------ Game State Manipulation ------

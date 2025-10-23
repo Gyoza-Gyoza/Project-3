@@ -4,9 +4,19 @@ using UnityEngine;
 
 public class EnemySpawn : Entity
 {
+    public bool isSpawning { get; private set; } = false;
+
+    public void StartSpawning()
+    { isSpawning = true; }
+    public void StopSpawning()
+    { isSpawning = false; }
+
+
     public override void OnDeath()
     {
-        //throw new System.NotImplementedException();
+        //base.OnDeath();
+        StopSpawning();
+        this.gameObject.SetActive(false);
     }
 
     protected override void OnDamage()
