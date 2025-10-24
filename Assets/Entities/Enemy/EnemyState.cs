@@ -275,20 +275,15 @@ public class EnemyKnockUpState : EnemyStunState
         enemy.Animator.Play("Land");
     }
 }
-public class EnemyDeathState : EnemyState
+public class EnemyDeathState : EnemyKnockUpState
 {
-    public EnemyDeathState(EnemyBehaviour enemy) : base(enemy)
+    public EnemyDeathState(EnemyBehaviour enemy, float duration, Vector3 force, float downwardForce, float recoveryTime) : base(enemy, duration, force, downwardForce, recoveryTime)
     {
-        Debug.Log("Enemy entering Death State");
-    }
-    public override void DoEnemyAction()
-    {
-        
-    }
-    public override void ReachTargetAction()
-    {
+
     }
     public override void OnLanding()
     {
+        if (stunned) return;
+        enemy.PlayDeathCoroutine();
     }
 }

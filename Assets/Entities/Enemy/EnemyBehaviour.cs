@@ -24,6 +24,7 @@ public class EnemyBehaviour : Entity
     public float downDrag = 0f;
     [SerializeField] private float knockupDuration = 1f;
     [SerializeField] private float recoveryTime = 1f;
+    [SerializeField] private float deathForceMultiplier = 2f;
 
     [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
@@ -77,8 +78,6 @@ public class EnemyBehaviour : Entity
     private void Update()
     {
         state.DoEnemyAction();
-
-        if (Input.GetKeyDown(KeyCode.M)) KnockbackFromPlayer();
     }
     private void InitializeStats()
     {
@@ -89,30 +88,24 @@ public class EnemyBehaviour : Entity
     {
         StartCoroutine(DamageFlicker());
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
-        KnockbackFromPlayer();
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), fallForce, recoveryTime);
     }
 
     private void Stunned()
     {
         agent.enabled = false;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f, this.transform.position.z);
-        KnockbackFromPlayer();
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), fallForce, recoveryTime);
     }
 
-    private void KnockbackFromPlayer()
+    private Vector3 CalculateKnockBack()
     {
-        // Uncomment if else to prevent knockups in the air
-        //if (state is EnemyStunState) return;
-        //else
-        {
-            // Calculate force and direction 
-            Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
-            Vector3 direction = new Vector3(difference.x, 0, difference.z).normalized;
-            Vector3 force = Vector3.up * hitUpforce + direction * hitHorforce;
+        // Calculate force and direction 
+        Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
+        Vector3 direction = new Vector3(difference.x, 0, difference.z).normalized;
+        Vector3 force = Vector3.up * hitUpforce + direction * hitHorforce;
 
-            // Apply it
-            state = new EnemyKnockUpState(this, knockupDuration, force, fallForce, recoveryTime);
-        }
+        return force;
     }
 
     protected override void OnHeal()
@@ -154,7 +147,10 @@ public class EnemyBehaviour : Entity
         //Do something else
         Debug.Log("Enemy on death called");
         LevelDirector.Instance.EnemyCount -= 1;
-        state = new EnemyDeathState(this);
+        state = new EnemyDeathState(this, knockupDuration, CalculateKnockBack() * deathForceMultiplier, fallForce, recoveryTime);
+    }
+    public void PlayDeathCoroutine()
+    {
         StartCoroutine(DeathCouroutine());
     }
     IEnumerator DeathCouroutine()
@@ -166,6 +162,7 @@ public class EnemyBehaviour : Entity
         while (count <= deathTime)
         {
             count += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(1f, 0f, 1f), count / deathTime);
             yield return new WaitForSeconds(Time.deltaTime);
         }
         mesh.SetActive(false);
