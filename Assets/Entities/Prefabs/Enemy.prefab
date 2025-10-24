@@ -83,12 +83,12 @@ MonoBehaviour:
   burnAdjAmount: 0.1
   speedAdjAmount: 0.1
   retreatAdjAmount: 0.1
-  hitUpforce: 8
-  hitHorforce: 10
-  upDrag: 1.5
-  fallForce: 3
-  downDrag: 0
-  knockupDuration: 0.5
+  hitUpforce: 11
+  hitHorforce: 9
+  upDrag: 0.1
+  fallForce: 11
+  downDrag: 0.05
+  knockupDuration: 0.2
   recoveryTime: 0.2
   ball: {fileID: 3766540546244074101}
   meshOffset: {fileID: 4457564212201973721}
