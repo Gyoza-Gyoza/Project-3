@@ -209,12 +209,14 @@ public class EnemyKnockUpState : EnemyStunState
     private Vector3 downwardForce;
     private float recoveryTime;
     private bool landed;
-    private float initialDrag;
+    private float downDrag;
     // Knockup state takes stun state and switches the stun duration to airtime duration
-    public EnemyKnockUpState(EnemyBehaviour enemy, float duration, Vector3 force, float downwardForce, float recoveryTime) : base(enemy, duration)
+    public EnemyKnockUpState(EnemyBehaviour enemy, float duration, Vector3 force,
+        float upDrag, float downwardForce, float downDrag, float recoveryTime) : base(enemy, duration)
     {
         this.downwardForce = new Vector3(0f, -downwardForce, 0f);
         this.recoveryTime = recoveryTime;
+        this.downDrag = downDrag;
 
         // Ensures nothing funny happens 
         enemy.agent.enabled = false;
@@ -224,7 +226,7 @@ public class EnemyKnockUpState : EnemyStunState
         enemy.Rb.freezeRotation = true;
 
         // Applies force 
-        enemy.Rb.drag = enemy.upDrag;
+        enemy.Rb.drag = upDrag;
         enemy.Rb.AddForce(force, ForceMode.Impulse);
         stunned = true;
     }
@@ -238,7 +240,7 @@ public class EnemyKnockUpState : EnemyStunState
         {
             if (timer >= duration)
             {
-                enemy.Rb.drag = enemy.downDrag;
+                enemy.Rb.drag = downDrag;
                 enemy.Rb.AddForce(downwardForce, ForceMode.Impulse);
                 stunned = false;
             }
@@ -254,7 +256,6 @@ public class EnemyKnockUpState : EnemyStunState
                     enemy.agent.enabled = true;
                     enemy.Rb.isKinematic = true;
                     enemy.Rb.freezeRotation = false;
-                    enemy.Rb.drag = initialDrag;
 
                     enemy.State = new EnemyChaseState(enemy);
                 }
@@ -277,7 +278,9 @@ public class EnemyKnockUpState : EnemyStunState
 }
 public class EnemyDeathState : EnemyKnockUpState
 {
-    public EnemyDeathState(EnemyBehaviour enemy, float duration, Vector3 force, float downwardForce, float recoveryTime) : base(enemy, duration, force, downwardForce, recoveryTime)
+    public EnemyDeathState(EnemyBehaviour enemy, float duration, Vector3 force,
+        float upDrag, float downwardForce, float downDrag, float recoveryTime) 
+        : base(enemy, duration, force, upDrag, downwardForce, downDrag, recoveryTime)
     {
 
     }

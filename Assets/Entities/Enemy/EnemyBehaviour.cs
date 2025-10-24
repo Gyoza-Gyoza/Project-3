@@ -19,12 +19,13 @@ public class EnemyBehaviour : Entity
     [Header("Physics Variables")]
     [SerializeField] private float hitUpforce = 1f;
     [SerializeField] private float hitHorforce = 1f;
-    public float upDrag = 1.5f;
+    [SerializeField] private float upDrag = 1.5f;
     [SerializeField] private float fallForce = 1f;
-    public float downDrag = 0f;
+    [SerializeField] private float downDrag = 0f;
     [SerializeField] private float knockupDuration = 1f;
     [SerializeField] private float recoveryTime = 1f;
-    [SerializeField] private float deathForceMultiplier = 2f;
+    [SerializeField] private float deathHitUpForce = 1f, deathHitHorForce = 1f, 
+        deathUpDrag = 1.5f, deathFallForce = 1f, deathDownDrag = 0f, deathKnockUpDuration = 1f;
 
     [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
@@ -78,6 +79,8 @@ public class EnemyBehaviour : Entity
     private void Update()
     {
         state.DoEnemyAction();
+
+        if (Input.GetKeyDown(KeyCode.M)) TakeDamage(Health);
     }
     private void InitializeStats()
     {
@@ -88,14 +91,14 @@ public class EnemyBehaviour : Entity
     {
         StartCoroutine(DamageFlicker());
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
-        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), fallForce, recoveryTime);
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), upDrag, fallForce, downDrag, recoveryTime);
     }
 
     private void Stunned()
     {
         agent.enabled = false;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f, this.transform.position.z);
-        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), fallForce, recoveryTime);
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), upDrag, fallForce, downDrag, recoveryTime);
     }
 
     private Vector3 CalculateKnockBack()
@@ -147,7 +150,7 @@ public class EnemyBehaviour : Entity
         //Do something else
         Debug.Log("Enemy on death called");
         LevelDirector.Instance.EnemyCount -= 1;
-        state = new EnemyDeathState(this, knockupDuration, CalculateKnockBack() * deathForceMultiplier, fallForce, recoveryTime);
+        state = new EnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack(), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
     }
     public void PlayDeathCoroutine()
     {
