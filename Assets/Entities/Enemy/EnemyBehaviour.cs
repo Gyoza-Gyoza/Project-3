@@ -91,22 +91,23 @@ public class EnemyBehaviour : Entity
     {
         StartCoroutine(DamageFlicker());
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
-        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), upDrag, fallForce, downDrag, recoveryTime);
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(false), upDrag, fallForce, downDrag, recoveryTime);
     }
 
     private void Stunned()
     {
         agent.enabled = false;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f, this.transform.position.z);
-        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(), upDrag, fallForce, downDrag, recoveryTime);
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(false), upDrag, fallForce, downDrag, recoveryTime);
     }
 
-    private Vector3 CalculateKnockBack()
+    private Vector3 CalculateKnockBack(bool death)
     {
         // Calculate force and direction 
         Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
         Vector3 direction = new Vector3(difference.x, 0, difference.z).normalized;
-        Vector3 force = Vector3.up * hitUpforce + direction * hitHorforce;
+        Vector3 force = Vector3.up * (death? deathHitUpForce : hitUpforce) 
+            + direction * (death ? deathHitHorForce : hitHorforce);
 
         return force;
     }
@@ -150,7 +151,7 @@ public class EnemyBehaviour : Entity
         //Do something else
         Debug.Log("Enemy on death called");
         LevelDirector.Instance.EnemyCount -= 1;
-        state = new EnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack(), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
+        state = new EnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack(true), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
     }
     public void PlayDeathCoroutine()
     {
