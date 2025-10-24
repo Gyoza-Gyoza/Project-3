@@ -60,7 +60,7 @@ public abstract class Entity : MonoBehaviour
     public virtual void TakeDamage(int amount)
     {
         health -= amount;
-        if (health > 0) OnDamage();
+        OnDamage();
         if (health <= 0)
         {
             health = 0; // Ensure health doesn't go below zero
