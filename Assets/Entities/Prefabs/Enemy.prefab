@@ -90,12 +90,12 @@ MonoBehaviour:
   downDrag: 0.05
   knockupDuration: 0.2
   recoveryTime: 0.2
-  deathHitUpForce: 11
-  deathHitHorForce: 9
+  deathHitUpForce: 13
+  deathHitHorForce: 12
   deathUpDrag: 0.1
-  deathFallForce: 11
-  deathDownDrag: 0.05
-  deathKnockUpDuration: 0.2
+  deathFallForce: 7
+  deathDownDrag: 0.1
+  deathKnockUpDuration: 0.3
   ball: {fileID: 3766540546244074101}
   mesh: {fileID: 7268949247338714290}
   skin: {fileID: 4457564212201973721}
