@@ -28,6 +28,7 @@ public class EnemyBehaviour : Entity
     [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject mesh;
+    [SerializeField] private GameObject skin;
     [SerializeField] private GameObject deathParticleSystem;
     [SerializeField] private Material hitMat;
     [SerializeField] private Material oriMat;
@@ -143,9 +144,9 @@ public class EnemyBehaviour : Entity
     }
     IEnumerator DamageFlicker()
     {
-        mesh.GetComponent<SkinnedMeshRenderer>().material = hitMat;
+        skin.GetComponent<SkinnedMeshRenderer>().material = hitMat;
         yield return new WaitForSeconds(.1f);
-        mesh.GetComponent<SkinnedMeshRenderer>().material = oriMat;
+        skin.GetComponent<SkinnedMeshRenderer>().material = oriMat;
         yield break;
     }
     public override void OnDeath()
