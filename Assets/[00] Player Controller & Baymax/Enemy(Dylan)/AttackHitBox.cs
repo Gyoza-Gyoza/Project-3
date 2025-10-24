@@ -226,18 +226,18 @@ public class AttackHitBox : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        if (_box == null) _box = GetComponent<BoxCollider>();
-        Gizmos.matrix = transform.localToWorldMatrix;
+    //void OnDrawGizmos()
+    //{
+    //    if (_box == null) _box = GetComponent<BoxCollider>();
+    //    Gizmos.matrix = transform.localToWorldMatrix;
 
-        Gizmos.color = (_active && _box.enabled) ? new Color(1f, 0f, 0f, 0.3f)
-                    : _box.enabled ? new Color(1f, 1f, 0f, 0.2f)
-                    : new Color(0f, 0f, 1f, 0.15f);
+    //    Gizmos.color = (_active && _box.enabled) ? new Color(1f, 0f, 0f, 0.3f)
+    //                : _box.enabled ? new Color(1f, 1f, 0f, 0.2f)
+    //                : new Color(0f, 0f, 1f, 0.15f);
 
-        Gizmos.DrawCube(_box.center, _box.size);
-        Gizmos.color = Color.black;
-        Gizmos.DrawWireCube(_box.center, _box.size);
-    }
+    //    Gizmos.DrawCube(_box.center, _box.size);
+    //    Gizmos.color = Color.black;
+    //    Gizmos.DrawWireCube(_box.center, _box.size);
+    //}
 #endif
 }
