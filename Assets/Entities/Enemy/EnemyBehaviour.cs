@@ -27,7 +27,7 @@ public class EnemyBehaviour : Entity
 
     [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
-    [SerializeField] private GameObject meshOffset;
+    [SerializeField] private GameObject mesh;
     [SerializeField] private GameObject deathParticleSystem;
     [SerializeField] private Material hitMat;
     [SerializeField] private Material oriMat;
@@ -77,35 +77,11 @@ public class EnemyBehaviour : Entity
     {
         state.DoEnemyAction();
 
-
         if (Input.GetKeyDown(KeyCode.M)) KnockbackFromPlayer();
     }
     private void InitializeStats()
     {
         agent.speed = MovementSpeed; 
-
-    }
-    IEnumerator DeathCouroutine()
-    {
-        agent.enabled = false;
-        deathParticleSystem.SetActive(true);
-        ball.SetActive(false);
-        //KnockbackFromPlayer();
-        float count = 0f;
-        while (count <=  deathTime)
-        {
-            count += Time.deltaTime;
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        meshOffset.SetActive(false);
-        ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
-        particleSystem.Stop();
-        while (particleSystem.IsAlive())
-        {
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        GameObjectPool.ReturnObject(gameObject);
-        yield break;
     }
 
     protected override void OnDamage()
@@ -138,14 +114,6 @@ public class EnemyBehaviour : Entity
         }
     }
 
-    IEnumerator DamageFlicker()
-    {
-        meshOffset.GetComponent<SkinnedMeshRenderer>().material = hitMat;
-        yield return new WaitForSeconds(.1f);
-        meshOffset.GetComponent<SkinnedMeshRenderer>().material = oriMat;
-        yield break;
-    }
-
     protected override void OnHeal()
     {
     }
@@ -173,6 +141,13 @@ public class EnemyBehaviour : Entity
         agent.updateRotation = true;
         animator.ResetTrigger("Attacking");
     }
+    IEnumerator DamageFlicker()
+    {
+        mesh.GetComponent<SkinnedMeshRenderer>().material = hitMat;
+        yield return new WaitForSeconds(.1f);
+        mesh.GetComponent<SkinnedMeshRenderer>().material = oriMat;
+        yield break;
+    }
     public override void OnDeath()
     {
         //Do something else
@@ -180,6 +155,33 @@ public class EnemyBehaviour : Entity
         LevelDirector.Instance.EnemyCount -= 1;
         state = new EnemyDeathState(this);
         StartCoroutine(DeathCouroutine());
+    }
+    IEnumerator DeathCouroutine()
+    {
+        agent.enabled = false;
+        deathParticleSystem.SetActive(true);
+        ball.SetActive(false);
+        float count = 0f;
+        while (count <= deathTime)
+        {
+            count += Time.deltaTime;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        mesh.SetActive(false);
+        ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
+        particleSystem.Stop();
+        while (particleSystem.IsAlive())
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        GameObjectPool.ReturnObject(gameObject);
+        yield break;
+    }
+    private void OnEnable()
+    {
+        agent.enabled = true;
+        ball.SetActive(true);
+        mesh.SetActive(true);
     }
 
     private void OnCollisionEnter(Collision collision)

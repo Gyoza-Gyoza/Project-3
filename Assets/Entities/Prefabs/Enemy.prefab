@@ -91,7 +91,7 @@ MonoBehaviour:
   knockupDuration: 0.2
   recoveryTime: 0.2
   ball: {fileID: 3766540546244074101}
-  meshOffset: {fileID: 4457564212201973721}
+  mesh: {fileID: 7268949247338714290}
   deathParticleSystem: {fileID: 3929770318114016586}
   hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   oriMat: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
@@ -5336,11 +5336,6 @@ PrefabInstance:
 --- !u!1 &3766540546244074101 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6657560127643677590, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
-  m_PrefabInstance: {fileID: 7503303751902079459}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4457564212201973721 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -3027153377421144518, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
   m_PrefabInstance: {fileID: 7503303751902079459}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &7268949247338714290 stripped
