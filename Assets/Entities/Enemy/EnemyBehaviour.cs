@@ -67,12 +67,14 @@ public class EnemyBehaviour : Entity
         get { return target; }
         set { target = value; }
     }
-
+    private void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
+    }
     protected override void Start()
     {
         base.Start();
-        agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
         hb.HitBoxListeners += DamagePlayer;
         state = new EnemyChaseState(this);
     }
@@ -93,14 +95,6 @@ public class EnemyBehaviour : Entity
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
         state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(false), upDrag, fallForce, downDrag, recoveryTime);
     }
-
-    private void Stunned()
-    {
-        agent.enabled = false;
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f, this.transform.position.z);
-        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(false), upDrag, fallForce, downDrag, recoveryTime);
-    }
-
     private Vector3 CalculateKnockBack(bool death)
     {
         // Calculate force and direction 
