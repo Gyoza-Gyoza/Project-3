@@ -68,46 +68,46 @@ public class AttackHitBox : MonoBehaviour
     /// Open the hit window; also sweeps for overlaps immediately.
     public void Begin(Transform attackerTransform)
     {
-        _attacker = attackerTransform;
-        _hitThisWindow.Clear();
-        _active = true;
-        _box.enabled = true;
+        //_attacker = attackerTransform;
+        //_hitThisWindow.Clear();
+        //_active = true;
+        //_box.enabled = true;
 
-        // reset decision state
-        _normalHitCount = 0;
-        _posSum = Vector3.zero;
-        _decidedThisSwing = false;
-        if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
+        //// reset decision state
+        //_normalHitCount = 0;
+        //_posSum = Vector3.zero;
+        //_decidedThisSwing = false;
+        //if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
 
-        // sweep anything already inside
-        Vector3 worldCenter = transform.TransformPoint(_box.center);
-        Vector3 halfExtents = Vector3.Scale(_box.size * 0.5f, transform.lossyScale);
-        Quaternion rot = transform.rotation;
+        //// sweep anything already inside
+        //Vector3 worldCenter = transform.TransformPoint(_box.center);
+        //Vector3 halfExtents = Vector3.Scale(_box.size * 0.5f, transform.lossyScale);
+        //Quaternion rot = transform.rotation;
 
-        var hits = Physics.OverlapBox(
-            worldCenter,
-            halfExtents + Vector3.one * 0.005f,
-            rot,
-            targetLayers,
-            QueryTriggerInteraction.Ignore
-        );
+        //var hits = Physics.OverlapBox(
+        //    worldCenter,
+        //    halfExtents + Vector3.one * 0.005f,
+        //    rot,
+        //    targetLayers,
+        //    QueryTriggerInteraction.Ignore
+        //);
 
-        for (int i = 0; i < hits.Length; i++)
-            ApplyHitIfValid(hits[i]);
+        //for (int i = 0; i < hits.Length; i++)
+        //    ApplyHitIfValid(hits[i]);
     }
 
     /// Close the hit window and finalize sfx/vfx choice if needed.
     public void End()
     {
         // finalize with whatever we’ve collected in this swing
-        FinalizeHitSfxDecision();
+        //FinalizeHitSfxDecision();
 
-        _active = false;
-        _attacker = null;
-        _hitThisWindow.Clear();
-        _box.enabled = false;
+        //_active = false;
+        //_attacker = null;
+        //_hitThisWindow.Clear();
+        //_box.enabled = false;
 
-        if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
+        //if (_decideRoutine != null) { StopCoroutine(_decideRoutine); _decideRoutine = null; }
     }
 
     void OnTriggerEnter(Collider other) { ApplyHitIfValid(other); }
@@ -216,18 +216,18 @@ public class AttackHitBox : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        if (_box == null) _box = GetComponent<BoxCollider>();
-        Gizmos.matrix = transform.localToWorldMatrix;
+    //void OnDrawGizmos()
+    //{
+    //    if (_box == null) _box = GetComponent<BoxCollider>();
+    //    Gizmos.matrix = transform.localToWorldMatrix;
 
-        Gizmos.color = (_active && _box.enabled) ? new Color(1f, 0f, 0f, 0.3f)
-                    : _box.enabled ? new Color(1f, 1f, 0f, 0.2f)
-                    : new Color(0f, 0f, 1f, 0.15f);
+    //    Gizmos.color = (_active && _box.enabled) ? new Color(1f, 0f, 0f, 0.3f)
+    //                : _box.enabled ? new Color(1f, 1f, 0f, 0.2f)
+    //                : new Color(0f, 0f, 1f, 0.15f);
 
-        Gizmos.DrawCube(_box.center, _box.size);
-        Gizmos.color = Color.black;
-        Gizmos.DrawWireCube(_box.center, _box.size);
-    }
+    //    Gizmos.DrawCube(_box.center, _box.size);
+    //    Gizmos.color = Color.black;
+    //    Gizmos.DrawWireCube(_box.center, _box.size);
+    //}
 #endif
 }

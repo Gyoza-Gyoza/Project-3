@@ -19,15 +19,18 @@ public class EnemyBehaviour : Entity
     [Header("Physics Variables")]
     [SerializeField] private float hitUpforce = 1f;
     [SerializeField] private float hitHorforce = 1f;
-    public float upDrag = 1.5f;
+    [SerializeField] private float upDrag = 1.5f;
     [SerializeField] private float fallForce = 1f;
-    public float downDrag = 0f;
+    [SerializeField] private float downDrag = 0f;
     [SerializeField] private float knockupDuration = 1f;
     [SerializeField] private float recoveryTime = 1f;
+    [SerializeField] private float deathHitUpForce = 1f, deathHitHorForce = 1f, 
+        deathUpDrag = 1.5f, deathFallForce = 1f, deathDownDrag = 0f, deathKnockUpDuration = 1f;
 
     [Header("Visual Variables")]
     [SerializeField] private GameObject ball;
-    [SerializeField] private GameObject meshOffset;
+    [SerializeField] private GameObject mesh;
+    [SerializeField] private GameObject skin;
     [SerializeField] private GameObject deathParticleSystem;
     [SerializeField] private Material hitMat;
     [SerializeField] private Material oriMat;
@@ -64,12 +67,14 @@ public class EnemyBehaviour : Entity
         get { return target; }
         set { target = value; }
     }
-
+    private void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
+    }
     protected override void Start()
     {
         base.Start();
-        agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
         hb.HitBoxListeners += DamagePlayer;
         state = new EnemyChaseState(this);
     }
@@ -77,73 +82,28 @@ public class EnemyBehaviour : Entity
     {
         state.DoEnemyAction();
 
-
-        if (Input.GetKeyDown(KeyCode.M)) KnockbackFromPlayer();
+        if (Input.GetKeyDown(KeyCode.M)) TakeDamage(Health);
     }
     private void InitializeStats()
     {
         agent.speed = MovementSpeed; 
-
-    }
-    IEnumerator DeathCouroutine()
-    {
-        agent.enabled = false;
-        deathParticleSystem.SetActive(true);
-        ball.SetActive(false);
-        //KnockbackFromPlayer();
-        float count = 0f;
-        while (count <=  deathTime)
-        {
-            count += Time.deltaTime;
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        meshOffset.SetActive(false);
-        ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
-        particleSystem.Stop();
-        while (particleSystem.IsAlive())
-        {
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-        GameObjectPool.ReturnObject(gameObject);
-        yield break;
     }
 
     protected override void OnDamage()
     {
         StartCoroutine(DamageFlicker());
         //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
-        KnockbackFromPlayer();
+        state = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack(false), upDrag, fallForce, downDrag, recoveryTime);
     }
-
-    private void Stunned()
+    private Vector3 CalculateKnockBack(bool death)
     {
-        agent.enabled = false;
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + .2f, this.transform.position.z);
-        KnockbackFromPlayer();
-    }
+        // Calculate force and direction 
+        Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
+        Vector3 direction = new Vector3(difference.x, 0, difference.z).normalized;
+        Vector3 force = Vector3.up * (death? deathHitUpForce : hitUpforce) 
+            + direction * (death ? deathHitHorForce : hitHorforce);
 
-    private void KnockbackFromPlayer()
-    {
-        // Uncomment if else to prevent knockups in the air
-        //if (state is EnemyStunState) return;
-        //else
-        {
-            // Calculate force and direction 
-            Vector3 difference = this.transform.position - PlayerController3P.Instance.transform.position;
-            Vector3 direction = new Vector3(difference.x, 0, difference.z).normalized;
-            Vector3 force = Vector3.up * hitUpforce + direction * hitHorforce;
-
-            // Apply it
-            state = new EnemyKnockUpState(this, knockupDuration, force, fallForce, recoveryTime);
-        }
-    }
-
-    IEnumerator DamageFlicker()
-    {
-        meshOffset.GetComponent<SkinnedMeshRenderer>().material = hitMat;
-        yield return new WaitForSeconds(.1f);
-        meshOffset.GetComponent<SkinnedMeshRenderer>().material = oriMat;
-        yield break;
+        return force;
     }
 
     protected override void OnHeal()
@@ -173,13 +133,51 @@ public class EnemyBehaviour : Entity
         agent.updateRotation = true;
         animator.ResetTrigger("Attacking");
     }
+    IEnumerator DamageFlicker()
+    {
+        skin.GetComponent<SkinnedMeshRenderer>().material = hitMat;
+        yield return new WaitForSeconds(.1f);
+        skin.GetComponent<SkinnedMeshRenderer>().material = oriMat;
+        yield break;
+    }
     public override void OnDeath()
     {
         //Do something else
         Debug.Log("Enemy on death called");
         LevelDirector.Instance.EnemyCount -= 1;
-        state = new EnemyDeathState(this);
+        state = new EnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack(true), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
+    }
+    public void PlayDeathCoroutine()
+    {
         StartCoroutine(DeathCouroutine());
+    }
+    IEnumerator DeathCouroutine()
+    {
+        agent.enabled = false;
+        deathParticleSystem.SetActive(true);
+        ball.SetActive(false);
+        float count = 0f;
+        while (count <= deathTime)
+        {
+            count += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(1f, 0f, 1f), count / deathTime);
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        mesh.SetActive(false);
+        ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
+        particleSystem.Stop();
+        while (particleSystem.IsAlive())
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        GameObjectPool.ReturnObject(gameObject);
+        yield break;
+    }
+    private void OnEnable()
+    {
+        agent.enabled = true;
+        ball.SetActive(true);
+        mesh.SetActive(true);
     }
 
     private void OnCollisionEnter(Collision collision)

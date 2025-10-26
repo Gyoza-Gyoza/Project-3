@@ -111,6 +111,13 @@ public class PlayerController3P : Entity
     public float plungeDuration = 0.5f;
     public string plungeTrigger = "Plunge";
 
+    // ------------------ HIT BOXES ------------------------------------------------------------------------------------------
+    [Header("Hitboxes")]
+    [SerializeField] private HitBox basicHB_1;
+    [SerializeField] private HitBox basicHB_2;
+    [SerializeField] private HitBox basicHB_3;
+    [SerializeField] private HitBox plungeHB;
+
     // ------------------ VFX ------------------------------------------------------------------------------------------
     [Header("VFX")]
     [SerializeField] private Transform VFXZeroPoint;
@@ -239,6 +246,8 @@ public class PlayerController3P : Entity
         }
 
         doubleJumpAvailable = enableDoubleJump && !groundedNow;
+
+        InitializeHitboxes();
     }
 
     void Update()
@@ -718,6 +727,20 @@ public class PlayerController3P : Entity
     // -------------------- Attack Input & Update ------------------------------------------------------------------------------------------
     #region Attack Inputs
 
+    private void InitializeHitboxes()
+    {
+        basicHB_1.HitBoxListeners += DealDamage;
+        basicHB_2.HitBoxListeners += DealDamage;
+        basicHB_3.HitBoxListeners += DealDamage;
+        plungeHB.HitBoxListeners += DealDamage;
+    }
+    private void DealDamage(GameObject entityToDamage)
+    {
+        if(entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        {
+            enemy.TakeDamage(Damage);
+        }
+    }
     void HandleAttackInput()
     {
         if (!controller.isGrounded && !isAttacking && !isPlunging) // Plunge: only if airborne and not already attacking
