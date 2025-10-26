@@ -27,7 +27,7 @@ public class AttackHitBox : MonoBehaviour
     [Range(0.01f, 0.2f)] public float decisionWindow = 0.08f;
 
     [Header("Aggregated VFX (one VFX per swing at avg hit position)")]
-    [Tooltip("Randomized pool used when the swing resolves as a SINGLE hit")]
+    [Tooltip("Randomized pool used when the swing resolves as a SINGLE hit      ")]
     public List<GameObject> singleHitVFXList = new List<GameObject>();
     public float singleHitVFXDuration = 0.9f;
 
@@ -115,6 +115,7 @@ public class AttackHitBox : MonoBehaviour
 
     void ApplyHitIfValid(Collider other)
     {
+        Debug.Log("Hit box collides");
         if (!_active) return;
 
         // layer mask

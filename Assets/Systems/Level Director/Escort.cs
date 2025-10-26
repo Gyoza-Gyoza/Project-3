@@ -34,13 +34,13 @@ public class Escort : Stage
 
             if (PayloadBehaviour.Instance.Agent.destination == escortPosition)
             {
-                Debug.Log("Position is correct");
+                //Debug.Log("Position is correct");
                 return PayloadBehaviour.Instance.Agent.remainingDistance;
             }
 
             else
             {
-                Debug.Log($"Position is incorrect, {escortDistance}, {PayloadBehaviour.Instance.Agent.remainingDistance}");
+                //Debug.Log($"Position is incorrect, {escortDistance}, {PayloadBehaviour.Instance.Agent.remainingDistance}");
 
                 return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; 
 
@@ -61,7 +61,7 @@ public class Escort : Stage
         //Basically check if the 
         if (PayloadBehaviour.Instance.Agent.hasPath && PayloadBehaviour.Instance.Agent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
+            //Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
 
             if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 1f)
             {
@@ -72,7 +72,7 @@ public class Escort : Stage
         }
         else
         {
-            Debug.LogWarning("Path incomplete or invalid!");
+            Debug.LogWarning("Path incomplete or invalid! (Do Payload Behaviour)");
         }
 
     }

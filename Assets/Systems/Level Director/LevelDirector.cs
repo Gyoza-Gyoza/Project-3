@@ -76,18 +76,18 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             // Subtracting by one to ignore the first escortPosition as it's the starting point
             float calc = 0.0001f;
-            Debug.Log($"calc was {calc}");
+            //Debug.Log($"calc was {calc}");
             //float progressionPerStage = 1f / (Stages.Length - 1);
             for (int i = 1; i < currentStage; i++)
             {
                 if (stages[i].Length > 0f)
                 {
-                    Debug.Log($"Length is  {stages[i].Length}");
+                    //Debug.Log($"Length is  {stages[i].Length}");
                     calc += stages[i].Length;
                 }
                 else
                 {
-                    Debug.Log("No length");
+                    //Debug.Log("No length");
                     calc += 0f;
                 }
             }
@@ -95,7 +95,7 @@ public class LevelDirector : Singleton<LevelDirector>
             calc += stages[currentStage].StageProgress * stages[currentStage].Length;
             float result = calc / levelLength;
 
-            Debug.Log($"Stage StageProgress: {result}, calc was {calc}, levelLength was {levelLength}");
+            //Debug.Log($"Stage StageProgress: {result}, calc was {calc}, levelLength was {levelLength}");
 
             return Mathf.Clamp01(result); 
         } 
@@ -451,16 +451,18 @@ public class LevelDirector : Singleton<LevelDirector>
 
     #region --- Enemy Spawner ---
 
-    private List<EnemySpawn> spawners;
+    private List<EnemySpawn> spawners = new List<EnemySpawn>();
 
     private void SpawnSpawners()
     {
-        foreach (EnemySpawn e in spawners) 
+        if (spawners != null && spawners.Count > 0)
         {
-            GameObject.Destroy(e.gameObject);
+            foreach (EnemySpawn e in spawners)
+            {
+                GameObject.Destroy(e.gameObject);
+            }
+            spawners.Clear();
         }
-
-        spawners = new List<EnemySpawn>();
 
         foreach (Vector3 spawn in stages[currentStage].SpawnMarkers)
         {

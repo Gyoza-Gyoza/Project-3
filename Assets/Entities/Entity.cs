@@ -59,6 +59,7 @@ public abstract class Entity : MonoBehaviour
     }
     public virtual void TakeDamage(int amount)
     {
+        Debug.Log($"Entity taking {amount}");
         health -= amount;
         if (health > 0) OnDamage();
         if (health <= 0)

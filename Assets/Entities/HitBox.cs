@@ -11,6 +11,7 @@ public class HitBox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Hitbox is on");
         HitBoxListeners(other.gameObject);
     }
 }

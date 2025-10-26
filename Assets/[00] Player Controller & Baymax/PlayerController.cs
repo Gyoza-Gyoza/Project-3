@@ -13,6 +13,12 @@ public class PlayerController3P : Entity
     [SerializeField] private Volume globalVolume;
     private bool dead = false;
 
+    [Header("Attaack Damages")]
+    public int attack1_Damage = 20;
+    public int attack2_Damage = 30;
+    public int attack3_Damage = 50;
+    public int plunge_Damage = 60;
+
     [Header("Regen")]
     public float healthRegenRate = 0.5f;
     public float healthRegenCooldown = 5f;
@@ -222,7 +228,7 @@ public class PlayerController3P : Entity
         foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
         {
             playerMat.Add(mr);
-            Debug.Log("Added mat " + mr.material.name);
+            //Debug.Log("Added mat " + mr.material.name);
         }
     }
 
@@ -729,18 +735,53 @@ public class PlayerController3P : Entity
 
     private void InitializeHitboxes()
     {
-        basicHB_1.HitBoxListeners += DealDamage;
-        basicHB_2.HitBoxListeners += DealDamage;
-        basicHB_3.HitBoxListeners += DealDamage;
-        plungeHB.HitBoxListeners += DealDamage;
+        basicHB_1.HitBoxListeners += Attack_1_Damage;
+        basicHB_2.HitBoxListeners += Attack_2_Damage;
+        basicHB_3.HitBoxListeners += Attack_3_Damage;
+        plungeHB.HitBoxListeners += Plunge_Damage;
     }
-    private void DealDamage(GameObject entityToDamage)
+
+    //private void DealDamage(GameObject entityToDamage)
+    //{
+    //    if(entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+    //    {
+    //        enemy.TakeDamage(Damage);
+    //    }
+    //}
+
+    public void Attack_1_Damage(GameObject entityToDamage)
     {
-        if(entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
-        {
-            enemy.TakeDamage(Damage);
-        }
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        { enemy.TakeDamage(attack1_Damage);}
+        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
+        { spawn.TakeDamage(attack1_Damage); Debug.Log($"Damaging spawn for{attack1_Damage}"); }
+
     }
+
+    public void Attack_2_Damage(GameObject entityToDamage)
+    {
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        { enemy.TakeDamage(attack2_Damage); }
+        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
+        { spawn.TakeDamage(attack2_Damage); }
+    }
+    public void Attack_3_Damage(GameObject entityToDamage)
+    {
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        { enemy.TakeDamage(attack3_Damage); }
+        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
+        { spawn.TakeDamage(attack3_Damage); }
+    }
+    public void Plunge_Damage(GameObject entityToDamage)
+    {
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        { enemy.TakeDamage(plunge_Damage); }
+        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
+        { spawn.TakeDamage(plunge_Damage); }
+    }
+
+
+
     void HandleAttackInput()
     {
         if (!controller.isGrounded && !isAttacking && !isPlunging) // Plunge: only if airborne and not already attacking
