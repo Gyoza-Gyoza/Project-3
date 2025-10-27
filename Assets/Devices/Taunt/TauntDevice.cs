@@ -12,7 +12,7 @@ public class TauntDevice : Device
     private SphereCollider col;
     private SphereCollider trigger;
     private Rigidbody rb;
-    private List<EnemyBehaviour> enemiesInRange = new List<EnemyBehaviour>();
+    private List<BasicEnemyBehaviour> enemiesInRange = new List<BasicEnemyBehaviour>();
 
     private void Awake()
     {
@@ -56,7 +56,7 @@ public class TauntDevice : Device
 
         foreach (Collider hit in hits)
         {
-            EnemyBehaviour enemy = hit.GetComponent<EnemyBehaviour>();
+            BasicEnemyBehaviour enemy = hit.GetComponent<BasicEnemyBehaviour>();
 
             if (enemy != null)
             {
@@ -80,7 +80,7 @@ public class TauntDevice : Device
     private IEnumerator DeactiveCoroutine()
     {
         isActive = false;
-        foreach (EnemyBehaviour enemy in enemiesInRange)
+        foreach (BasicEnemyBehaviour enemy in enemiesInRange)
         {
             if (enemy != null && enemy.State is EnemyTauntState)
             {
@@ -103,7 +103,7 @@ public class TauntDevice : Device
     {
         if (other.CompareTag("Enemy"))
         {
-            EnemyBehaviour enemy = other.GetComponent<EnemyBehaviour>();
+            BasicEnemyBehaviour enemy = other.GetComponent<BasicEnemyBehaviour>();
             if (enemy != null)
             {
                 if (!enemiesInRange.Contains(enemy))

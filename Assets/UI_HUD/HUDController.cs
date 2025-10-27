@@ -276,7 +276,7 @@ public class HUDController : Singleton<HUDController>
 
     public void StartHighlight()
     {
-        Debug.Log("Start Highling called");
+        //Debug.Log("Start Highling called");
         enemiesPushing += 1;
         if (!highlighting)
         {
@@ -296,7 +296,7 @@ public class HUDController : Singleton<HUDController>
 
     IEnumerator EnemyPushingWarning()
     {
-        Debug.Log("Enemy Push Coroutine called");
+        //Debug.Log("Enemy Push Coroutine called");
         while (highlighting)
         {
             // Fade In
@@ -310,7 +310,7 @@ public class HUDController : Singleton<HUDController>
 
     IEnumerator HighlightFadeTo(float target)
     {
-        Debug.Log("Highlight fade done");
+        //Debug.Log("Highlight fade done");
         while (!Mathf.Approximately(highlight.alpha, target))
         {
             highlight.alpha = Mathf.MoveTowards(

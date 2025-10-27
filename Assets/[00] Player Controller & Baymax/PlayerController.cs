@@ -751,33 +751,34 @@ public class PlayerController3P : Entity
 
     public void Attack_1_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
-        { enemy.TakeDamage(attack1_Damage);}
-        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
-        { spawn.TakeDamage(attack1_Damage); Debug.Log($"Damaging spawn for{attack1_Damage}"); }
-
+        Debug.Log(entityToDamage.name);
+        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        {
+            objectToDamage.TakeDamage(attack1_Damage);
+            Debug.Log($"{objectToDamage.GetType()}");
+        }
     }
 
     public void Attack_2_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
-        { enemy.TakeDamage(attack2_Damage); }
-        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
-        { spawn.TakeDamage(attack2_Damage); }
+        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        {
+            objectToDamage.TakeDamage(attack2_Damage);
+        }
     }
     public void Attack_3_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
-        { enemy.TakeDamage(attack3_Damage); }
-        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
-        { spawn.TakeDamage(attack3_Damage); }
+        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        {
+            objectToDamage.TakeDamage(attack3_Damage);
+        }
     }
     public void Plunge_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
-        { enemy.TakeDamage(plunge_Damage); }
-        if (entityToDamage.TryGetComponent<EnemySpawn>(out EnemySpawn spawn))
-        { spawn.TakeDamage(plunge_Damage); }
+        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        {
+            objectToDamage.TakeDamage(plunge_Damage);
+        }
     }
 
 

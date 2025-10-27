@@ -4,7 +4,7 @@ using UnityEngine;
 // Stores and manages core stats like health, damage, and movement speed.
 // Other scripts can use the provided properties to interact with these stats.
 // Inherit from this class and implement OnHeal, OnDamage, and OnDeath for custom behavior.
-public abstract class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour, IDamageable
 {
     [Header("Basic Stats")]
     [SerializeField] 
@@ -59,7 +59,7 @@ public abstract class Entity : MonoBehaviour
     }
     public virtual void TakeDamage(int amount)
     {
-        Debug.Log($"Entity taking {amount}");
+        Debug.Log($"{name} taking {amount} damage");
         health -= amount;
         if (health > 0) OnDamage();
         if (health <= 0)

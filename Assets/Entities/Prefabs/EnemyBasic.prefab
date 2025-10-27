@@ -10,12 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6444522432718995187}
   - component: {fileID: 5117323911281256085}
-  - component: {fileID: 2613800612817234358}
+  - component: {fileID: 5497905881130254482}
   - component: {fileID: 9097011396309068352}
   - component: {fileID: 2687843969462325557}
-  - component: {fileID: 567848356574419701}
-  m_Layer: 8
-  m_Name: Enemy
+  m_Layer: 0
+  m_Name: EnemyBasic
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,6 +36,7 @@ Transform:
   - {fileID: 3844051683712054794}
   - {fileID: 352352781496495909}
   - {fileID: 8046717021511470600}
+  - {fileID: 4375906028292822411}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!195 &5117323911281256085
@@ -61,7 +61,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2613800612817234358
+--- !u!114 &5497905881130254482
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,43 +70,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 1255745766610047194}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb22e14d2e049ef4f814fe7efee2af45, type: 3}
+  m_Script: {fileID: 11500000, guid: 782366458ff1900428e48039ba2ff8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 15
   initialDamage: 5
-  initialMovementSpeed: 100
+  initialMovementSpeed: 15
   animator: {fileID: 5169975208432417997}
-  flickerSign: {fileID: 2775048984678454219}
   hb: {fileID: 361636551238153991}
-  deathTime: 1
-  burnAdjAmount: 0.1
-  speedAdjAmount: 0.1
-  retreatAdjAmount: 0.1
-  hitUpforce: 11
-  hitHorforce: 9
-  upDrag: 0.1
-  fallForce: 11
-  downDrag: 0.05
-  knockupDuration: 0.2
-  recoveryTime: 0.2
-  deathHitUpForce: 13
-  deathHitHorForce: 12
-  deathUpDrag: 0.1
-  deathFallForce: 7
-  deathDownDrag: 0.1
-  deathKnockUpDuration: 0.3
+  burnAdjAmount: 0
+  speedAdjAmount: 0
+  retreatAdjAmount: 0
+  agent: {fileID: 0}
+  payloadRange: 20
+  aggroRange: 10
+  attackRange: 5
+  attackCooldown: 1
   ball: {fileID: 3766540546244074101}
   mesh: {fileID: 7268949247338714290}
   skin: {fileID: 4457564212201973721}
-  deathParticleSystem: {fileID: 3929770318114016586}
+  deathParticleSystem: {fileID: 8460919031876513103, guid: c9bf0f2fce717d54f93bfa4b6046415f, type: 3}
   hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
-  oriMat: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
-  agent: {fileID: 0}
-  payloadRange: 1
-  aggroRange: 15
-  attackRange: 4
-  attackCooldown: 1
+  oriMat: {fileID: 0}
+  deathTime: 1
+  hitUpforce: 10
+  hitHorforce: 9
+  upDrag: 1.5
+  fallForce: 6
+  downDrag: 0
+  knockupDuration: 0.25
+  recoveryTime: 1
+  deathHitUpForce: 1
+  deathHitHorForce: 1
+  deathUpDrag: 1.5
+  deathFallForce: 1
+  deathDownDrag: 0
+  deathKnockUpDuration: 1
 --- !u!54 &9097011396309068352
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -126,7 +125,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2304
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -147,7 +146,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 2304
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -155,27 +154,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!65 &567848356574419701
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1255745766610047194}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 0.3, z: 1}
-  m_Center: {x: 0, y: -0.15, z: 0}
 --- !u!1 &2775048984678454219
 GameObject:
   m_ObjectHideFlags: 0
@@ -5229,6 +5207,72 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &9022649021695638511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4375906028292822411}
+  - component: {fileID: 2368843780121032796}
+  - component: {fileID: 8552488528971415014}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4375906028292822411
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9022649021695638511}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6444522432718995187}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2368843780121032796
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9022649021695638511}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.3, z: 1}
+  m_Center: {x: 0, y: -0.15, z: 0}
+--- !u!114 &8552488528971415014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9022649021695638511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3a1ada61e59de14f85b6ca319f5c781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7503303751902079459
 PrefabInstance:
   m_ObjectHideFlags: 0
