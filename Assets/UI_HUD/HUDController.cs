@@ -149,7 +149,7 @@ public class HUDController : Singleton<HUDController>
             emberOrigin = playerEmber.value;
             playerEmberTarget = Mathf.Clamp(input, 0f, 1f);
             playerEmber.value = playerEmberTarget;
-            StartCoroutine(UpdateHealthSequence());
+            StartCoroutine(UpdatePlayerEmberSequence());
         }
         else
         {
