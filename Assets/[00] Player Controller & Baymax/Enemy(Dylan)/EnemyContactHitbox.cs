@@ -60,7 +60,7 @@ public class EnemyContactHitbox : MonoBehaviour
             if (ent == null) continue;
             if (now >= nextTick[ent])
             {
-                ent.TakeDamage(damage);
+                ent.TakeDamage(damage, gameObject);
                 nextTick[ent] = now + tickInterval;
             }
         }

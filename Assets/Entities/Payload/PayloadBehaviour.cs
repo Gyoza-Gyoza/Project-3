@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class PayloadBehaviour : MonoBehaviour
+public class PayloadBehaviour : Singleton<PayloadBehaviour>
 {
     private float hinderedMovementSpeed;
     [SerializeField] private float movementSpeed;
@@ -56,14 +56,11 @@ public class PayloadBehaviour : MonoBehaviour
     public float InteractRadius
     { get { return interactRadius * transform.localScale.z; } } // Hard coding :( //Its okay Hard coding is fine
     private bool playerInRange = false;
-    public static PayloadBehaviour Instance;
     private PayloadStepper stepper;
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(Instance);
-
+        base.Awake();
         agent = GetComponent<NavMeshAgent>();
         if (agent != null)
         {

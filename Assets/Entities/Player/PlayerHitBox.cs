@@ -11,8 +11,8 @@ public class PlayerHitBox : MonoBehaviour
         player = GetComponentInParent<PlayerController3P>();
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, GameObject source)
     {
-        player.TakeDamage(damage);
+        player.TakeDamage(damage, source);
     }
 }

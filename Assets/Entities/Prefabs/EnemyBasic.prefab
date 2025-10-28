@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5497905881130254482}
   - component: {fileID: 9097011396309068352}
   - component: {fileID: 2687843969462325557}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: EnemyBasic
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -77,35 +77,35 @@ MonoBehaviour:
   initialDamage: 5
   initialMovementSpeed: 15
   animator: {fileID: 5169975208432417997}
-  hb: {fileID: 361636551238153991}
   burnAdjAmount: 0
   speedAdjAmount: 0
   retreatAdjAmount: 0
   agent: {fileID: 0}
-  payloadRange: 20
-  aggroRange: 10
-  attackRange: 5
+  groundCheck: {fileID: 0}
+  payloadRange: 1
+  aggroRange: 15
+  attackRange: 4
   attackCooldown: 1
+  hb: {fileID: 361636551238153991}
+  skin: {fileID: 4457564212201973721}
+  hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   ball: {fileID: 3766540546244074101}
   mesh: {fileID: 7268949247338714290}
-  skin: {fileID: 4457564212201973721}
   deathParticleSystem: {fileID: 8460919031876513103, guid: c9bf0f2fce717d54f93bfa4b6046415f, type: 3}
-  hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
-  oriMat: {fileID: 0}
   deathTime: 1
-  hitUpforce: 10
+  hitUpforce: 11
   hitHorforce: 9
-  upDrag: 1.5
-  fallForce: 6
-  downDrag: 0
-  knockupDuration: 0.25
-  recoveryTime: 1
-  deathHitUpForce: 1
-  deathHitHorForce: 1
-  deathUpDrag: 1.5
-  deathFallForce: 1
-  deathDownDrag: 0
-  deathKnockUpDuration: 1
+  upDrag: 0.1
+  fallForce: 11
+  downDrag: 0.05
+  knockupDuration: 0.2
+  recoveryTime: 0.2
+  deathHitUpForce: 13
+  deathHitHorForce: 12
+  deathUpDrag: 0.1
+  deathFallForce: 7
+  deathDownDrag: 0.1
+  deathKnockUpDuration: 0.3
 --- !u!54 &9097011396309068352
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -152,7 +152,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 2}
+  m_Size: {x: 2, y: 1, z: 2}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &2775048984678454219
 GameObject:
@@ -5273,6 +5273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3a1ada61e59de14f85b6ca319f5c781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 5497905881130254482}
 --- !u!1001 &7503303751902079459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5336,7 +5337,7 @@ PrefabInstance:
     - target: {fileID: -496703243754914968, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 5e305ffca4536344ea03fe169925f739, type: 2}
+      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
     - target: {fileID: 919132149155446097, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Name
       value: Enemy_Basic
@@ -5352,7 +5353,7 @@ PrefabInstance:
     - target: {fileID: 3436248342685271414, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 5e305ffca4536344ea03fe169925f739, type: 2}
+      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 89.98021
