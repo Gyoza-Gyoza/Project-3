@@ -77,7 +77,6 @@ MonoBehaviour:
   initialDamage: 5
   initialMovementSpeed: 15
   animator: {fileID: 5169975208432417997}
-  hb: {fileID: 361636551238153991}
   burnAdjAmount: 0
   speedAdjAmount: 0
   retreatAdjAmount: 0
@@ -87,12 +86,12 @@ MonoBehaviour:
   aggroRange: 15
   attackRange: 4
   attackCooldown: 1
+  hb: {fileID: 361636551238153991}
+  skin: {fileID: 4457564212201973721}
+  hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   ball: {fileID: 3766540546244074101}
   mesh: {fileID: 7268949247338714290}
-  skin: {fileID: 4457564212201973721}
   deathParticleSystem: {fileID: 8460919031876513103, guid: c9bf0f2fce717d54f93bfa4b6046415f, type: 3}
-  hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
-  oriMat: {fileID: 0}
   deathTime: 1
   hitUpforce: 11
   hitHorforce: 9
@@ -5338,7 +5337,7 @@ PrefabInstance:
     - target: {fileID: -496703243754914968, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 5e305ffca4536344ea03fe169925f739, type: 2}
+      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
     - target: {fileID: 919132149155446097, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Name
       value: Enemy_Basic
@@ -5354,7 +5353,7 @@ PrefabInstance:
     - target: {fileID: 3436248342685271414, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 5e305ffca4536344ea03fe169925f739, type: 2}
+      objectReference: {fileID: 2100000, guid: b12544fad9a5ee3458bc08b2a4438695, type: 2}
     - target: {fileID: 5746564759562468899, guid: d993f2788a22ff44aa9bd804dea8bce7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 89.6686
