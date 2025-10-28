@@ -761,6 +761,7 @@ public class PlayerController3P : Entity
 
     public void Attack_2_Damage(GameObject entityToDamage)
     {
+        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
             objectToDamage.TakeDamage(attack2_Damage);
@@ -768,6 +769,7 @@ public class PlayerController3P : Entity
     }
     public void Attack_3_Damage(GameObject entityToDamage)
     {
+        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
             objectToDamage.TakeDamage(attack3_Damage);
@@ -775,6 +777,7 @@ public class PlayerController3P : Entity
     }
     public void Plunge_Damage(GameObject entityToDamage)
     {
+        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
             objectToDamage.TakeDamage(plunge_Damage);
