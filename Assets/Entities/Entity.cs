@@ -57,11 +57,11 @@ public abstract class Entity : MonoBehaviour, IDamageable
         health = Mathf.Clamp(health + amount, 0, maxHealth);
         OnHeal();
     }
-    public virtual void TakeDamage(int amount)
+    public virtual void TakeDamage(int amount, GameObject source)
     {
         Debug.Log($"{name} taking {amount} damage");
         health -= amount;
-        if (health > 0) OnDamage();
+        if (health > 0) OnDamage(source);
         if (health <= 0)
         {
             health = 0; // Ensure health doesn't go below zero
@@ -69,6 +69,6 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
     protected abstract void OnHeal();
-    protected abstract void OnDamage();
+    protected abstract void OnDamage(GameObject source);
     public abstract void OnDeath();
 }

@@ -204,7 +204,7 @@ public class TwoJawScript : MonoBehaviour
     {
         if ( toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage);
+            //toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage);
         }
     }
 }

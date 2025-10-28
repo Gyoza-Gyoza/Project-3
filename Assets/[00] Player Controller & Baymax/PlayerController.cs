@@ -751,36 +751,31 @@ public class PlayerController3P : Entity
 
     public void Attack_1_Damage(GameObject entityToDamage)
     {
-        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
-            objectToDamage.TakeDamage(attack1_Damage);
-            Debug.Log($"{objectToDamage.GetType()}");
+            objectToDamage.TakeDamage(attack1_Damage, gameObject);
         }
     }
 
     public void Attack_2_Damage(GameObject entityToDamage)
     {
-        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
-            objectToDamage.TakeDamage(attack2_Damage);
+            objectToDamage.TakeDamage(attack2_Damage, gameObject);
         }
     }
     public void Attack_3_Damage(GameObject entityToDamage)
     {
-        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
-            objectToDamage.TakeDamage(attack3_Damage);
+            objectToDamage.TakeDamage(attack3_Damage, gameObject);
         }
     }
     public void Plunge_Damage(GameObject entityToDamage)
     {
-        Debug.Log(entityToDamage.name);
         if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
         {
-            objectToDamage.TakeDamage(plunge_Damage);
+            objectToDamage.TakeDamage(plunge_Damage, gameObject);
         }
     }
 
@@ -1320,7 +1315,7 @@ public class PlayerController3P : Entity
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
     }
 
-    protected override void OnDamage()
+    protected override void OnDamage(GameObject source)
     {
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         StopRegen();

@@ -302,7 +302,7 @@ public class Discon_PlayerController : Entity
     {
         if (toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_1);
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_1, gameObject);
         }
     }
 
@@ -310,7 +310,7 @@ public class Discon_PlayerController : Entity
     {
         if (toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_2);
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_2, gameObject);
         }
     }
 
@@ -318,7 +318,7 @@ public class Discon_PlayerController : Entity
     {
         if (toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_3);
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_3, gameObject);
         }
     }
     #endregion
@@ -388,7 +388,7 @@ public class Discon_PlayerController : Entity
         //throw new System.NotImplementedException();
     }
 
-    protected override void OnDamage()
+    protected override void OnDamage(GameObject source)
     {
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
     }

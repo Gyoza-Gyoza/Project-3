@@ -10,17 +10,21 @@ public class EnemyBehaviour : Entity
     public Animator Animator
     { get { return animator; } }
     //[SerializeField] private GameObject flickerSign;
-    [SerializeField] private HitBox hb;
     public float burnAdjAmount;
     public float speedAdjAmount;
     public float retreatAdjAmount;
 
     // Internal Variables
     [HideInInspector] public NavMeshAgent agent;
+    [HideInInspector] public GroundCheck groundCheck;
     private EnemyState state;
     public EnemyState State
     {
-        get { return state; }
+        get 
+        {
+            Debug.Log($"{name} entering {state.GetType()} state");
+            return state; 
+        }
         set { previousState = state; state = value; }
     }
     private EnemyState previousState;
@@ -36,9 +40,6 @@ public class EnemyBehaviour : Entity
 
     [Header("Enemy Stats")]
     public float payloadRange = 1f;
-    public float aggroRange = 1f;
-    public float attackRange = 1f;
-    public float attackCooldown = 1f;
 
     private GameObject target;
 
@@ -47,7 +48,7 @@ public class EnemyBehaviour : Entity
         get { return target; }
         set { target = value; }
     }
-    private void Awake()
+    protected virtual void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
@@ -55,25 +56,17 @@ public class EnemyBehaviour : Entity
     protected override void Start()
     {
         base.Start();
-        hb.HitBoxListeners += DamagePlayer;
         InitializeStats();
     }
     private void Update()
     {
         state.DoEnemyAction();
 
-        if (Input.GetKeyDown(KeyCode.M)) TakeDamage(1);
+        if (Input.GetKeyDown(KeyCode.M)) TakeDamage(1, gameObject);
     }
     protected virtual void InitializeStats()
     {
         agent.speed = MovementSpeed; 
-    }
-    public virtual void DamagePlayer(GameObject toDamage)
-    {
-        if (toDamage.tag == "Player")
-        {
-            toDamage.GetComponent<PlayerController3P>().TakeDamage(Damage);
-        }
     }
     public void Attack()
     {
@@ -83,7 +76,6 @@ public class EnemyBehaviour : Entity
         agent.updateRotation = false;
         animator.Play("Attack");
     }
-
     public void StopAttack()
     {
         agent.updateRotation = true;
@@ -93,24 +85,16 @@ public class EnemyBehaviour : Entity
     {
         agent.enabled = true;
     }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red; 
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-    }
-
     protected override void OnHeal()
     {
 
     }
-
-    protected override void OnDamage()
+    protected override void OnDamage(GameObject source)
     {
 
     }
-
     public override void OnDeath()
     {
-
+        LevelDirector.Instance.EnemyCount -= 1;
     }
 }

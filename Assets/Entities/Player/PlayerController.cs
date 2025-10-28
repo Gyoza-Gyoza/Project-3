@@ -132,7 +132,7 @@ public class PlayerController : Entity
     {
     }
 
-    protected override void OnDamage()
+    protected override void OnDamage(GameObject source)
     {
         HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
     }
@@ -166,7 +166,7 @@ public class PlayerController : Entity
     {
         if (toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_1);
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_1, gameObject);
         }
     }
 
@@ -174,7 +174,7 @@ public class PlayerController : Entity
     {
         if (toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_2);
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_2, gameObject);
         }
     }
 
@@ -182,7 +182,7 @@ public class PlayerController : Entity
     {
         if (toDamage.tag == "Enemy")
         {
-            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_3);
+            toDamage.GetComponent<EnemyBehaviour>().TakeDamage(basicDamage_3, gameObject);
         }
     }
 

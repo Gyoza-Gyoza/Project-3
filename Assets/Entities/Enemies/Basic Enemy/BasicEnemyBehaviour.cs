@@ -5,13 +5,18 @@ using UnityEngine;
 
 public class BasicEnemyBehaviour : EnemyBehaviour
 {
+    public float aggroRange = 1f;
+    public float attackRange = 1f;
+    public float attackCooldown = 1f;
+    [SerializeField] private HitBox hb;
+
     [Header("Visual Variables")]
+    [SerializeField] protected GameObject skin;
+    [SerializeField] protected Material hitMat;
+    protected Material oriMat;
     [SerializeField] private GameObject ball;
     [SerializeField] private GameObject mesh;
-    [SerializeField] private GameObject skin;
     [SerializeField] private GameObject deathParticleSystem;
-    [SerializeField] private Material hitMat;
-    [SerializeField] private Material oriMat;
     [SerializeField] private float deathTime = 1f;
 
     [Header("Physics Variables")]
@@ -25,18 +30,22 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     [SerializeField]
     private float deathHitUpForce = 1f, deathHitHorForce = 1f,
         deathUpDrag = 1.5f, deathFallForce = 1f, deathDownDrag = 0f, deathKnockUpDuration = 1f;
+    protected override void Awake()
+    {
+        base.Awake();
+        oriMat = skin.GetComponent<SkinnedMeshRenderer>().material;
+        hb.HitBoxListeners += DamagePlayer;
+    }
     protected override void Start()
     {
         base.Start();
-        State = new EnemyChaseState(this);
-        oriMat = skin.GetComponent<SkinnedMeshRenderer>().material;
+        State = new BasicEnemyChaseState(this);
     }
-    protected override void OnDamage()
+    protected override void OnDamage(GameObject source)
     {
         StartCoroutine(DamageFlicker());
-        //Quaternion f = Quaternion.Euler(new Vector3(45, Vector3.Angle(PlayerController3P.Instance.transform.position, this.transform.position), 0)).normalized;
-        State = new EnemyKnockUpState(this, knockupDuration, CalculateKnockBack
-            (false, PlayerController3P.Instance.transform), upDrag, fallForce, downDrag, recoveryTime);
+        State = new BasicEnemyKnockUpState(this, knockupDuration, CalculateKnockBack
+            (false, source.transform), upDrag, fallForce, downDrag, recoveryTime);
         Debug.Log("Enemy on damage called");
     }
     private Vector3 CalculateKnockBack(bool death, Transform source)
@@ -49,24 +58,31 @@ public class BasicEnemyBehaviour : EnemyBehaviour
 
         return force;
     }
+    public override void OnDeath()
+    {
+        //Do something else
+        Debug.Log("Enemy on death called");
+        base.OnDeath();
+        State = new BasicEnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack
+            (true, PlayerController3P.Instance.transform), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
+    }
+    public virtual void DamagePlayer(GameObject toDamage)
+    {
+        if (toDamage.tag == "Player")
+        {
+            toDamage.GetComponent<PlayerController3P>().TakeDamage(Damage, gameObject);
+        }
+    }
+    public void PlayDeathCoroutine()
+    {
+        StartCoroutine(DeathCouroutine());
+    }
     IEnumerator DamageFlicker()
     {
         skin.GetComponent<SkinnedMeshRenderer>().material = hitMat;
         yield return new WaitForSeconds(.1f);
         skin.GetComponent<SkinnedMeshRenderer>().material = oriMat;
         yield break;
-    }
-    public override void OnDeath()
-    {
-        //Do something else
-        Debug.Log("Enemy on death called");
-        LevelDirector.Instance.EnemyCount -= 1;
-        State = new EnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack
-            (true, PlayerController3P.Instance.transform), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
-    }
-    public void PlayDeathCoroutine()
-    {
-        StartCoroutine(DeathCouroutine());
     }
     IEnumerator DeathCouroutine()
     {

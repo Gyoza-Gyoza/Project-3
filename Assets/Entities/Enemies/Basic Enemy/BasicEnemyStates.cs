@@ -28,12 +28,12 @@ public class BasicEnemyState : EnemyState
     {
     }
 }
-public class EnemyChaseState : BasicEnemyState
+public class BasicEnemyChaseState : BasicEnemyState
 {
-    public EnemyChaseState(BasicEnemyBehaviour enemy) : base(enemy)
+    public BasicEnemyChaseState(BasicEnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Chase State");
-        if (enemy.PreviousState is not EnemyKnockUpState) enemy.Animator.Play("Walk");
+        if (enemy.PreviousState is not BasicEnemyKnockUpState) enemy.Animator.Play("Walk");
         else enemy.Animator.SetTrigger("Recover");
         enemy.agent.isStopped = false;
         enemy.agent.updateRotation = true;
@@ -49,12 +49,12 @@ public class EnemyChaseState : BasicEnemyState
 
         if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
         {
-            enemy.State = new EnemyPayloadState(enemy);
+            enemy.State = new BasicEnemyPayloadState(enemy);
         }
 
         if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
         {
-            enemy.State = new EnemyAttackState(enemy);
+            enemy.State = new BasicEnemyAttackState(enemy);
         }
     }
     private Transform GetTarget()
@@ -71,10 +71,10 @@ public class EnemyChaseState : BasicEnemyState
     }
 }
 
-public class EnemyAttackState : BasicEnemyState
+public class BasicEnemyAttackState : BasicEnemyState
 {
     private float timer = 0f;
-    public EnemyAttackState(BasicEnemyBehaviour enemy) : base(enemy)
+    public BasicEnemyAttackState(BasicEnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Attack State");
         enemy.Attack();
@@ -113,13 +113,13 @@ public class EnemyAttackState : BasicEnemyState
 
     public override void ReachTargetAction()
     {
-        enemy.State = new EnemyChaseState(enemy);
+        enemy.State = new BasicEnemyChaseState(enemy);
     }
 }
-public class EnemyPayloadState : BasicEnemyState
+public class BasicEnemyPayloadState : BasicEnemyState
 {
     bool pushing = false;
-    public EnemyPayloadState(BasicEnemyBehaviour enemy) : base(enemy)
+    public BasicEnemyPayloadState(BasicEnemyBehaviour enemy) : base(enemy)
     {
 
     }
@@ -140,14 +140,14 @@ public class EnemyPayloadState : BasicEnemyState
         {
             PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
         }
-        enemy.State = new EnemyAttackState(enemy);
+        enemy.State = new BasicEnemyAttackState(enemy);
     }
 }
 
-public class EnemyTauntState : BasicEnemyState
+public class BasicEnemyTauntState : BasicEnemyState
 {
     private Transform target;
-    public EnemyTauntState(BasicEnemyBehaviour enemy, Transform target) : base(enemy)
+    public BasicEnemyTauntState(BasicEnemyBehaviour enemy, Transform target) : base(enemy)
     {
         this.target = target;
         enemy.agent.SetDestination(target.transform.position);
@@ -162,12 +162,14 @@ public class EnemyTauntState : BasicEnemyState
     }
 }
 
-public class EnemyStunState : BasicEnemyState
+public class BasicEnemyStunState : BasicEnemyState
 {
     protected float timer;
     protected float duration;
     protected bool stunned;
-    public EnemyStunState(BasicEnemyBehaviour enemy, float duration) : base(enemy)
+    public bool Stunned
+    { get { return stunned; } }
+    public BasicEnemyStunState(BasicEnemyBehaviour enemy, float duration) : base(enemy)
     {
         timer = 0f;
         this.duration = duration;
@@ -185,17 +187,17 @@ public class EnemyStunState : BasicEnemyState
     }
     public override void ReachTargetAction()
     {
-        enemy.State = new EnemyChaseState(enemy);
+        enemy.State = new BasicEnemyChaseState(enemy);
     }
 }
-public class EnemyKnockUpState : EnemyStunState
+public class BasicEnemyKnockUpState : BasicEnemyStunState
 {
     private Vector3 downwardForce;
     private float recoveryTime;
     private bool landed;
     private float downDrag;
     // Knockup state takes stun state and switches the stun duration to airtime duration
-    public EnemyKnockUpState(BasicEnemyBehaviour enemy, float duration, Vector3 force,
+    public BasicEnemyKnockUpState(BasicEnemyBehaviour enemy, float duration, Vector3 force,
         float upDrag, float downwardForce, float downDrag, float recoveryTime) : base(enemy, duration)
     {
         this.downwardForce = new Vector3(0f, -downwardForce, 0f);
@@ -227,6 +229,7 @@ public class EnemyKnockUpState : EnemyStunState
                 enemy.Rb.drag = downDrag;
                 enemy.Rb.AddForce(downwardForce, ForceMode.Impulse);
                 stunned = false;
+                landed = enemy.groundCheck.Grounded; 
             }
         }
         // Second stage: landed and recovering 
@@ -241,7 +244,7 @@ public class EnemyKnockUpState : EnemyStunState
                     enemy.Rb.isKinematic = true;
                     enemy.Rb.freezeRotation = false;
 
-                    enemy.State = new EnemyChaseState(enemy);
+                    enemy.State = new BasicEnemyChaseState(enemy);
                 }
             }
         }
@@ -256,14 +259,18 @@ public class EnemyKnockUpState : EnemyStunState
         enemy.Animator.Play("Land");
     }
 }
-public class EnemyDeathState : EnemyKnockUpState
+public class BasicEnemyDeathState : BasicEnemyKnockUpState
 {
-    public EnemyDeathState(BasicEnemyBehaviour enemy, float duration, Vector3 force,
+    public BasicEnemyDeathState(BasicEnemyBehaviour enemy, float duration, Vector3 force,
         float upDrag, float downwardForce, float downDrag, float recoveryTime)
         : base(enemy, duration, force, upDrag, downwardForce, downDrag, recoveryTime)
     {
-
-    }
+        if (enemy.groundCheck.Grounded)
+        {
+            stunned = false;
+            OnLanding();
+        }
+    }   
     public override void OnLanding()
     {
         if (stunned) return;

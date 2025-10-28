@@ -8,6 +8,11 @@ using UnityEngine;
 
 public class ChargerEnemyState : EnemyState
 {
+    protected ChargerEnemyBehaviour enemy;
+    public ChargerEnemyState(ChargerEnemyBehaviour enemy)
+    {
+        this.enemy = enemy;
+    }
     public override void Attack()
     {
 
@@ -33,9 +38,60 @@ public class ChargerEnemyState : EnemyState
 
     }
 }
-public class ChargerIdleState : ChargerEnemyState
+public class ChargerEnemyChaseState : ChargerEnemyState
 {
-    public ChargerIdleState(EnemyBehaviour enemy)
+    public ChargerEnemyChaseState(ChargerEnemyBehaviour enemy) : base(enemy)
     {
+        enemy.agent.enabled = true;
+        enemy.agent.updateRotation = true;
+        enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+        enemy.Animator.Play("Walk");
+    }
+}
+public class ChargerEnemyStunState : ChargerEnemyState
+{
+    private float duration;
+    private float timer;
+    protected bool stunned;
+    public bool Stunned
+    { get { return stunned; } }
+    public ChargerEnemyStunState(ChargerEnemyBehaviour enemy, float duration, Vector3 force) : base(enemy)
+    {
+        // Ensures nothing funny happens 
+        enemy.agent.enabled = false;
+        enemy.Rb.velocity = Vector3.zero;
+        enemy.Rb.angularVelocity = Vector3.zero;
+        enemy.Rb.isKinematic = false;
+        enemy.Rb.freezeRotation = true;
+
+        this.duration = duration;
+        stunned = true;
+        timer = 0f;
+        enemy.Animator.Play("Idle");
+        enemy.Rb.AddForce(force, ForceMode.Impulse);
+    }
+    public override void DoEnemyAction()
+    {
+        timer += Time.deltaTime;
+        if (timer >= duration)
+        {
+            stunned = false;
+            ReachTargetAction();
+        }
+    }
+    public override void ReachTargetAction()
+    {
+        enemy.State = new ChargerEnemyChaseState(enemy);
+    }
+}
+public class ChargerEnemyDeathState : ChargerEnemyStunState
+{
+    public ChargerEnemyDeathState(ChargerEnemyBehaviour enemy, float duration, Vector3 force) : base(enemy, duration, force)
+    {
+
+    }
+    public override void DoEnemyAction()
+    {
+        enemy.PlayDeathCoroutine();
     }
 }

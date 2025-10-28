@@ -62,7 +62,7 @@ public class TauntDevice : Device
             {
                 enemiesInRange.Add(enemy);
             }
-            enemy.State = new EnemyTauntState(enemy, transform);
+            enemy.State = new BasicEnemyTauntState(enemy, transform);
         }
 
         isActive = true;
@@ -82,9 +82,9 @@ public class TauntDevice : Device
         isActive = false;
         foreach (BasicEnemyBehaviour enemy in enemiesInRange)
         {
-            if (enemy != null && enemy.State is EnemyTauntState)
+            if (enemy != null && enemy.State is BasicEnemyTauntState)
             {
-                enemy.State = new EnemyChaseState(enemy);
+                enemy.State = new BasicEnemyChaseState(enemy);
             }
         }
         // Play deactivation animation here
@@ -109,7 +109,7 @@ public class TauntDevice : Device
                 if (!enemiesInRange.Contains(enemy))
                 {
                     enemiesInRange.Add(enemy);
-                    enemy.State = new EnemyTauntState(enemy, transform);
+                    enemy.State = new BasicEnemyTauntState(enemy, transform);
                 }
             }
         }
