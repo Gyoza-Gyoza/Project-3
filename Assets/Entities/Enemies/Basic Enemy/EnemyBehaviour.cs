@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyBehaviour : Entity, IPlayerDamageable
+public class EnemyBehaviour : Entity
 {
     [SerializeField] private Animator animator;
     public Animator Animator
