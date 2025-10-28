@@ -4,7 +4,7 @@ using UnityEngine;
 // Stores and manages core stats like health, damage, and movement speed.
 // Other scripts can use the provided properties to interact with these stats.
 // Inherit from this class and implement OnHeal, OnDamage, and OnDeath for custom behavior.
-public abstract class Entity : MonoBehaviour, IDamageable
+public abstract class Entity : MonoBehaviour
 {
     [Header("Basic Stats")]
     [SerializeField] 

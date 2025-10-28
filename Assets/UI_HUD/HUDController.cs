@@ -67,6 +67,9 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private CanvasGroup winGroup;
     [SerializeField] private CanvasGroup loseGroup;
 
+    [Header("Devices / Abilities")]
+    [SerializeField] private Slider tauntSlider;
+
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
 
@@ -398,6 +401,13 @@ public class HUDController : Singleton<HUDController>
     public void QuitPressed()
     {
         LevelDirector.Instance.Quit();
+    }
+    #endregion
+
+    #region Abilities
+    public void SetTauntSlider(float input)
+    {
+        tauntSlider.value = input;
     }
     #endregion
 

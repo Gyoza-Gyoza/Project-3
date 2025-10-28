@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController3P : Entity
+public class PlayerController3P : Entity, IEnemyDamageable
 {
     [Header("Refs")]
     public ThirdPersonCamera camRig;
@@ -116,6 +116,10 @@ public class PlayerController3P : Entity
     public float plungeDownwardSpeed = 15f;
     public float plungeDuration = 0.5f;
     public string plungeTrigger = "Plunge";
+    public float heightModifierPerOneExtra = .05f;
+    public float heightThreshold = 3.5f;
+    private float _plungemodifierCount = 0f;
+    private Vector3 _plungeStartPoint = new Vector3(0,0,0);
 
     // ------------------ HIT BOXES ------------------------------------------------------------------------------------------
     [Header("Hitboxes")]
@@ -147,6 +151,10 @@ public class PlayerController3P : Entity
     [SerializeField] private float throwForce = 10f;
     [SerializeField] private float upwardsForce = 5f;
     [SerializeField] private Transform throwPoint;
+    [SerializeField] private float tauntCooldown = 1f;
+    bool _tauntThrown = false;
+
+
 
     // ----------------- AUDIO ------------------------------------------------------------------------------------------
     [SerializeField] private AudioSource walkAudioSource;
@@ -752,7 +760,7 @@ public class PlayerController3P : Entity
     public void Attack_1_Damage(GameObject entityToDamage)
     {
         Debug.Log(entityToDamage.name);
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<IPlayerDamageable>(out IPlayerDamageable objectToDamage))
         {
             objectToDamage.TakeDamage(attack1_Damage);
             Debug.Log($"{objectToDamage.GetType()}");
@@ -762,7 +770,7 @@ public class PlayerController3P : Entity
     public void Attack_2_Damage(GameObject entityToDamage)
     {
         Debug.Log(entityToDamage.name);
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<IPlayerDamageable>(out IPlayerDamageable objectToDamage))
         {
             objectToDamage.TakeDamage(attack2_Damage);
         }
@@ -770,7 +778,7 @@ public class PlayerController3P : Entity
     public void Attack_3_Damage(GameObject entityToDamage)
     {
         Debug.Log(entityToDamage.name);
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<IPlayerDamageable>(out IPlayerDamageable objectToDamage))
         {
             objectToDamage.TakeDamage(attack3_Damage);
         }
@@ -778,9 +786,10 @@ public class PlayerController3P : Entity
     public void Plunge_Damage(GameObject entityToDamage)
     {
         Debug.Log(entityToDamage.name);
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<IPlayerDamageable>(out IPlayerDamageable objectToDamage))
         {
-            objectToDamage.TakeDamage(plunge_Damage);
+            objectToDamage.TakeDamage((int)((float)plunge_Damage * (1f + _plungemodifierCount)));
+            Debug.Log($"Damage done, modifier is at {(1f + _plungemodifierCount)}");
         }
     }
 
@@ -1136,6 +1145,14 @@ public class PlayerController3P : Entity
         plungeTimer = 0f;
         plungeImpulseStarted = false;
 
+
+        //Eze's Code Start
+        _plungemodifierCount = 0f;
+
+        _plungeStartPoint = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+
+        //Eze's Code End
+
         velocity = Vector3.zero;  // stop dead
 
         plungeDir = transform.forward; plungeDir.y = 0f;
@@ -1155,6 +1172,19 @@ public class PlayerController3P : Entity
         if (!isPlunging) return;
 
         plungeTimer += Time.deltaTime;
+
+        //Eze's Code Start
+
+        float heightTraveled = _plungeStartPoint.y - this.transform.position.y;
+
+
+
+        if (heightTraveled >= heightThreshold)
+        {
+            _plungemodifierCount = (heightTraveled - heightThreshold) * heightModifierPerOneExtra;
+        }
+
+        //Eze's Code End
 
         if (!plungeImpulseStarted && plungeTimer >= plungeDelay)
             plungeImpulseStarted = true;
@@ -1183,6 +1213,14 @@ public class PlayerController3P : Entity
         }
 
         camRig.Shake(40.0f, 0.5f);
+
+        //Eze's Code Start
+        Debug.Log($"Plunge end, modifier at {(1f + _plungemodifierCount)}");
+        //_plungemodifierCount = 0f;
+        //Eze's Code End
+
+
+
     }
 
     #endregion
@@ -1197,15 +1235,49 @@ public class PlayerController3P : Entity
             ThrowDevice();
         }
     }
+
     void ThrowDevice()
     {
-        // spawn grenade
-        GameObject grenade = Instantiate(tauntDevicePrefab, throwPoint.position, throwPoint.rotation);
+        if (!_tauntThrown)
+        {
+            // spawn grenade
+            GameObject grenade = Instantiate(tauntDevicePrefab, throwPoint.position, throwPoint.rotation);
 
-        // apply physics
-        Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        Vector3 force = Camera.main.transform.forward * throwForce + Vector3.up * upwardsForce;
-        rb.AddForce(force, ForceMode.VelocityChange);
+            // apply physics
+            Rigidbody rb = grenade.GetComponent<Rigidbody>();
+            Vector3 force = Camera.main.transform.forward * throwForce + Vector3.up * upwardsForce;
+            rb.AddForce(force, ForceMode.VelocityChange);
+
+            StartCoroutine(TauntCooldown());    
+        }
+        else
+        {
+            Debug.Log("Taunt is on cooldown");
+        }
+    }
+
+
+    IEnumerator TauntCooldown()
+    {
+        float count = 0f;
+        _tauntThrown = true;
+        while (_tauntThrown)
+        {
+            count += Time.fixedDeltaTime;
+            if (count >= tauntCooldown)
+            {
+                _tauntThrown = false;
+            }
+            else
+            {
+                HUDController.Instance.SetTauntSlider(count / tauntCooldown);
+            }
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+        }
+
+        HUDController.Instance.SetTauntSlider(1f);
+
+        yield break;
     }
 
     #endregion
