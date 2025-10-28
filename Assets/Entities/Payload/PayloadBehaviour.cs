@@ -6,9 +6,10 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class PayloadBehaviour : Entity
+public class PayloadBehaviour : MonoBehaviour
 {
     private float hinderedMovementSpeed;
+    [SerializeField] private float movementSpeed;
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
     private float extraReturnSpeed;
@@ -75,9 +76,8 @@ public class PayloadBehaviour : Entity
         interactRadius = GetComponent<CapsuleCollider>().radius;
         IniLineRenderer();
     }
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         stages = LevelDirector.Instance.Stages;
 
         InitializeAgent();
@@ -284,7 +284,7 @@ public class PayloadBehaviour : Entity
     #region ------------------Enemy Surrounding Behaviour----------------
     public void EnemyPushing(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
     {
-        Debug.Log("Enemy Pushing");
+        //Debug.Log("Enemy Pushing");
         extraBurningRate += burnAdj;
         hinderedMovementSpeed += moveSpeedAdj;
         //extraReturnSpeed += returnSpeedAdj;
@@ -294,7 +294,7 @@ public class PayloadBehaviour : Entity
 
     public void EnemyExit(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
     {
-        Debug.Log("Enemy Stop Pushing");
+        //Debug.Log("Enemy Stop Pushing");
         extraBurningRate -= burnAdj;
         hinderedMovementSpeed -= moveSpeedAdj;
         //extraReturnSpeed -= returnSpeedAdj;
@@ -306,7 +306,7 @@ public class PayloadBehaviour : Entity
     private void InitializeAgent()
     {
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-        agent.speed = MovementSpeed;
+        agent.speed = movementSpeed;
         agent.angularSpeed = turnSpeed;
 
         agent.updatePosition = false;
@@ -317,7 +317,7 @@ public class PayloadBehaviour : Entity
     }
     public void CompleteStage()
     {
-        Debug.Log($"Complete Stage called for stage {LevelDirector.Instance.CurrentStage + 1}");
+        //Debug.Log($"Complete Stage called for stage {LevelDirector.Instance.CurrentStage + 1}");
         LevelDirector.Instance.CompletedStage();
         if (LevelDirector.Instance.CurrentStage < stages.Length)
         {
@@ -337,16 +337,6 @@ public class PayloadBehaviour : Entity
         escort.EscortDistance = agent.remainingDistance;
 
         yield break;
-    }
-    protected override void OnHeal()
-    {
-    }
-    protected override void OnDamage()
-    {
-    }
-    public override void OnDeath()
-    {
-
     }
 
 

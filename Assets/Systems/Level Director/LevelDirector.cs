@@ -283,7 +283,7 @@ public class LevelDirector : Singleton<LevelDirector>
                         NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
                         enemy.Warp(spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
                         EnemyCount += 1;
-                        Debug.Log("Enemy count being added");
+                        //Debug.Log("Enemy count being added");
                     }
                 }
             }
