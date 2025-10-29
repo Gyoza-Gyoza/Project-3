@@ -10,7 +10,7 @@ public class KnockbackTrigger : MonoBehaviour
     {
         if (other.TryGetComponent<IDamageable>(out IDamageable basicEnemy))
         {
-            if (other.gameObject != parent) basicEnemy.TakeDamage(0, gameObject);
+            if (basicEnemy is BasicEnemyBehaviour) basicEnemy.TakeDamage(0, gameObject);
         }
     }
 }

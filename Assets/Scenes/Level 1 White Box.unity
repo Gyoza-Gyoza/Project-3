@@ -4712,8 +4712,14 @@ MonoBehaviour:
   lost: 0
   enemyPrefab: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
   enemySpawnerPrefab: {fileID: 6322387330183314530, guid: d5a1d96fdf9c56c4b96daa5856bb8893, type: 3}
+  presetStages:
+  - chargerSpawnPoint: {fileID: 0}
+    chargerAmountSpawned: 0
+    drainerSpawnPoint: {fileID: 0}
+    drainerAmountSpawned: 0
   specialEnemyPrefabs:
-  - {fileID: 6260911112667375902, guid: cae3c7814e496a5459f69a5103f9082e, type: 3}
+  - {fileID: 3454796461600382455, guid: 14becbd755d878048b9d5c4652a07643, type: 3}
+  - {fileID: 579452246062201755, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
   specialEnemyChance: 0.1
   spawnEnemies: 1
   enemyCount: 0
@@ -6243,6 +6249,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2094281173788186747, guid: 31256e47891ec06409d677ee3d946dc0, type: 3}
   m_PrefabInstance: {fileID: 160049012}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &489266613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 489266614}
+  m_Layer: 0
+  m_Name: DrainerSpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &489266614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489266613}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1817979197}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &489398577 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7879565257049111681, guid: 3dd23752075711549b79b49a119d72b7, type: 3}
@@ -15437,6 +15474,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6938504882919160368, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
+      propertyPath: skin
+      value: 
+      objectReference: {fileID: 1911550137}
+    - target: {fileID: 6938504882919160368, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
+      propertyPath: hitMat
+      value: 
+      objectReference: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17395,6 +17440,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5202077376901847588, guid: b504009b549e74f44af6c636d22ea6bf, type: 3}
   m_PrefabInstance: {fileID: 1354476744}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1366018839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1366018840}
+  m_Layer: 0
+  m_Name: ChargerSpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1366018840
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366018839}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1817979197}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1366508424
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22360,6 +22436,39 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: -0.072000004, y: 1.5910001, z: -0.097}
   m_TimeToStationary: 0.5
+--- !u!1 &1817979196
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1817979197}
+  m_Layer: 0
+  m_Name: SpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1817979197
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817979196}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1366018840}
+  - {fileID: 489266614}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1818091809
 GameObject:
   m_ObjectHideFlags: 0
@@ -24340,6 +24449,11 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0.040000003, y: -0.046000004, z: -0.068}
   m_TimeToStationary: 0.5
+--- !u!137 &1911550137 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6920748275748137612, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
+  m_PrefabInstance: {fileID: 1241955675}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1923880881
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28085,3 +28199,4 @@ SceneRoots:
   - {fileID: 463232168}
   - {fileID: 1384731607}
   - {fileID: 1241955675}
+  - {fileID: 1817979197}
