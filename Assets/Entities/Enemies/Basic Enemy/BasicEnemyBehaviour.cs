@@ -76,9 +76,9 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     }
     public virtual void DamagePlayer(GameObject toDamage)
     {
-        if (toDamage.tag == "Player")
+        if (toDamage.TryGetComponent<PlayerController3P>(out PlayerController3P player))
         {
-            toDamage.GetComponent<PlayerController3P>().TakeDamage(Damage, gameObject);
+            player.TakeDamage(Damage, gameObject);
         }
     }
     public void PlayDeathCoroutine()

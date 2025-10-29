@@ -751,7 +751,7 @@ public class PlayerController3P : Entity
 
     public void Attack_1_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(attack1_Damage, gameObject);
         }
@@ -759,21 +759,21 @@ public class PlayerController3P : Entity
 
     public void Attack_2_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(attack2_Damage, gameObject);
         }
     }
     public void Attack_3_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(attack3_Damage, gameObject);
         }
     }
     public void Plunge_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(plunge_Damage, gameObject);
         }

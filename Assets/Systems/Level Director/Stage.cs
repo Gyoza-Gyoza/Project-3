@@ -22,6 +22,8 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private int resumeThreshold;
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
+    [SerializeField] private float specialEnemyChance;
+    [SerializeField] private bool[] specialEnemiesIncluded;
     private float progress = 0f;
     private float lengthFromPrevious;
 
@@ -47,7 +49,10 @@ public abstract class Stage : ScriptableObject
     { get { return lengthFromPrevious; } set { lengthFromPrevious = value; }}
     public bool IsCheckpoint
     { get { return isCheckpoint; }}
-
+    public float SpecialEnemyChance
+    { get { return specialEnemyChance; } }
+    public bool[] SpecialEnemiesIncluded
+    { get { return specialEnemiesIncluded; } }
 
     public abstract void StartStage();
     public abstract void DoPayloadBehaviour();

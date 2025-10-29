@@ -46,6 +46,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private bool spawnEnemies = true;
     private bool spawnCoolingDown = false;
     private bool startCooldown = false;
+    private List<GameObject> specialEnemyPool = new List<GameObject>();
 
     private Vector3 currentPosition; // Used for drawing gizmos
     private PayloadBehaviour payload;
@@ -301,34 +302,19 @@ public class LevelDirector : Singleton<LevelDirector>
             {
                 foreach (EnemySpawn spawn in spawners)
                 {
-                    if ( spawn.isSpawning == true)
+                    if ( spawn.isSpawning == true )
                     {
-                        GameObject enemyToSpawn = enemyPrefab;
-                        //if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
-                        NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
-                        enemy.Warp(spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
-                        EnemyCount += 1;
-                        //Debug.Log("Enemy count being added");
+                        for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
+                        {
+                            GameObject enemyToSpawn = enemyPrefab;
+                            if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPool[Random.Range(0, specialEnemyPrefabs.Length - 1)];
+                            NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
+                            enemy.Warp(spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
+                            EnemyCount += 1;
+                            //Debug.Log("Enemy count being added");
+                        }
                     }
                 }
-            }
-            else
-            {
-                //Temp removal
-
-                //foreach (Vector3 marker in Stages[currentStage].SpawnMarkers)
-                //{
-                //    for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
-                //    {
-                //        GameObject enemyToSpawn = enemyPrefab;
-                //        if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
-                //        NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
-                //        enemy.Warp(marker + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
-                //        EnemyCount += 1;
-                //        Debug.Log("Enemy count being added");
-                //    }
-                //}
-
             }
             timer = 0;
         }
@@ -442,6 +428,18 @@ public class LevelDirector : Singleton<LevelDirector>
         currentStage = Mathf.Clamp(currentStage, 0, Stages.Length);
 
         SpawnSpawners();
+
+        specialEnemyChance = Stages[currentStage].SpecialEnemyChance;
+
+        // Adding Special enemies
+        specialEnemyPool.Clear();
+
+        for (int i = 0; i < Stages[currentStage].SpecialEnemiesIncluded.Length; i++)
+        {
+            if (Stages[currentStage].SpecialEnemiesIncluded[i])
+                specialEnemyPool.Add(specialEnemyPrefabs[i]);
+        }
+
 
         //Hardcode to start death zone on 3rd check point
         if (currentStage == 2)
