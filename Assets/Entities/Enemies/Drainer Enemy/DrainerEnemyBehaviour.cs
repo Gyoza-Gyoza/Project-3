@@ -96,6 +96,12 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     protected override void OnDamage(GameObject source)
     {
         StartCoroutine(DamageFlicker());
+        Debug.Log(Health);
+    }
+    public override void OnDeath()
+    {
+        State = new DrainerEnemyDeathState(this);
+        GameObjectPool.ReturnObject(gameObject);
     }
     IEnumerator DamageFlicker()
     {

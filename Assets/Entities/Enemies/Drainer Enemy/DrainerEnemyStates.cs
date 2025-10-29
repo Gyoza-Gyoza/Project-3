@@ -89,3 +89,10 @@ public class DrainerEnemyDefendState : DrainerEnemyState
         enemy.defense = enemy.DefendingDefense;
     }
 }
+public class DrainerEnemyDeathState : DrainerEnemyState
+{
+    public DrainerEnemyDeathState(DrainerEnemyBehaviour enemy) : base(enemy)
+    {
+
+    }
+}
