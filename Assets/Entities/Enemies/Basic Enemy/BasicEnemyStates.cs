@@ -21,9 +21,6 @@ public class BasicEnemyState : EnemyState
     public override void OnLanding()
     {
     }
-    public override void Attack()
-    {
-    }
     public override void OnCollide()
     {
     }

@@ -10,7 +10,6 @@ public abstract class EnemyState
 
     public abstract void ReachTargetAction();
     public abstract void OnLanding();
-    public abstract void Attack();
     public abstract void OnCollide();
 }
 

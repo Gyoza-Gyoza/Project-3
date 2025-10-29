@@ -20,17 +20,18 @@ public class EnemyBehaviour : Entity
     private EnemyState state;
     public EnemyState State
     {
-        get 
+        get { return state; }
+        set
         {
+            previousState = state; 
+            state = value; 
             Debug.Log($"{name} entering {state.GetType()} state");
-            return state; 
         }
-        set { previousState = state; state = value; }
     }
     private EnemyState previousState;
     public EnemyState PreviousState
     { get { return previousState; } }
-    private Rigidbody rb;
+    protected Rigidbody rb;
     public Rigidbody Rb
     { get { return rb; } }
     private bool flying = false;
@@ -58,7 +59,7 @@ public class EnemyBehaviour : Entity
         base.Start();
         InitializeStats();
     }
-    private void Update()
+    protected virtual void Update()
     {
         state.DoEnemyAction();
 
@@ -68,13 +69,9 @@ public class EnemyBehaviour : Entity
     {
         agent.speed = MovementSpeed; 
     }
-    public void Attack()
+    public virtual void Attack()
     {
-        Debug.Log("Enemy Attack Called");
-        agent.isStopped = true;
-        agent.velocity = Vector3.zero;
-        agent.updateRotation = false;
-        animator.Play("Attack");
+        
     }
     public void StopAttack()
     {

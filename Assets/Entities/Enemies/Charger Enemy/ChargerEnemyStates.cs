@@ -13,26 +13,18 @@ public class ChargerEnemyState : EnemyState
     {
         this.enemy = enemy;
     }
-    public override void Attack()
-    {
-
-    }
-
     public override void DoEnemyAction()
     {
 
     }
-
     public override void OnCollide()
     {
 
     }
-
     public override void OnLanding()
     {
 
     }
-
     public override void ReachTargetAction()
     {
 
@@ -44,8 +36,11 @@ public class ChargerEnemyChaseState : ChargerEnemyState
     {
         enemy.agent.enabled = true;
         enemy.agent.updateRotation = true;
-        enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
         enemy.Animator.Play("Walk");
+    }
+    public override void DoEnemyAction()
+    {
+        enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
     }
 }
 public class ChargerEnemyStunState : ChargerEnemyState
