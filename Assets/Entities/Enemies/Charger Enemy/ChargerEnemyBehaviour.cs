@@ -57,6 +57,11 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
             mr.material = oriMat;
         }
     }
+    protected override void OnEnable()
+    {
+        State = new ChargerEnemyChaseState(this);
+        transform.localScale = Vector3.one;
+    }
     public override void OnDeath()
     {
         base.OnDeath();

@@ -89,7 +89,9 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     }
     protected override void OnEnable()
     {
-
+        base.OnEnable();
+        State = new DrainerEnemyIdleState(this);
+        defense = 1f;
     }
     protected override void OnDamage(GameObject source)
     {

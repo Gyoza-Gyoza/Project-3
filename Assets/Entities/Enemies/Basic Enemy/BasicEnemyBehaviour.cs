@@ -119,5 +119,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         base.OnEnable();
         ball.SetActive(true);
         mesh.SetActive(true);
+        State = new BasicEnemyChaseState(this);
+        transform.localScale = Vector3.one;
     }
 }

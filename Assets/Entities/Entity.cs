@@ -48,6 +48,14 @@ public abstract class Entity : MonoBehaviour, IDamageable
     {
         // Initialize stats for interaction with other scripts
         // Remember to call base.Start() when inheriting from this class
+        InitializeStats();
+    }
+    protected virtual void OnEnable()
+    {
+        InitializeStats();
+    }
+    private void InitializeStats()
+    {
         health = maxHealth;
         Damage = initialDamage;
         MovementSpeed = initialMovementSpeed;
