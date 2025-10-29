@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // A generic Singleton base class for MonoBehaviour-derived types.
@@ -13,15 +14,17 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             // Ensures that there's always a reference to the singleton instance. 
             // This finds and returns the script if it is in the scene and creates one if it is not.
+            
             if (instance == null)
             {
                 instance = FindObjectOfType<T>();
-                if (instance == null)
-                {
-                    GameObject singletonObject = new GameObject();
-                    instance = singletonObject.AddComponent<T>();
-                    singletonObject.name = typeof(T).Name + " (Singleton)";
-                }
+                //if (instance == null)
+                //{
+                //    Debug.Log($"Trying to grab a copy of {typeof(T).Name}");
+                //    GameObject singletonObject = new GameObject();
+                //    instance = singletonObject.AddComponent<T>();
+                //    singletonObject.name = typeof(T).Name + " (Singleton)";
+                //}
             }
             return instance;
         }
@@ -32,10 +35,13 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             instance = this as T;
             DontDestroyOnLoad(gameObject);
+            Debug.Log($"Singleton for {gameObject.name} is set");
         }
         else
-        {
-            Destroy(gameObject);
+        { 
+                Destroy(gameObject);
+                Debug.Log($"Singleton is filled. {gameObject.name} is destroyed");
+            
         }
     }
 }

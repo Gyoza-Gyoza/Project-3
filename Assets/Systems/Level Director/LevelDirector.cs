@@ -249,6 +249,11 @@ public class LevelDirector : Singleton<LevelDirector>
     protected override void Awake()
     {
         base.Awake();
+
+    }
+
+    private void Start()
+    {
         payload = PayloadBehaviour.Instance;
         AssignEscortStages();
         calculateLevelLength();
@@ -257,10 +262,25 @@ public class LevelDirector : Singleton<LevelDirector>
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F11))
+        {
+            if (spawnEnemies == true)
+            {
+                spawnEnemies = false;
+                HUDController.Instance.EnemiesStopped(true);
+            }
+            else
+            {
+                spawnEnemies = true;
+                HUDController.Instance.EnemiesStopped(false);
+            }
+        }
         if (spawnEnemies) SpawnEnemies();
         if (Input.GetKeyDown(KeyCode.J)) SpawnSpecialEnemies(-1);
         if (Input.GetKeyDown(KeyCode.K)) SpawnSpecialEnemies(0);
         if (Input.GetKeyDown(KeyCode.L)) SpawnSpecialEnemies(1);
+        if (Input.GetKeyDown(KeyCode.F12)) Application.Quit();
+
     }
     #endregion
 
