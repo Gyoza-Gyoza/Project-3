@@ -41,6 +41,14 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         base.Start();
         State = new BasicEnemyChaseState(this);
     }
+    public override void Attack()
+    {
+        Debug.Log("Enemy Attack Called");
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        agent.updateRotation = false;
+        Animator.Play("Attack");
+    }
     protected override void OnDamage(GameObject source)
     {
         StartCoroutine(DamageFlicker());

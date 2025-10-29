@@ -23,14 +23,19 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     [SerializeField] private float fillingRate = 1f;
     private bool fillingGas = false;
 
-    [SerializeField] private int maxGas = 100;
-    [SerializeField] private int iniGas = 0;
-    private int currentGas;
+    [SerializeField] private float maxGas = 100;
+    [SerializeField] private float iniGas = 0;
+    private float currentGas;
 
-    public int CurrentGas
+    public float CurrentGas
     {
         get { return currentGas; }
-        set { currentGas = value; UpdateGasSlider(); }
+        set 
+        { 
+            currentGas = value;
+            if (currentGas < 0) currentGas = 0;
+            UpdateGasSlider(); 
+        }
     }
 
     [SerializeField] private Animator animator;
@@ -246,6 +251,10 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         //PayloadBehaviour.Instance.agent.isStopped = true;
         //Debug.Log($"Payload Stopped, current Gas is {currentGas}");
         yield break;
+    }
+    public void RemoveGas(float gasToRemove)
+    {
+        CurrentGas -= gasToRemove;
     }
 
     #endregion

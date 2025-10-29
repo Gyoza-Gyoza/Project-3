@@ -14,7 +14,7 @@ public abstract class Entity : MonoBehaviour
     {
         get { return maxHealth; }
     }
-    private int health;
+    protected int health;
 
     // Property used by other scripts to interact with the Entity's Health value
     public virtual int Health
