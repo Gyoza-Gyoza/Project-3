@@ -66,6 +66,10 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     protected override void Awake()
     {
         base.Awake();
+
+    }
+    protected void Start()
+    {
         agent = GetComponent<NavMeshAgent>();
         if (agent != null)
         {
@@ -77,9 +81,8 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
         interactRadius = GetComponent<CapsuleCollider>().radius;
         IniLineRenderer();
-    }
-    protected void Start()
-    {
+
+
         stages = LevelDirector.Instance.Stages;
 
         InitializeAgent();
@@ -210,7 +213,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             // clear agent path to ensure it doesn't later automatically go to previous escortPosition
             if (agent != null)
             {
-                agent.ResetPath();
+                //agent.ResetPath();
                 agent.isStopped = true;
             }
         }
@@ -220,7 +223,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             if (agent != null)
             {
                 agent.isStopped = true;
-                agent.ResetPath();
+                //agent.ResetPath();
             }
         }
     }
