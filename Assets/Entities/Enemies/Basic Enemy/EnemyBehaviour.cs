@@ -78,9 +78,10 @@ public class EnemyBehaviour : Entity
         agent.updateRotation = true;
         animator.ResetTrigger("Attacking");
     }
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
-        agent.enabled = true;
+        base.OnEnable();
+        if (agent!= null) agent.enabled = true;
     }
     protected override void OnHeal()
     {
