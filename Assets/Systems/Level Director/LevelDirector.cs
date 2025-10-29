@@ -9,7 +9,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
 using UnityEngine.UIElements;
 
-
+[System.Serializable]
+public class PresetStage
+{
+    public Transform chargerSpawnPoint;
+    public int chargerAmountSpawned;
+    public Transform drainerSpawnPoint;
+    public int drainerAmountSpawned;
+}
 public class LevelDirector : Singleton<LevelDirector>
 {
     [SerializeField] private Stage[] stages;
@@ -32,6 +39,8 @@ public class LevelDirector : Singleton<LevelDirector>
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject enemySpawnerPrefab;
+    [SerializeField] private PresetStage[] presetStages;
+    private int presetStageCounter;
     [SerializeField] private GameObject[] specialEnemyPrefabs;
     [SerializeField] private float specialEnemyChance = 0.1f;
     [SerializeField] private bool spawnEnemies = true;
@@ -248,13 +257,29 @@ public class LevelDirector : Singleton<LevelDirector>
     private void Update()
     {
         if (spawnEnemies) SpawnEnemies();
+        if (Input.GetKeyDown(KeyCode.J)) SpawnSpecialEnemies(-1);
+        if (Input.GetKeyDown(KeyCode.K)) SpawnSpecialEnemies(0);
+        if (Input.GetKeyDown(KeyCode.L)) SpawnSpecialEnemies(1);
     }
     #endregion
 
     #region ---- Enemy Spawning ----
 
     private float timer;
-
+    private void SpawnSpecialEnemies(int counter)
+    {
+        PresetStage chosenStage = presetStages[Mathf.Clamp(presetStageCounter += counter, 0, presetStages.Length - 1)];
+        for(int i = 0; i < chosenStage.chargerAmountSpawned;  i++)
+        {
+            GameObjectPool.GetObject(specialEnemyPrefabs[0]).transform.position 
+                = chosenStage.chargerSpawnPoint.position;
+        }
+        for (int i = 0; i < chosenStage.drainerAmountSpawned; i++)
+        {
+            GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position
+                = chosenStage.drainerSpawnPoint.position;
+        }
+    }
     private void SpawnEnemies()
     {
         if (CanSpawn())
@@ -279,7 +304,7 @@ public class LevelDirector : Singleton<LevelDirector>
                     if ( spawn.isSpawning == true)
                     {
                         GameObject enemyToSpawn = enemyPrefab;
-                        if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
+                        //if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPrefabs[Random.Range(0, specialEnemyPrefabs.Length - 1)];
                         NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
                         enemy.Warp(spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
                         EnemyCount += 1;
@@ -537,6 +562,13 @@ public class LevelDirector : Singleton<LevelDirector>
                 }
             }
 
+        }
+        foreach (PresetStage ps in presetStages)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(ps.chargerSpawnPoint.position, 3f);
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(ps.drainerSpawnPoint.position, 3f);
         }
     }
 }

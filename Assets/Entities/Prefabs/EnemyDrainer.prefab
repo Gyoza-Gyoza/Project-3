@@ -58,7 +58,9 @@ MonoBehaviour:
   agent: {fileID: 0}
   groundCheck: {fileID: 0}
   payloadRange: 1
+  skin: {fileID: 6920748275748137612}
   targetCheckFrequency: 10
+  hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   aggroRange: 50
   defendingDefense: 2
   defendRange: 10
@@ -317,6 +319,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6667058055344779242}
   m_SourcePrefab: {fileID: 100100000, guid: c959f146611addb4482b696df56999a2, type: 3}
+--- !u!137 &6920748275748137612 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1630794972795428178, guid: c959f146611addb4482b696df56999a2, type: 3}
+  m_PrefabInstance: {fileID: 8550876093730240478}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7806779087390649561 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7278502305178739961, guid: c959f146611addb4482b696df56999a2, type: 3}
