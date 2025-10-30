@@ -85,7 +85,7 @@ public class ChargerEnemyDeathState : ChargerEnemyStunState
     {
 
     }
-    public override void DoEnemyAction()
+    public override void ReachTargetAction()
     {
         enemy.PlayDeathCoroutine();
     }

@@ -27,7 +27,6 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     {
         base.Start();
         State = new ChargerEnemyChaseState(this);
-        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
     }
     protected override void OnDamage(GameObject source)
     {
@@ -65,7 +64,8 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     public override void OnDeath()
     {
         base.OnDeath();
-        State = new ChargerEnemyDeathState(this, stunDuration, CalculateKnockBack(PlayerController3P.Instance.transform));
+        if (State is not ChargerEnemyDeathState)
+            State = new ChargerEnemyDeathState(this, stunDuration, CalculateKnockBack(PlayerController3P.Instance.transform));
     }
     public void PlayDeathCoroutine()
     {
@@ -79,7 +79,7 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
         {
             count += Time.deltaTime;
             transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(1f, 0f, 1f), count / deathTime);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
         GameObjectPool.ReturnObject(gameObject);
         yield break;

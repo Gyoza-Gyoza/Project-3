@@ -585,10 +585,13 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             foreach (PresetStage ps in presetStages)
             {
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(ps.chargerSpawnPoint.position, 3f);
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawWireSphere(ps.drainerSpawnPoint.position, 3f);
+                if (ps.drainerSpawnPoint != null && ps.chargerSpawnPoint != null)
+                {
+                    Gizmos.color = Color.cyan;
+                    Gizmos.DrawWireSphere(ps.chargerSpawnPoint.position, 3f);
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawWireSphere(ps.drainerSpawnPoint.position, 3f);
+                }
             }
         }
     }

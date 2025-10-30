@@ -67,7 +67,7 @@ public class EnemyBehaviour : Entity
     }
     protected virtual void InitializeStats()
     {
-        agent.speed = MovementSpeed; 
+        if (agent != null) agent.speed = MovementSpeed; 
     }
     public virtual void Attack()
     {

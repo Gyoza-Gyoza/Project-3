@@ -264,8 +264,7 @@ public class BasicEnemyDeathState : BasicEnemyKnockUpState
     {
         if (enemy.groundCheck.Grounded)
         {
-            stunned = false;
-            OnLanding();
+            if (!stunned) OnLanding();
         }
     }   
     public override void OnLanding()

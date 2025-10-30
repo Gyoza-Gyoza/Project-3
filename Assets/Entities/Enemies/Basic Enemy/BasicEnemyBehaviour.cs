@@ -102,7 +102,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         {
             count += Time.deltaTime;
             transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(1f, 0f, 1f), count / deathTime);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
         mesh.SetActive(false);
         ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
