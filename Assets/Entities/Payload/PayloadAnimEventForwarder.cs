@@ -13,10 +13,10 @@ public class PayloadAnimEventForwarder : MonoBehaviour
     }
 
     // Animation Events (match the event names in clips)
-    public void StepStart_L() { if (payload) payload.StepStart_L(); }
-    public void StepEnd_L() { if (payload) payload.StepEnd_L(); }
-    public void StepStart_R() { if (payload) payload.StepStart_R(); }
-    public void StepEnd_R() { if (payload) payload.StepEnd_R(); }
+    //public void StepStart_L() { if (payload) payload.StepStart_L(); }
+    //public void StepEnd_L() { if (payload) payload.StepEnd_L(); }
+    //public void StepStart_R() { if (payload) payload.StepStart_R(); }
+    //public void StepEnd_R() { if (payload) payload.StepEnd_R(); }
 
     public void PlayStepRightSFX()
     {

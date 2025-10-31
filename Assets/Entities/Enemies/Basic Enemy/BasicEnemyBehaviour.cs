@@ -76,9 +76,9 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     }
     public virtual void DamagePlayer(GameObject toDamage)
     {
-        if (toDamage.tag == "Player")
+        if (toDamage.TryGetComponent<PlayerController3P>(out PlayerController3P player))
         {
-            toDamage.GetComponent<PlayerController3P>().TakeDamage(Damage, gameObject);
+            player.TakeDamage(Damage, gameObject);
         }
     }
     public void PlayDeathCoroutine()
@@ -102,7 +102,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         {
             count += Time.deltaTime;
             transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(1f, 0f, 1f), count / deathTime);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return null;
         }
         mesh.SetActive(false);
         ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();

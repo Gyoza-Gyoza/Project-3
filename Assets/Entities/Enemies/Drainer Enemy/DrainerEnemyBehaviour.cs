@@ -8,6 +8,8 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     [SerializeField] private float targetCheckFrequency = 10f;
     [SerializeField] protected Material hitMat;
     protected Material oriMat;
+    [SerializeField] private GameObject shield;
+    [SerializeField] private float shieldUpTime = 0.5f;
     public float TargetCheckFrequency
     { get { return targetCheckFrequency; } }
     [SerializeField] private float aggroRange = 30f;
@@ -40,13 +42,7 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     }
     protected override void Update()
     {
-        base.Update(); 
-
-        if (CheckPlayerInRange()) State = new DrainerEnemyDefendState(this);
-    }
-    protected override void InitializeStats()
-    {
-        
+        base.Update();
     }
     public override void TakeDamage(int amount, GameObject source)
     {
@@ -75,7 +71,7 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
         }
         return false;
     }
-    private bool CheckPlayerInRange()
+    public bool CheckPlayerInRange()
     {
         if (Vector3.Distance(transform.position, PlayerController3P.Instance.transform.position) <= defendRange)
         {
@@ -87,11 +83,24 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     {
         PayloadBehaviour.Instance.RemoveGas(burnAdjAmount * Time.deltaTime);
     }
-    protected override void OnEnable()
+    public void SetShieldActive(bool active)
     {
-        base.OnEnable();
-        State = new DrainerEnemyIdleState(this);
-        defense = 1f;
+        StopCoroutine("SetShieldActiveCoroutine");
+        StartCoroutine(SetShieldActiveCoroutine(active));
+    }
+    private IEnumerator SetShieldActiveCoroutine(bool active)
+    {
+        float timer = 0f;
+        Vector3 start = active ? Vector3.zero : Vector3.one; 
+        Vector3 end = active ? Vector3.one : Vector3.zero;
+
+        while (timer <= shieldUpTime)
+        {
+            timer += Time.deltaTime;
+
+            shield.transform.localScale = Vector3.Lerp(start, end, timer / shieldUpTime);
+            yield return null;
+        }
     }
     protected override void OnDamage(GameObject source)
     {
@@ -109,5 +118,11 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
         yield return new WaitForSeconds(.1f);
         skin.GetComponent<SkinnedMeshRenderer>().material = oriMat;
         yield break;
+    }
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        State = new DrainerEnemyIdleState(this);
+        defense = 1f;
     }
 }

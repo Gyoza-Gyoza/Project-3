@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHitBox : MonoBehaviour, IDamageable
+public class PlayerHitBox : MonoBehaviour
 {
     private PlayerController3P player;
 

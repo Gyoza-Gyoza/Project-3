@@ -40,6 +40,7 @@ public class DrainerEnemyIdleState : DrainerEnemyState
     {
         targetCheckFrequency = enemy.TargetCheckFrequency;
         timer = 0f;
+        enemy.SetShieldActive(false);
     }
     public override void DoEnemyAction()
     {
@@ -50,6 +51,11 @@ public class DrainerEnemyIdleState : DrainerEnemyState
             timer -= 1 / targetCheckFrequency;
 
             if (enemy.CanHitTarget()) enemy.State = new DrainerEnemyDrainState(enemy);
+        }
+        
+        if (enemy.CheckPlayerInRange())
+        {
+            enemy.State = new DrainerEnemyDefendState(enemy);
         }
     }
 }
@@ -87,6 +93,7 @@ public class DrainerEnemyDefendState : DrainerEnemyState
     public void Defend()
     {
         enemy.defense = enemy.DefendingDefense;
+        enemy.SetShieldActive(true);
     }
 }
 public class DrainerEnemyDeathState : DrainerEnemyState

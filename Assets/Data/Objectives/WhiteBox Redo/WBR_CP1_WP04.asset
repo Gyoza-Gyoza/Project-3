@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: WBR_CP1_WP04
   m_EditorClassIdentifier: 
   isCheckpoint: 0
-  durationBetweenSpawns: 0
+  durationBetweenSpawns: 3
   enemyPerGroup: 15
   spawnMarkers:
-  - {x: 33, y: 12, z: 202}
+  - {x: 43.2, y: 12, z: 206.6}
   - {x: -19, y: 58, z: 44}
   spawnCooldown: 0
   maxEnemies: 30
   resumeThreshold: 0
   minSpawnDistance: 5
   maxSpawnDistance: 100
+  specialEnemyChance: 0.1
+  specialEnemiesIncluded: 0100
   escortPosition: {x: 60.7, y: 41.4, z: 75.4}
   payloadSpeed: 40

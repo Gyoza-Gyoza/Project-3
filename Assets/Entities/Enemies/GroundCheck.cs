@@ -14,7 +14,8 @@ public class GroundCheck : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground") ||
+            other.gameObject.layer == LayerMask.NameToLayer("Environment"))
         {
             enemy.State.OnLanding();
             grounded = true;
@@ -22,7 +23,8 @@ public class GroundCheck : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground") ||
+            other.gameObject.layer == LayerMask.NameToLayer("Environment"))
         {
             grounded = false;
         }

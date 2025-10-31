@@ -6,8 +6,8 @@ public class HitBox : MonoBehaviour
 {
     public delegate void HitBoxTriggerEvent(GameObject hit);
     public event HitBoxTriggerEvent HitBoxListeners;
-    private Entity owner;
-    private BoxCollider boxCollider;
+    //private Entity owner;
+    //private BoxCollider boxCollider;
 
     private void OnTriggerEnter(Collider other)
     {

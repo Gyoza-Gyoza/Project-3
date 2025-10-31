@@ -25,7 +25,7 @@ public class EnemyBehaviour : Entity
         {
             previousState = state; 
             state = value; 
-            Debug.Log($"{name} entering {state.GetType()} state");
+            //Debug.Log($"{name} entering {state.GetType()} state");
         }
     }
     private EnemyState previousState;
@@ -67,7 +67,7 @@ public class EnemyBehaviour : Entity
     }
     protected virtual void InitializeStats()
     {
-        agent.speed = MovementSpeed; 
+        if (agent != null) agent.speed = MovementSpeed; 
     }
     public virtual void Attack()
     {

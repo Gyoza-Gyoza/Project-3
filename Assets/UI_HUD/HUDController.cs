@@ -67,8 +67,12 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private CanvasGroup winGroup;
     [SerializeField] private CanvasGroup loseGroup;
 
+    [Header("Devices / Abilities")]
+    [SerializeField] private Slider tauntSlider;
+
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
+    [SerializeField] private TextMeshProUGUI enemiesStopped;
 
     // Start is called before the first frame update
     void Start()
@@ -149,7 +153,7 @@ public class HUDController : Singleton<HUDController>
             emberOrigin = playerEmber.value;
             playerEmberTarget = Mathf.Clamp(input, 0f, 1f);
             playerEmber.value = playerEmberTarget;
-            StartCoroutine(UpdateHealthSequence());
+            StartCoroutine(UpdatePlayerEmberSequence());
         }
         else
         {
@@ -378,14 +382,14 @@ public class HUDController : Singleton<HUDController>
     #region Win Lose
     public void WinScreen()
     {
-        StartCoroutine(ScreenEffectsManager.Instance.Fade(winGroup, 0f, 1f, 1f));
+        StartCoroutine(Fade(winGroup, 0f, 1f, 1f));
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void LoseScreen()
     {
-        StartCoroutine(ScreenEffectsManager.Instance.Fade(loseGroup, 0f, 1f, 1f));
+        StartCoroutine(Fade(loseGroup, 0f, 1f, 1f));
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -401,7 +405,25 @@ public class HUDController : Singleton<HUDController>
     }
     #endregion
 
+    #region Abilities
+    public void SetTauntSlider(float input)
+    {
+        tauntSlider.value = input;
+    }
+    #endregion
+
     #region Debug
+
+    public void EnemiesStopped( bool input)
+    {
+        if (input == true)
+        {
+            enemiesStopped.gameObject.SetActive(true);
+        }
+        else
+        { enemiesStopped.gameObject.SetActive(false); }
+    }
+
     public void UpdateTotalEnemyCount(int input)
     {
         if (enemyCount!= null && enemyCount.isActiveAndEnabled)
@@ -412,9 +434,29 @@ public class HUDController : Singleton<HUDController>
 
     #endregion
 
-    // Update is called once per frame
-    void Update()
+
+    public IEnumerator Fade(CanvasGroup target, float start, float end, float duration)
+    {
+        float timer = 0f;
+
+        while (timer <= duration)
+        {
+            timer += Time.deltaTime;
+            target.alpha = Mathf.Lerp(start, end, timer / duration);
+            yield return null;
+        }
+    }
+
+
+
+// Update is called once per frame
+void Update()
     {
         
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log("HUD Manager Destoyed");
     }
 }

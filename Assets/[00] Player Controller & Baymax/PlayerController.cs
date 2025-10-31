@@ -116,6 +116,10 @@ public class PlayerController3P : Entity
     public float plungeDownwardSpeed = 15f;
     public float plungeDuration = 0.5f;
     public string plungeTrigger = "Plunge";
+    public float heightModifierPerOneExtra = .05f;
+    public float heightThreshold = 3.5f;
+    private float _plungemodifierCount = 0f;
+    private Vector3 _plungeStartPoint = new Vector3(0, 0, 0);
 
     // ------------------ HIT BOXES ------------------------------------------------------------------------------------------
     [Header("Hitboxes")]
@@ -147,6 +151,9 @@ public class PlayerController3P : Entity
     [SerializeField] private float throwForce = 10f;
     [SerializeField] private float upwardsForce = 5f;
     [SerializeField] private Transform throwPoint;
+    [SerializeField] private float tauntCooldown = 1f;
+    bool _tauntThrown = false;
+
 
     // ----------------- AUDIO ------------------------------------------------------------------------------------------
     [SerializeField] private AudioSource walkAudioSource;
@@ -224,8 +231,8 @@ public class PlayerController3P : Entity
             lensDistortion = ld;
             lensDistortion.active = true;
         }
-        else Debug.LogWarning ("LensDistortion not found.");
-        foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
+        else Debug.LogWarning("LensDistortion not found.");
+        foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
         {
             playerMat.Add(mr);
             //Debug.Log("Added mat " + mr.material.name);
@@ -284,7 +291,7 @@ public class PlayerController3P : Entity
     }
 
     public void StopRegen()
-    {   regeneratingHealth = false;}
+    { regeneratingHealth = false; }
 
     IEnumerator RegenHealth()
     {
@@ -293,7 +300,7 @@ public class PlayerController3P : Entity
         float count = 0f;
         float buffercount = 0f;
 
-        while(regeneratingHealth)
+        while (regeneratingHealth)
         {
             if (buffercount < healthRegenCooldown)
             {
@@ -634,8 +641,8 @@ public class PlayerController3P : Entity
             StopCoroutine(dashEffectsCoroutine);
             dashEffectsCoroutine = null;
         }
-        dashEffectsCoroutine = StartCoroutine(DashEffects());                  
-                                                        // Someone forgot to start their coroutines :(
+        dashEffectsCoroutine = StartCoroutine(DashEffects());
+        // Someone forgot to start their coroutines :(
         camRig.DashFOVKick(8f, 0.08f, 0.04f, 0.10f);    //Camera FOV
         camRig.Shake(10f, 0.12f);                       //Camera Shake
     }
@@ -717,11 +724,11 @@ public class PlayerController3P : Entity
         while (timer <= Mathf.Max(lensDistortionDuration, playerGlowDuration))
         {
             timer += Time.deltaTime;
-            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer/lensDistortionDuration);
+            lensDistortion.intensity.value = Mathf.Lerp(-0.5f, 0f, timer / lensDistortionDuration);
 
             foreach (MeshRenderer mr in playerMat)
             {
-                mr.material.SetFloat("_GlowAmount", Mathf.Lerp(1, 0, timer/playerGlowDuration));
+                mr.material.SetFloat("_GlowAmount", Mathf.Lerp(1, 0, timer / playerGlowDuration));
             }
 
             yield return null;
@@ -751,7 +758,7 @@ public class PlayerController3P : Entity
 
     public void Attack_1_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(attack1_Damage, gameObject);
         }
@@ -759,23 +766,23 @@ public class PlayerController3P : Entity
 
     public void Attack_2_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(attack2_Damage, gameObject);
         }
     }
     public void Attack_3_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
             objectToDamage.TakeDamage(attack3_Damage, gameObject);
         }
     }
     public void Plunge_Damage(GameObject entityToDamage)
     {
-        if (entityToDamage.TryGetComponent<IDamageable>(out IDamageable objectToDamage))
+        if (entityToDamage.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour objectToDamage))
         {
-            objectToDamage.TakeDamage(plunge_Damage, gameObject);
+            objectToDamage.TakeDamage((int)((float)plunge_Damage * (1f + _plungemodifierCount)), gameObject);
         }
     }
 
@@ -1131,6 +1138,13 @@ public class PlayerController3P : Entity
         plungeTimer = 0f;
         plungeImpulseStarted = false;
 
+        //Eze's Code Start
+        _plungemodifierCount = 0f;
+
+        _plungeStartPoint = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
+
+        //Eze's Code End
+
         velocity = Vector3.zero;  // stop dead
 
         plungeDir = transform.forward; plungeDir.y = 0f;
@@ -1150,6 +1164,19 @@ public class PlayerController3P : Entity
         if (!isPlunging) return;
 
         plungeTimer += Time.deltaTime;
+
+        //Eze's Code Start
+
+        float heightTraveled = _plungeStartPoint.y - this.transform.position.y;
+
+
+
+        if (heightTraveled >= heightThreshold)
+        {
+            _plungemodifierCount = (heightTraveled - heightThreshold) * heightModifierPerOneExtra;
+        }
+
+        //Eze's Code End
 
         if (!plungeImpulseStarted && plungeTimer >= plungeDelay)
             plungeImpulseStarted = true;
@@ -1194,19 +1221,53 @@ public class PlayerController3P : Entity
     }
     void ThrowDevice()
     {
-        // spawn grenade
-        GameObject grenade = Instantiate(tauntDevicePrefab, throwPoint.position, throwPoint.rotation);
 
-        // apply physics
-        Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        Vector3 force = Camera.main.transform.forward * throwForce + Vector3.up * upwardsForce;
-        rb.AddForce(force, ForceMode.VelocityChange);
+        if (!_tauntThrown)
+        {
+            // spawn grenade
+            GameObject grenade = Instantiate(tauntDevicePrefab, throwPoint.position, throwPoint.rotation);
+
+            // apply physics
+            Rigidbody rb = grenade.GetComponent<Rigidbody>();
+            Vector3 force = Camera.main.transform.forward * throwForce + Vector3.up * upwardsForce;
+            rb.AddForce(force, ForceMode.VelocityChange);
+
+            StartCoroutine(TauntCooldown());
+        }
+        else
+        {
+            Debug.Log("Taunt is on cooldown");
+        }
     }
 
-    #endregion
+    IEnumerator TauntCooldown()
+    {
+        float count = 0f;
+        _tauntThrown = true;
+        while (_tauntThrown)
+        {
+            count += Time.fixedDeltaTime;
+            if (count >= tauntCooldown)
+            {
+                _tauntThrown = false;
+            }
+            else
+            {
+                HUDController.Instance.SetTauntSlider(count / tauntCooldown);
+            }
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+        }
 
-    // -------------------- Helpers ------------------------------------------------------------------------------------------
-    bool TryGetCameraRelativeMove(out Vector3 dir)
+        HUDController.Instance.SetTauntSlider(1f);
+
+        yield break;
+
+    }    
+
+        #endregion
+
+        // -------------------- Helpers ------------------------------------------------------------------------------------------
+        bool TryGetCameraRelativeMove(out Vector3 dir)
     {
         float ix = Input.GetAxisRaw("Horizontal");
         float iz = Input.GetAxisRaw("Vertical");
