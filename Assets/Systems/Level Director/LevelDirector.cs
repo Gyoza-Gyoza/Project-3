@@ -60,18 +60,18 @@ public class LevelDirector : Singleton<LevelDirector>
     #region --- Level Length and Progress ---
     private float levelLength = 0f;
 
-    private void calculateLevelLength()
+    private void CalculateLevelLength()
     {
         for (int i = 1; i < stages.Length; i++)
         {
-            stages[i].Length = calculateCheckpointLength(i);
+            stages[i].Length = CalculateCheckpointLength(i);
             //Debug.Log($"Checkpoint Length: {stages[i].Length}");
             //Debug.Log($"Current Length: {levelLength}");
             levelLength += stages[i].Length;
         }
     }
 
-    private float calculateCheckpointLength(int index)
+    private float CalculateCheckpointLength(int index)
     {
         if (stages[index - 1] is Escort escort1 && stages[index] is Escort escort2)
         {
@@ -256,7 +256,7 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         payload = PayloadBehaviour.Instance;
         AssignEscortStages();
-        calculateLevelLength();
+        CalculateLevelLength();
         HUDController.Instance.SetUpProgressBar(stages, levelLength);
         lineRenderer = new LineRenderer();
     }
@@ -329,7 +329,18 @@ public class LevelDirector : Singleton<LevelDirector>
                             GameObject enemyToSpawn = enemyPrefab;
                             if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPool[Random.Range(0, specialEnemyPrefabs.Length - 1)];
                             NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
-                            if (enemy!= null) enemy.Warp(spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread)));
+                            if (enemy != null)
+                            {
+                                while (true)
+                                {
+                                    Vector3 spawnPos = spawn.gameObject.transform.position + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0, Random.Range(-spawnSpread, spawnSpread));
+                                    if (NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, spawnSpread, NavMesh.AllAreas))
+                                    {
+                                        enemy.Warp(hit.position);
+                                        break;
+                                    }
+                                }
+                            }
                             EnemyCount += 1;
                             //Debug.Log("Enemy count being added");
                         }

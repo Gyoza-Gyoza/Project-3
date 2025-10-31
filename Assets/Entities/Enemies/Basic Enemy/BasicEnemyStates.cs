@@ -32,7 +32,7 @@ public class BasicEnemyChaseState : BasicEnemyState
         //Debug.Log("Enemy entering Chase State");
         if (enemy.PreviousState is not BasicEnemyKnockUpState) enemy.Animator.Play("Walk");
         else enemy.Animator.SetTrigger("Recover");
-        enemy.agent.isStopped = false;
+        if (enemy.agent.isOnNavMesh) enemy.agent.isStopped = false;
         enemy.agent.updateRotation = true;
     }
     public override void DoEnemyAction()
