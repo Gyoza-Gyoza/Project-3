@@ -8,9 +8,7 @@ public class KnockbackTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<IDamageable>(out IDamageable basicEnemy))
-        {
-            if (basicEnemy is BasicEnemyBehaviour) basicEnemy.TakeDamage(0, gameObject);
-        }
+        if (other.TryGetComponent<BasicEnemyBehaviour>(out BasicEnemyBehaviour basicEnemy)) 
+            basicEnemy.TakeDamage(0, gameObject);
     }
 }

@@ -25,7 +25,7 @@ public class EnemyBehaviour : Entity
         {
             previousState = state; 
             state = value; 
-            Debug.Log($"{name} entering {state.GetType()} state");
+            //Debug.Log($"{name} entering {state.GetType()} state");
         }
     }
     private EnemyState previousState;

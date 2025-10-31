@@ -71,11 +71,11 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     protected void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        if (agent != null)
-        {
-            agent.updatePosition = false;
-            agent.updateRotation = false;
-        }
+        //if (agent != null)
+        //{
+        //    agent.updatePosition = false;
+        //    agent.updateRotation = false;
+        //}
 
         stepper = GetComponent<PayloadStepper>();
 
@@ -105,8 +105,9 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             DrawPath();
         }
 
-        TickStep(Time.deltaTime);           // drive manual movement if a step is active
-        agent.nextPosition = transform.position; // keep agent synced to our manual motion
+        Debug.Log($"Payload Agent isStopped: {agent.isStopped}");
+        //TickStep(Time.deltaTime);           // drive manual movement if a step is active
+        //agent.nextPosition = transform.position; // keep agent synced to our manual motion
 
     }
 
@@ -172,23 +173,24 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
         // #EZE -- Coroutine to start burning gas 
         StartCoroutine(burnGas());
+        SetStepsActive(true);
 
-        // start walking animation flag
-        if (animator != null)
-        {
-            animator.SetBool("Walking", true);
-        }
+        //// start walking animation flag
+        //if (animator != null)
+        //{
+        //    animator.SetBool("Walking", true);
+        //}
 
-        // resume the stepper (unpause agent movement)
-        if (stepper != null)
-        {
-            stepper.ResumeStepper();
-        }
-        else
-        {
-            // fallback: un-stop agent so old code still moves (not preferred)
-            if (agent != null) agent.isStopped = false;
-        }
+        //// resume the stepper (unpause agent movement)
+        //if (stepper != null)
+        //{
+        //    stepper.ResumeStepper();
+        //}
+        //else
+        //{
+        //    // fallback: un-stop agent so old code still moves (not preferred)
+        //    if (agent != null) agent.isStopped = false;
+        //}
     }
 
     public void StopBurningGas()
@@ -200,32 +202,33 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         // animator.SetBool("Walking", false);
         // agent.isStopped = true;
 
-            burningGas = false;
+        burningGas = false;
+        SetStepsActive(false);
 
         // clear walking animation flag
-        if (animator != null)
-            animator.SetBool("Walking", false);
+        //if (animator != null)
+        //    animator.SetBool("Walking", false);
 
-        // Pause the stepper and stop pathing so the golem stands still
-        if (stepper != null)
-        {
-            stepper.StopStepperImmediate();
-            // clear agent path to ensure it doesn't later automatically go to previous escortPosition
-            if (agent != null)
-            {
-                //agent.ResetPath();
-                agent.isStopped = true;
-            }
-        }
-        else
-        {
-            // fallback: stop the agent
-            if (agent != null)
-            {
-                agent.isStopped = true;
-                //agent.ResetPath();
-            }
-        }
+        //// Pause the stepper and stop pathing so the golem stands still
+        //if (stepper != null)
+        //{
+        //    stepper.StopStepperImmediate();
+        //    // clear agent path to ensure it doesn't later automatically go to previous escortPosition
+        //    if (agent != null)
+        //    {
+        //        //agent.ResetPath();
+        //        agent.isStopped = true;
+        //    }
+        //}
+        //else
+        //{
+        //    // fallback: stop the agent
+        //    if (agent != null)
+        //    {
+        //        agent.isStopped = true;
+        //        //agent.ResetPath();
+        //    }
+        //}
     }
 
     IEnumerator burnGas()
@@ -235,7 +238,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
         while (CurrentGas > 0)
         {
-            PayloadBehaviour.Instance.agent.isStopped = false;
+            //PayloadBehaviour.Instance.agent.isStopped = false;
             //Debug.Log($"Payload Moving, current Gas {CurrentGas}");
             HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
@@ -314,11 +317,10 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
     private void InitializeAgent()
     {
-        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         agent.speed = movementSpeed;
         agent.angularSpeed = turnSpeed;
 
-        agent.updatePosition = false;
+        //agent.updatePosition = false;
 
         if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.EscortPosition);
         CompleteStage(); //Complete the beginning one
@@ -415,106 +417,150 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     #region ------------------ Golem Step ----------------
 
     // --- Step Locomotion (manual stride timing) ---
-    [Header("Step Locomotion")]
-    [SerializeField] private float strideDistance = 0.8f;
-    [SerializeField] private float strideDuration = 0.35f;
+    //[Header("Step Locomotion")]
+    //[SerializeField] private float strideDistance = 0.8f;
+    //[SerializeField] private float strideDuration = 0.35f;
 
-    private bool _isStepping;
-    private Vector3 _stepDir;
-    private Vector3 _stepStartPos;
-    private Vector3 _stepTarget;
-    private float _stepTimer;
-    [SerializeField] private float navSampleMaxDist = 2f; // how far to look for the surface
-    [SerializeField] float rotationSpeed = 6f; // 4–10 feels good for a heavy golem
+    //private bool _isStepping;
+    //private Vector3 _stepDir;
+    //private Vector3 _stepStartPos;
+    //private Vector3 _stepTarget;
+    //private float _stepTimer;
+    //[SerializeField] private float navSampleMaxDist = 2f; // how far to look for the surface
+    //[SerializeField] float rotationSpeed = 6f; // 4–10 feels good for a heavy golem
 
-    public void StepStart_L() => BeginStep();
-    public void StepEnd_L() => EndStep();
-    public void StepStart_R() => BeginStep();
-    public void StepEnd_R() => EndStep();
+    //public void StepStart_L() => BeginStep();
+    //public void StepEnd_L() => EndStep();
+    //public void StepStart_R() => BeginStep();
+    //public void StepEnd_R() => EndStep();
 
-    private void BeginStep()
+    //private void BeginStep()
+    //{
+    //    if (!burningGas || !agent.hasPath) { _isStepping = false; return; }
+
+    //    // Use next corner for direction (includes turns on ramps)
+    //    Vector3 toCorner = agent.steeringTarget - transform.position;
+    //    toCorner.y = 0f;
+    //    if (toCorner.sqrMagnitude < 0.0001f) toCorner = transform.forward;
+    //    toCorner.Normalize();
+
+    //    float maxAllowed = Mathf.Max(0f, agent.remainingDistance - agent.stoppingDistance);
+    //    float thisStep = Mathf.Min(strideDistance, maxAllowed);
+
+    //    _stepStartPos = transform.position;
+    //    var flatTarget = _stepStartPos + toCorner * thisStep;
+
+    //    // *** critical: put the target ON the navmesh/ramp ***
+    //    _stepTarget = SnapToNavMeshY(flatTarget);
+
+    //    _stepTimer = 0f;
+    //    _isStepping = thisStep > 0f;
+    //}
+
+    //private void EndStep()
+    //{
+    //    if (_isStepping)
+    //    {
+    //        transform.position = _stepTarget;
+    //        _isStepping = false;
+    //        agent.nextPosition = transform.position;
+    //    }
+    //}
+
+    //private void TickStep(float dt)
+    //{
+    //    if (!_isStepping) return;
+
+    //    _stepTimer += dt;
+    //    float t = Mathf.Clamp01(_stepTimer / strideDuration);
+
+    //    // your existing movement (snapped to navmesh)
+    //    Vector3 p = Vector3.Lerp(_stepStartPos, _stepTarget, t);
+    //    p = SnapToNavMeshY(p);
+    //    transform.position = p;
+
+    //    // NEW: face the agent’s steering target
+    //    FaceSteeringTarget(dt);
+
+    //    // keep agent synced to your manual movement
+    //    agent.nextPosition = transform.position;
+
+    //    if (t >= 1f) EndStep();
+    //}
+
+
+    //private Vector3 SnapToNavMeshY(Vector3 pos)
+    //{
+    //    if (NavMesh.SamplePosition(pos, out var hit, navSampleMaxDist, NavMesh.AllAreas))
+    //        pos.y = hit.position.y;
+    //    else
+    //    {
+    //        // Fallback: raycast against level colliders if no NavMesh found (optional)
+    //        if (Physics.Raycast(pos + Vector3.up * 2f, Vector3.down, out var rh, 10f))
+    //            pos.y = rh.point.y;
+    //    }
+    //    return pos;
+    //}
+
+    //private void FaceSteeringTarget(float dt)
+    //{
+    //    // If the agent has a path, look toward its steering target (next corner)
+    //    if (agent != null && !agent.pathPending)
+    //    {
+    //        Vector3 lookDir = agent.steeringTarget - transform.position;
+    //        lookDir.y = 0f; // keep yaw-only rotation
+
+    //        // Fallback: if steering target is on top of us (e.g., end of path), keep current forward
+    //        if (lookDir.sqrMagnitude > 0.001f)
+    //        {
+    //            Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
+    //            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, dt * rotationSpeed);
+    //        }
+    //    }
+    //}
+
+    [Tooltip("Duration that the payload will move before stopping")]
+    [SerializeField] private float stepDuration = 0.35f;
+    [Tooltip("Pause before starting the next step")]
+    [SerializeField] private float stepInterval = 0.5f;
+    private bool leftStep;
+    private bool stepping;
+
+    public void SetStepsActive(bool state)
     {
-        if (!burningGas || !agent.hasPath) { _isStepping = false; return; }
-
-        // Use next corner for direction (includes turns on ramps)
-        Vector3 toCorner = agent.steeringTarget - transform.position;
-        toCorner.y = 0f;
-        if (toCorner.sqrMagnitude < 0.0001f) toCorner = transform.forward;
-        toCorner.Normalize();
-
-        float maxAllowed = Mathf.Max(0f, agent.remainingDistance - agent.stoppingDistance);
-        float thisStep = Mathf.Min(strideDistance, maxAllowed);
-
-        _stepStartPos = transform.position;
-        var flatTarget = _stepStartPos + toCorner * thisStep;
-
-        // *** critical: put the target ON the navmesh/ramp ***
-        _stepTarget = SnapToNavMeshY(flatTarget);
-
-        _stepTimer = 0f;
-        _isStepping = thisStep > 0f;
-    }
-
-    private void EndStep()
-    {
-        if (_isStepping)
+        stepping = state;
+        if (stepping)
         {
-            transform.position = _stepTarget;
-            _isStepping = false;
-            agent.nextPosition = transform.position;
+            leftStep = true;
+            StartCoroutine(PlayStep());
         }
     }
-
-    private void TickStep(float dt)
+    private IEnumerator PlayStep()
     {
-        if (!_isStepping) return;
+        animator.SetBool("Stop", false);
 
-        _stepTimer += dt;
-        float t = Mathf.Clamp01(_stepTimer / strideDuration);
-
-        // your existing movement (snapped to navmesh)
-        Vector3 p = Vector3.Lerp(_stepStartPos, _stepTarget, t);
-        p = SnapToNavMeshY(p);
-        transform.position = p;
-
-        // NEW: face the agent’s steering target
-        FaceSteeringTarget(dt);
-
-        // keep agent synced to your manual movement
-        agent.nextPosition = transform.position;
-
-        if (t >= 1f) EndStep();
-    }
-
-
-    private Vector3 SnapToNavMeshY(Vector3 pos)
-    {
-        if (NavMesh.SamplePosition(pos, out var hit, navSampleMaxDist, NavMesh.AllAreas))
-            pos.y = hit.position.y;
-        else
+        while (true)
         {
-            // Fallback: raycast against level colliders if no NavMesh found (optional)
-            if (Physics.Raycast(pos + Vector3.up * 2f, Vector3.down, out var rh, 10f))
-                pos.y = rh.point.y;
-        }
-        return pos;
-    }
+            string clip = leftStep ? "LeftStep" : "RightStep";
+            string sfx = leftStep ? "Golem_LeftStomp" : "Golem_RightStomp";
 
-    private void FaceSteeringTarget(float dt)
-    {
-        // If the agent has a path, look toward its steering target (next corner)
-        if (agent != null && !agent.pathPending)
-        {
-            Vector3 lookDir = agent.steeringTarget - transform.position;
-            lookDir.y = 0f; // keep yaw-only rotation
+            animator.Play(clip);
+            AudioManager.Instance.PlaySFX(sfx, transform.position);
 
-            // Fallback: if steering target is on top of us (e.g., end of path), keep current forward
-            if (lookDir.sqrMagnitude > 0.001f)
-            {
-                Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, dt * rotationSpeed);
-            }
+            agent.isStopped = false; 
+
+            yield return new WaitForSeconds(stepDuration);
+            Debug.Log(agent.isStopped);
+            agent.isStopped = true;
+
+            yield return new WaitForSeconds(stepInterval);
+
+            leftStep = !leftStep;
+
+            if (!stepping && !leftStep) break;
         }
+
+        animator.SetBool("Stop", true);
     }
 
     public void PlayStepLeftSFX()
