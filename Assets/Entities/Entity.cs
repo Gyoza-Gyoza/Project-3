@@ -65,8 +65,9 @@ public abstract class Entity : MonoBehaviour
         health = Mathf.Clamp(health + amount, 0, maxHealth);
         OnHeal();
     }
-    public virtual void TakeDamage(int amount, GameObject source)
+    public virtual void TakeDamage(int amount, GameObject source = null)
     {
+        source = source ?? gameObject;
         Debug.Log($"{name} taking {amount} damage");
         health -= amount;
         if (health > 0) OnDamage(source);

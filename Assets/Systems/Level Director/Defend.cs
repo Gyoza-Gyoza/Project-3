@@ -21,7 +21,7 @@ public class Defend : Stage
     public override void DoPayloadBehaviour()
     {
         LevelDirector.Instance.testText.text =
-        $"Current Stage is {LevelDirector.Instance.CurrentStage} " +
+        $"Current Stage is {LevelDirector.Instance.CurrentStageCounter} " +
         $"\n Defense progress is {StageProgress * 100}% " +
         $"\n Total progress is {LevelDirector.Instance.StageProgress * 100}%"; 
         if (playerInRange)

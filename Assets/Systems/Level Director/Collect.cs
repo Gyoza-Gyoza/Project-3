@@ -55,7 +55,7 @@ public class Collect : Stage
     public override void DoPayloadBehaviour()
     {
         LevelDirector.Instance.testText.text =
-        $"Current Stage is {LevelDirector.Instance.CurrentStage} " +
+        $"Current Stage is {LevelDirector.Instance.CurrentStageCounter} " +
         $"\n {AmountCollected} / {AmountToCollect} collected " +
         $"\n Total progress is {LevelDirector.Instance.StageProgress * 100}%";
         if (AmountCollected >= AmountToCollect)

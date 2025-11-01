@@ -99,6 +99,6 @@ public class EnemyBehaviour : Entity
     }
     public override void OnDeath()
     {
-        LevelDirector.Instance.EnemyCount -= 1;
+        LevelDirector.Instance.RemoveEnemy(this);
     }
 }

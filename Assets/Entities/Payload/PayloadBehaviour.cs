@@ -90,11 +90,11 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     }
     private void Update()
     {
-        if (LevelDirector.Instance.CurrentStage < stages.Length) stages[LevelDirector.Instance.CurrentStage].DoPayloadBehaviour();
+        if (LevelDirector.Instance.CurrentStageCounter < stages.Length) stages[LevelDirector.Instance.CurrentStageCounter].DoPayloadBehaviour();
 
         if (CurrentGas > 0 && !burningGas)
         {
-            Debug.Log("Burning conditions triggered");
+            //Debug.Log("Burning conditions triggered");
             StartBurningGas();
         }
 
@@ -104,8 +104,6 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         {
             DrawPath();
         }
-
-        Debug.Log($"Payload Agent isStopped: {agent.isStopped}");
         //TickStep(Time.deltaTime);           // drive manual movement if a step is active
         //agent.nextPosition = transform.position; // keep agent synced to our manual motion
 
@@ -322,7 +320,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
         //agent.updatePosition = false;
 
-        if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) agent.Warp(escort.EscortPosition);
+        if (stages[LevelDirector.Instance.CurrentStageCounter] is Escort escort) agent.Warp(escort.EscortPosition);
         CompleteStage(); //Complete the beginning one
         agent.isStopped = true;
     }
@@ -330,14 +328,14 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     {
         //Debug.Log($"Complete Stage called for stage {LevelDirector.Instance.CurrentStage + 1}");
         LevelDirector.Instance.CompletedStage();
-        if (LevelDirector.Instance.CurrentStage < stages.Length)
+        if (LevelDirector.Instance.CurrentStageCounter < stages.Length)
         {
-            stages[LevelDirector.Instance.CurrentStage].StartStage();
+            stages[LevelDirector.Instance.CurrentStageCounter].StartStage();
             // Ensures that the player in range behaviour stays the same when changing stages
-            if (playerInRange) stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
-            else stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
+            if (playerInRange) stages[LevelDirector.Instance.CurrentStageCounter].PlayerInRange();
+            else stages[LevelDirector.Instance.CurrentStageCounter].PlayerOutOfRange();
 
-            if (stages[LevelDirector.Instance.CurrentStage] is Escort escort) StartCoroutine(GetPath(escort));
+            if (stages[LevelDirector.Instance.CurrentStageCounter] is Escort escort) StartCoroutine(GetPath(escort));
         }
         else LevelDirector.Instance.CompleteLevel();
     }
@@ -356,7 +354,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         if (other.gameObject.tag == "Player")
         {
             playerInRange = true;
-            stages[LevelDirector.Instance.CurrentStage].PlayerInRange();
+            stages[LevelDirector.Instance.CurrentStageCounter].PlayerInRange();
         }
     }
     private void OnTriggerExit(Collider other)
@@ -364,7 +362,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         if (other.gameObject.tag == "Player")
         {
             playerInRange = false;
-            stages[LevelDirector.Instance.CurrentStage].PlayerOutOfRange();
+            stages[LevelDirector.Instance.CurrentStageCounter].PlayerOutOfRange();
         }
     }
 

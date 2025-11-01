@@ -159,7 +159,7 @@ public class PlayerController3P : Entity
     [SerializeField] private AudioSource walkAudioSource;
 
     // ------------------ INTERNALS ------------------------------------------------------------------------------------------
-    private CharacterController controller;
+    [HideInInspector] public CharacterController controller;
     private Vector3 velocity;
     private bool wasGrounded;
     private float lastGroundedTime;

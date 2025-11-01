@@ -19,7 +19,7 @@ public class PresetStage
 }
 public class LevelDirector : Singleton<LevelDirector>
 {
-    [SerializeField] private Stage[] stages;
+    [SerializeField] private Level[] levels;
     [SerializeField] public TextMeshProUGUI testText;
     [SerializeField] private GameObject test;
     [SerializeField] private float spawnSpread;
@@ -28,13 +28,19 @@ public class LevelDirector : Singleton<LevelDirector>
 
     private LineRenderer lineRenderer;
 
-    private List<Transform> spawnMarker = new List<Transform>(); 
+    private List<Transform> spawnMarker = new List<Transform>();
+    public Level[] Levels
+    { get { return levels; } }
+    public Level CurrentLevel
+    { get { return levels[currentLevelCounter]; } }
     public Stage[] Stages
-    {
-        get { return stages; }
-    }
-    private int currentStage; 
-    public int CurrentStage { get { return currentStage; } }
+    { get { return levels[currentLevelCounter].stages; } }
+    public Stage CurrentStage
+    { get { return levels[currentLevelCounter].stages[currentStageCounter]; } }
+    private int currentLevelCounter;
+    public int CurrentLevelCounter { get { return currentLevelCounter; } }
+    private int currentStageCounter; 
+    public int CurrentStageCounter { get { return currentStageCounter; } }
 
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
@@ -47,33 +53,34 @@ public class LevelDirector : Singleton<LevelDirector>
     private bool spawnCoolingDown = false;
     private bool startCooldown = false;
     private List<GameObject> specialEnemyPool = new List<GameObject>();
+    private List<EnemyBehaviour> enemyList = new List<EnemyBehaviour>();
 
     private Vector3 currentPosition; // Used for drawing gizmos
     private PayloadBehaviour payload;
 
-    [SerializeField] private int enemyCount = 0;
-    public int EnemyCount
-    { get { return enemyCount; } 
-      set { enemyCount = value; HUDController.Instance.UpdateTotalEnemyCount(enemyCount); }
-    }
+    //[SerializeField] private int enemyCount = 0;
+    //public int EnemyCount
+    //{ get { return enemyCount; } 
+    //  set { enemyCount = value; HUDController.Instance.UpdateTotalEnemyCount(enemyCount); }
+    //}
 
     #region --- Level Length and Progress ---
     private float levelLength = 0f;
 
     private void CalculateLevelLength()
     {
-        for (int i = 1; i < stages.Length; i++)
+        for (int i = 1; i < levels[currentLevelCounter].stages.Length; i++)
         {
-            stages[i].Length = CalculateCheckpointLength(i);
+            levels[currentLevelCounter].stages[i].Length = CalculateCheckpointLength(i);
             //Debug.Log($"Checkpoint Length: {stages[i].Length}");
             //Debug.Log($"Current Length: {levelLength}");
-            levelLength += stages[i].Length;
+            levelLength += levels[currentLevelCounter].stages[i].Length;
         }
     }
 
     private float CalculateCheckpointLength(int index)
     {
-        if (stages[index - 1] is Escort escort1 && stages[index] is Escort escort2)
+        if (levels[currentLevelCounter].stages[index - 1] is Escort escort1 && levels[currentLevelCounter].stages[index] is Escort escort2)
         {
             return Vector3.Magnitude(escort2.EscortPosition - escort1.EscortPosition);
         }
@@ -88,12 +95,12 @@ public class LevelDirector : Singleton<LevelDirector>
             float calc = 0.0001f;
             //Debug.Log($"calc was {calc}");
             //float progressionPerStage = 1f / (Stages.Length - 1);
-            for (int i = 1; i < currentStage; i++)
+            for (int i = 1; i < currentStageCounter; i++)
             {
-                if (stages[i].Length > 0f)
+                if (levels[currentLevelCounter].stages[i].Length > 0f)
                 {
                     //Debug.Log($"Length is  {stages[i].Length}");
-                    calc += stages[i].Length;
+                    calc += levels[currentLevelCounter].stages[i].Length;
                 }
                 else
                 {
@@ -102,7 +109,7 @@ public class LevelDirector : Singleton<LevelDirector>
                 }
             }
 
-            calc += stages[currentStage].StageProgress * stages[currentStage].Length;
+            calc += levels[currentLevelCounter].stages[currentStageCounter].StageProgress * levels[currentLevelCounter].stages[currentStageCounter].Length;
             float result = calc / levelLength;
 
             //Debug.Log($"Stage StageProgress: {result}, calc was {calc}, levelLength was {levelLength}");
@@ -138,9 +145,9 @@ public class LevelDirector : Singleton<LevelDirector>
         deathZoneChaser.isStopped = false;
         */
 
-        deathZoneChaser.Warp((stages[0] as Escort).EscortPosition);
+        deathZoneChaser.Warp((levels[currentLevelCounter].stages[0] as Escort).EscortPosition);
 
-        dir = (stages[deathZoneStage] as Escort).EscortPosition - (stages[deathZoneStage - 1] as Escort).EscortPosition;
+        dir = (levels[currentLevelCounter].stages[deathZoneStage] as Escort).EscortPosition - (levels[currentLevelCounter].stages[deathZoneStage - 1] as Escort).EscortPosition;
 
         StartCoroutine(DeathZoneCoroutine());
     }
@@ -154,12 +161,12 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         Debug.Log("Death completed called");
         deathZoneStage++;
-        deathZoneStage = Mathf.Clamp(currentStage, 0, Stages.Length - 1);
+        deathZoneStage = Mathf.Clamp(currentStageCounter, 0, Stages.Length - 1);
 
-        if (deathZoneStage < stages.Length && stages[deathZoneStage] is Escort nextStage)
+        if (deathZoneStage < levels[currentLevelCounter].stages.Length && levels[currentLevelCounter].stages[deathZoneStage] is Escort nextStage)
         {
             //deathZoneChaser.SetDestination(nextStage.EscortPosition);
-            dir = (stages[deathZoneStage] as Escort).EscortPosition - (stages[deathZoneStage - 1] as Escort).EscortPosition;
+            dir = (levels[currentLevelCounter].stages[deathZoneStage] as Escort).EscortPosition - (levels[currentLevelCounter].stages[deathZoneStage - 1] as Escort).EscortPosition;
         }
         else
         {
@@ -184,7 +191,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
             //Escort previous = stages[deathZoneStage - 1] as Escort;
 
-            Escort current = stages[deathZoneStage] as Escort;
+            Escort current = levels[currentLevelCounter].stages[deathZoneStage] as Escort;
 
             Vector3 currentPos = deathZoneChaser.gameObject.transform.position + (dir.normalized * rate * Time.deltaTime);
 
@@ -257,7 +264,7 @@ public class LevelDirector : Singleton<LevelDirector>
         payload = PayloadBehaviour.Instance;
         AssignEscortStages();
         CalculateLevelLength();
-        HUDController.Instance.SetUpProgressBar(stages, levelLength);
+        HUDController.Instance.SetUpProgressBar(levels[currentLevelCounter].stages, levelLength);
         lineRenderer = new LineRenderer();
     }
     private void Update()
@@ -275,6 +282,7 @@ public class LevelDirector : Singleton<LevelDirector>
                 HUDController.Instance.EnemiesStopped(false);
             }
         }
+        if (Input.GetKeyDown(KeyCode.P)) CompleteLevel();
         if (spawnEnemies) SpawnEnemies();
         if (Input.GetKeyDown(KeyCode.J)) SpawnSpecialEnemies(-1);
         if (Input.GetKeyDown(KeyCode.K)) SpawnSpecialEnemies(0);
@@ -324,7 +332,7 @@ public class LevelDirector : Singleton<LevelDirector>
                 {
                     if (spawn.isSpawning == true)
                     {
-                        for (int i = 0; i < Stages[currentStage].EnemyPerGroup; i++)
+                        for (int i = 0; i < Stages[currentStageCounter].EnemyPerGroup; i++)
                         {
                             GameObject enemyToSpawn = enemyPrefab;
                             if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPool[Random.Range(0, specialEnemyPrefabs.Length - 1)];
@@ -341,13 +349,28 @@ public class LevelDirector : Singleton<LevelDirector>
                                     }
                                 }
                             }
-                            EnemyCount += 1;
+                            EnemyBehaviour enemyBehaviour = enemy.gameObject.GetComponent<EnemyBehaviour>();
+                            AddEnemy(enemyBehaviour);
                             //Debug.Log("Enemy count being added");
                         }
                     }
                 }
             }
             timer = 0;
+        }
+    }
+    // Use these to contain all logic for counting enemies
+    private void AddEnemy(EnemyBehaviour enemy)
+    {
+        enemyList.Add(enemy);
+        HUDController.Instance.UpdateTotalEnemyCount(enemyList.Count);
+    }
+    public void RemoveEnemy(EnemyBehaviour enemy)
+    {
+        if (enemyList.Contains(enemy))
+        {
+            enemyList.Remove(enemy);
+            HUDController.Instance.UpdateTotalEnemyCount(enemyList.Count);
         }
     }
     private bool CanSpawn()
@@ -358,7 +381,7 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             if(!startCooldown) // Checks if the cooldown can be started
             {
-                if (enemyCount <= Stages[currentStage].ResumeThreshold) // Checks if the enemy count is below the resume threshold and removes the spawn cooldown
+                if (enemyList.Count <= Stages[currentStageCounter].ResumeThreshold) // Checks if the enemy count is below the resume threshold and removes the spawn cooldown
                 {
                     startCooldown = true;
                     timer = 0f; // Starts the timer when the enemy goes below the threshold
@@ -367,7 +390,7 @@ public class LevelDirector : Singleton<LevelDirector>
             }
             else // If it is cooling down, it starts the timer
             {
-                if (timer >= stages[CurrentStage].SpawnCooldown)
+                if (timer >= levels[currentLevelCounter].stages[CurrentStageCounter].SpawnCooldown)
                 {
                     startCooldown = false;
                     spawnCoolingDown = false;
@@ -377,13 +400,13 @@ public class LevelDirector : Singleton<LevelDirector>
             //Debug.Log($"Spawning on cooldown, timer: {timer}");
             return false; 
         }
-        if (enemyCount >= Stages[currentStage].MaxEnemies) // Checks if the enemy count is at max and sets the spawn on cooldown
+        if (enemyList.Count >= Stages[currentStageCounter].MaxEnemies) // Checks if the enemy count is at max and sets the spawn on cooldown
         {
             spawnCoolingDown = true;
             //Debug.Log("Enemy cap reached, spawning on cooldown");
             return false;
         }
-        if (timer <= stages[currentStage].DurationBetweenSpawns) // Checks if the timer has reached the spawn frequency
+        if (timer <= levels[currentLevelCounter].stages[currentStageCounter].DurationBetweenSpawns) // Checks if the timer has reached the spawn frequency
         {
             //Debug.Log("Waiting for spawn timer");
             return false;
@@ -402,7 +425,9 @@ public class LevelDirector : Singleton<LevelDirector>
         for(int i = 0; i < 100; i++)
         {
             randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-            randomPosition = PlayerController3P.Instance.transform.position + randomDirection * (stages[currentStage].MinSpawnDistance + Random.Range(0f, stages[currentStage].MaxSpawnDistance));
+            randomPosition = PlayerController3P.Instance.transform.position + 
+                randomDirection * (levels[currentLevelCounter].stages[currentStageCounter].MinSpawnDistance 
+                + Random.Range(0f, levels[currentLevelCounter].stages[currentStageCounter].MaxSpawnDistance));
             
             Vector3 vectorToPlayer = PlayerController3P.Instance.transform.position - randomPosition;
             float distanceToPlayer = vectorToPlayer.magnitude;
@@ -430,8 +455,8 @@ public class LevelDirector : Singleton<LevelDirector>
         foreach (Transform position in spawnMarker)
         {
             // Checks if position is within range
-            if (!(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) <= Stages[currentStage].MaxSpawnDistance) ||
-                !(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) >= Stages[currentStage].MinSpawnDistance)) continue;
+            if (!(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) <= Stages[currentStageCounter].MaxSpawnDistance) ||
+                !(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) >= Stages[currentStageCounter].MinSpawnDistance)) continue;
 
             if (Physics.Linecast(position.position, PlayerController3P.Instance.transform.position, environmentMask))
             {
@@ -450,51 +475,62 @@ public class LevelDirector : Singleton<LevelDirector>
     }
     #endregion
 
-    public void MarkLocation(Transform pos) => spawnMarker.Add(pos);
     #endregion
 
     public void CompletedStage()
     {
-        currentStage++;
-        currentStage = Mathf.Clamp(currentStage, 0, Stages.Length);
+        currentStageCounter++;
+        currentStageCounter = Mathf.Clamp(currentStageCounter, 0, Stages.Length);
 
         SpawnSpawners();
 
-        specialEnemyChance = Stages[currentStage].SpecialEnemyChance;
+        specialEnemyChance = Stages[currentStageCounter].SpecialEnemyChance;
 
         // Adding Special enemies
         specialEnemyPool.Clear();
 
-        for (int i = 0; i < Stages[currentStage].SpecialEnemiesIncluded.Length; i++)
+        for (int i = 0; i < Stages[currentStageCounter].SpecialEnemiesIncluded.Length; i++)
         {
-            if (Stages[currentStage].SpecialEnemiesIncluded[i])
+            if (Stages[currentStageCounter].SpecialEnemiesIncluded[i])
                 specialEnemyPool.Add(specialEnemyPrefabs[i]);
         }
 
 
         //Hardcode to start death zone on 3rd check point
-        if (currentStage == 2)
+        if (currentStageCounter == 2)
         {
             StartDeathZone();
+        }
+
+        if (currentStageCounter >= levels[currentLevelCounter].stages.Length)
+        {
+            CompleteLevel();
         }
     }
 
     public void CompleteLevel()
     {
-        // Handle level completion logic here
-        //testText.text = $"Level Completed! Total StageProgress: 100%";
-        Debug.Log("Complete level called");
-        WinGame();
+        currentLevelCounter++;
+        foreach (EnemyBehaviour enemy in enemyList)
+        {
+            enemy.TakeDamage(enemy.Health);
+        }
+        if (currentLevelCounter >= levels.Length)
+        {
+            WinGame();
+        }
+        ScreenEffectsManager.Instance.ScreenFade(() => 
+        PlayerController3P.Instance.transform.position = CurrentLevel.startPoint.position);
     }
 
     private void AssignEscortStages() // might become obselete when the baymax stops going backwards
     {
         //Debug.Log("Assign Escorts called");
-        for(int i = 1; i < stages.Length; i++)
+        for(int i = 1; i < levels[currentLevelCounter].stages.Length; i++)
         {
-            if (stages[i] is Escort escort1)
+            if (levels[currentLevelCounter].stages[i] is Escort escort1)
             {
-                if (stages[i -1] is Escort escort2)
+                if (levels[currentLevelCounter].stages[i -1] is Escort escort2)
                 {   escort1.PreviousStage = escort2.EscortPosition;}
                 else
                 {   escort1.PreviousStage = escort1.EscortPosition;}
@@ -518,7 +554,7 @@ public class LevelDirector : Singleton<LevelDirector>
             spawners.Clear();
         }
 
-        foreach (Vector3 spawn in stages[currentStage].SpawnMarkers)
+        foreach (Vector3 spawn in levels[currentLevelCounter].stages[currentStageCounter].SpawnMarkers)
         {
             EnemySpawn just = GameObject.Instantiate(enemySpawnerPrefab, spawn, Quaternion.identity).GetComponent<EnemySpawn>();
             spawners.Add(just);

@@ -25,7 +25,7 @@ public class EnemyHealth : MonoBehaviour
         {
             dead = true;
             currentHP = 0;
-            LevelDirector.Instance.EnemyCount -= 1; // #EZE -- This is temporary. We need to do a rehaul of the code 
+            //LevelDirector.Instance.EnemyCount -= 1; // #EZE -- This is temporary. We need to do a rehaul of the code 
             Debug.Log("Enemy count being MINUSED");
             ai.QueueDeath(); // allow knockback & skid to finish, then sink
         }

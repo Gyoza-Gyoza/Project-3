@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -27,23 +28,37 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I)) CreateQuickTextNotification(test, "Level 1 Start");
-        if (Input.GetKeyDown(KeyCode.U)) CreateTitleTextNotification("Level 1 Start");
-        if (Input.GetKeyDown(KeyCode.Y)) ScreenFade(0.5f, 0.5f, 1f, Color.black);
+
     }
     /// <summary>
     /// Performs a full screen fade in and out
     /// </summary>
+    /// <param name="actionToDo">Action to perform during the hold duration</param>
     /// <param name="fadeInDuration">Duration taken to fade in</param>
     /// <param name="fadeOutDuration">Duration taken to fade out</param>
     /// <param name="holdDuration">Duration that the fade will hold for</param>
     /// <param name="color">Color of the screen fade, leave as null for black</param>
-    public void ScreenFade(float fadeInDuration = 0.5f, float fadeOutDuration = 0.5f, float holdDuration = 1f, Color? color = null)
+    public void ScreenFade(float fadeInDuration = 0.5f, float fadeOutDuration = 0.5f, float holdDuration = 1f, Color? color = null, Action actionToDo = null)
     {
         //Assigns chosen values to the screen 
         screenCover.color = color ?? Color.black;
         
-        StartCoroutine(FadeSequence(screenCover, fadeInDuration, fadeOutDuration, holdDuration));
+        StartCoroutine(FadeSequence(screenCover, fadeInDuration, fadeOutDuration, holdDuration, actionToDo));
+    }
+    /// <summary>
+    /// Performs a full screen fade in and out
+    /// </summary>
+    /// <param name="actionToDo">Action to perform during the hold duration</param>
+    /// <param name="fadeInDuration">Duration taken to fade in</param>
+    /// <param name="fadeOutDuration">Duration taken to fade out</param>
+    /// <param name="holdDuration">Duration that the fade will hold for</param>
+    /// <param name="color">Color of the screen fade, leave as null for black</param>
+    public void ScreenFade(Action actionToDo = null, float fadeInDuration = 0.5f, float fadeOutDuration = 0.5f, float holdDuration = 1f, Color? color = null)
+    {
+        //Assigns chosen values to the screen 
+        screenCover.color = color ?? Color.black;
+
+        StartCoroutine(FadeSequence(screenCover, fadeInDuration, fadeOutDuration, holdDuration, actionToDo));
     }
     /// <summary>
     /// Creates a title text notification 
@@ -56,7 +71,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     {
         notification.text = notificationText; //Sets the text of the notification
 
-        titleTextQueue.Enqueue(FadeSequence(notification, fadeInDuration, fadeOutDuration, holdDuration)); //Adds the sequence to the queue
+        titleTextQueue.Enqueue(FadeSequence(notification, fadeInDuration, fadeOutDuration, holdDuration, null)); //Adds the sequence to the queue
 
         StartCoroutine(TryRunNextNotification());
     }
@@ -90,7 +105,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
 
         CanvasGroup canvasGroup = textNotification.GetComponent<CanvasGroup>();
 
-        StartCoroutine(FadeSequence(textNotification.GetComponent<CanvasGroup>(), fadeInDuration, fadeOutDuration, holdDuration));
+        StartCoroutine(FadeSequence(textNotification.GetComponent<CanvasGroup>(), fadeInDuration, fadeOutDuration, holdDuration, null));
     }
     /// <summary>
     /// Used to fade a UI element in or out
@@ -100,11 +115,12 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     /// <param name="fadeOutDuration">Duration of the fade out</param>
     /// <param name="holdDuration">How long to hold the fade in state</param>
     /// <returns></returns>
-    private IEnumerator FadeSequence(Graphic target, float fadeInDuration, float fadeOutDuration, float holdDuration)
+    private IEnumerator FadeSequence(Graphic target, float fadeInDuration, float fadeOutDuration, float holdDuration, Action actionToDo)
     {
         target.gameObject.SetActive(true);
 
         yield return Fade(target, 0f, 1f, fadeInDuration);
+        actionToDo?.Invoke();
         yield return new WaitForSeconds(holdDuration);
         yield return Fade(target, 1f, 0f, fadeOutDuration);
 
@@ -118,7 +134,7 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     /// <param name="fadeOutDuration">Duration of the fade out</param>
     /// <param name="holdDuration">How long to hold the fade in state</param>
     /// <returns></returns>
-    private IEnumerator FadeSequence(CanvasGroup target, float fadeInDuration, float fadeOutDuration, float holdDuration)
+    private IEnumerator FadeSequence(CanvasGroup target, float fadeInDuration, float fadeOutDuration, float holdDuration, Action actionToDo)
     {
         target.gameObject.SetActive(true);
 
