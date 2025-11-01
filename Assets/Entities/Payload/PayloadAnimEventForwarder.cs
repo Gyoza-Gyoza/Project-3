@@ -3,13 +3,12 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class PayloadAnimEventForwarder : MonoBehaviour
 {
-    [SerializeField] private PayloadBehaviour payload; // drag if needed
+    private PayloadBehaviour payload; // drag if needed
     [SerializeField] private GameObject leftStomp, rightStomp;
 
     void Awake()
     {
-        if (!payload)
-            payload = GetComponentInParent<PayloadBehaviour>();
+        if (payload == null) payload = GetComponentInParent<PayloadBehaviour>();
     }
 
     // Animation Events (match the event names in clips)
@@ -20,18 +19,18 @@ public class PayloadAnimEventForwarder : MonoBehaviour
 
     public void PlayStepRightSFX()
     {
-        if (payload)
+        if (payload != null)
         {
             payload.PlayStepRightSFX();
-            leftStomp.SetActive(true);
+            rightStomp.SetActive(true);
         }
     }
     public void PlayStepLeftSFX()
     {
-        if (payload)
+        if (payload != null)
         {
             payload.PlayStepLeftSFX();
-            rightStomp.SetActive(true);
+            leftStomp.SetActive(true);
         }
     }
     public void PlayStopSFX() { if (payload) payload.PlayStopSFX(); }
