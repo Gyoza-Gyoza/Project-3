@@ -51,6 +51,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     }
     protected override void OnDamage(GameObject source)
     {
+        if (State is BasicEnemyDeathState) return;
         StartCoroutine(DamageFlicker());
         State = new BasicEnemyKnockUpState(this, knockupDuration, CalculateKnockBack
             (false, source.transform), upDrag, fallForce, downDrag, recoveryTime);
@@ -106,11 +107,9 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         }
         mesh.SetActive(false);
         ParticleSystem particleSystem = deathParticleSystem.GetComponent<ParticleSystem>();
-        particleSystem.Stop();
-        while (particleSystem.IsAlive())
-        {
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
+        //particleSystem.Stop();
+        yield return new WaitUntil(() => !particleSystem.IsAlive());
+
         GameObjectPool.ReturnObject(gameObject);
         yield break;
     }

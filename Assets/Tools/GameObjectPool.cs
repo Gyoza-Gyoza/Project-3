@@ -31,14 +31,12 @@ public static class GameObjectPool
     }
     public static void ReturnObject(GameObject obj)
     {
-        if (pools.TryGetValue(obj.name, out Stack<GameObject> pool))
+        if (!pools.TryGetValue(obj.name, out Stack<GameObject> pool))
         {
-            pool.Push(obj);
-            obj.SetActive(false);
+            pool = new Stack<GameObject>();
+            pools[obj.name] = pool;
         }
-        else
-        {
-            pools.Add(obj.name, new Stack<GameObject>());
-        }
+        pool.Push(obj);
+        obj.SetActive(false);
     }
 }

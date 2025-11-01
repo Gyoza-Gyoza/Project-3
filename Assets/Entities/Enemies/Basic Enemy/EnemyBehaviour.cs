@@ -81,7 +81,13 @@ public class EnemyBehaviour : Entity
     protected override void OnEnable()
     {
         base.OnEnable();
-        if (agent!= null) agent.enabled = true;
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.enabled = true;
+            agent.isStopped = false;
+            agent.velocity = Vector3.zero;
+            agent.updateRotation = true;
+        }
     }
     protected override void OnHeal()
     {
