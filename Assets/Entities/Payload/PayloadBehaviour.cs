@@ -543,8 +543,6 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             string sfx = leftStep ? "Golem_LeftStomp" : "Golem_RightStomp";
 
             animator.Play(clip);
-            AudioManager.Instance.PlaySFX(sfx, transform.position);
-
             agent.isStopped = false; 
 
             yield return new WaitForSeconds(stepDuration);

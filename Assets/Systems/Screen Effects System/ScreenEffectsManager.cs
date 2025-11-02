@@ -16,19 +16,35 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     private Transform quickNotifications;
     [SerializeField]
     private GameObject quickNotificationPrefab;
+    [SerializeField] private RectTransform topBar, bottomBar;
     [SerializeField] private Sprite test;
     //Title queue system
     private Queue<IEnumerator> titleTextQueue = new Queue<IEnumerator>(); //Holds the queue of title text sequences
     private bool isTitleActive = false;
+    private RectTransform canvasRectTransform;
+    private Coroutine letterboxCoroutine;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        canvasRectTransform = GetComponent<RectTransform>();
+    }
     private void Start()
     {
         //screenCover.gameObject.SetActive(false);
         //notification.gameObject.SetActive(false);
+        InitializeLetterboxBars();
     }
     private void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SetLetterboxActive(true);
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            SetLetterboxActive(false);
+        }
     }
     /// <summary>
     /// Performs a full screen fade in and out
@@ -170,5 +186,48 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
             target.alpha = Mathf.Lerp(start, end, timer / duration);
             yield return null;
         }
+    }
+    private void InitializeLetterboxBars()
+    {
+        topBar.offsetMin = new Vector2(topBar.offsetMin.x, canvasRectTransform.rect.height);
+        bottomBar.offsetMax = new Vector2(bottomBar.offsetMax.x, -canvasRectTransform.rect.height);
+    }
+    /// <summary>
+    /// Starts the letterbox effect
+    /// </summary>
+    /// <param name="active">Activates/Deactivates the effect</param>
+    /// <param name="size">Percentage of the screen that it'll cover</param>
+    /// <param name="duration">Duration of the effect</param>
+    /// <param name="color">Color of the effect</param>
+    public void SetLetterboxActive(bool active, float size = 0.2f, float duration = 2f, Color? color = null)
+    {
+        if (letterboxCoroutine != null) StopCoroutine(letterboxCoroutine);
+        letterboxCoroutine = StartCoroutine(SetLetterboxActiveCoroutine(active, size, duration, color));
+    }
+    public IEnumerator SetLetterboxActiveCoroutine(bool active, float size = 0.1f, float duration = 2f, Color? color = null)
+    {
+        color = color ?? Color.black;
+        float timer = 0f;
+
+        topBar.GetComponent<Image>().color = (Color)color;
+        bottomBar.GetComponent<Image>().color = (Color)color;
+
+        float canvasHeight = canvasRectTransform.rect.height;
+        float startSize = topBar.offsetMin.y;
+        float targetSize = active? canvasHeight - size * (canvasHeight / 2f) : canvasHeight;
+
+        while (timer <= duration)
+        {
+            timer += Time.deltaTime;
+
+            float offsetSize = Mathf.Lerp(startSize, targetSize, timer / duration);
+
+            topBar.offsetMin = new Vector2(topBar.offsetMin.x, offsetSize);
+            bottomBar.offsetMax = new Vector2(bottomBar.offsetMax.x, -offsetSize); // Not a typo, offsetMax is set to negative by unity so it has to be negative to counter it
+            yield return null;
+        }
+   
+        topBar.offsetMin = new Vector2(topBar.offsetMin.x, targetSize);
+        bottomBar.offsetMax = new Vector2(bottomBar.offsetMax.x, -targetSize);
     }
 }

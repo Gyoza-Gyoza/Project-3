@@ -282,7 +282,6 @@ public class LevelDirector : Singleton<LevelDirector>
                 HUDController.Instance.EnemiesStopped(false);
             }
         }
-        if (Input.GetKeyDown(KeyCode.P)) CompleteLevel();
         if (spawnEnemies) SpawnEnemies();
         if (Input.GetKeyDown(KeyCode.J)) SpawnSpecialEnemies(-1);
         if (Input.GetKeyDown(KeyCode.K)) SpawnSpecialEnemies(0);
