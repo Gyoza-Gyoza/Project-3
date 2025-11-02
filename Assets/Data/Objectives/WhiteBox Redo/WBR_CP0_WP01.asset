@@ -15,9 +15,7 @@ MonoBehaviour:
   isCheckpoint: 0
   durationBetweenSpawns: 5
   enemyPerGroup: 5
-  spawnMarkers:
-  - {x: 43.2, y: 12, z: 206.6}
-  - {x: -23, y: 22, z: 205}
+  spawnMarkers: []
   spawnCooldown: 5
   maxEnemies: 40
   resumeThreshold: 5
@@ -25,5 +23,5 @@ MonoBehaviour:
   maxSpawnDistance: 100
   specialEnemyChance: 0
   specialEnemiesIncluded: 0000
-  escortPosition: {x: 30.2, y: 2.2, z: 140.1}
+  escortPosition: {x: 0, y: 8, z: 58}
   payloadSpeed: 40
