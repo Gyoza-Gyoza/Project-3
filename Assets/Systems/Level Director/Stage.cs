@@ -24,6 +24,7 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float maxSpawnDistance;
     [SerializeField] private float specialEnemyChance;
     [SerializeField] private bool[] specialEnemiesIncluded;
+    [SerializeField] private Transform respawn;
     private float progress = 0f;
     private float lengthFromPrevious;
 

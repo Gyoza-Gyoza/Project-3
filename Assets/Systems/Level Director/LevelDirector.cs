@@ -287,7 +287,7 @@ public class LevelDirector : Singleton<LevelDirector>
         if (Input.GetKeyDown(KeyCode.K)) SpawnSpecialEnemies(0);
         if (Input.GetKeyDown(KeyCode.L)) SpawnSpecialEnemies(1);
         if (Input.GetKeyDown(KeyCode.F12)) Application.Quit();
-
+        HUDController.Instance.UpdateTimePassed(Time.time);
     }
     #endregion
 

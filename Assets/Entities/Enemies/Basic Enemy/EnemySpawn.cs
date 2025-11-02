@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using UnityEngine;
 
-public class EnemySpawn : Entity
+public class EnemySpawn : EnemyBehaviour
 {
     public bool isSpawning { get; private set; } = false;
     public GameObject flicker;

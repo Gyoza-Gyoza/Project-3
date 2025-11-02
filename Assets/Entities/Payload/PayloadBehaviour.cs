@@ -10,6 +10,15 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 {
     private float hinderedMovementSpeed;
     [SerializeField] private float movementSpeed;
+
+    public float MovementSpeed
+    {
+        get { return movementSpeed; }
+        set { 
+              movementSpeed = value;
+            agent.acceleration = agent.speed = movementSpeed;
+        }        
+    }
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
     private float extraReturnSpeed;
@@ -546,7 +555,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             agent.isStopped = false; 
 
             yield return new WaitForSeconds(stepDuration);
-            Debug.Log(agent.isStopped);
+            //Debug.Log(agent.isStopped);
             agent.isStopped = true;
 
             yield return new WaitForSeconds(stepInterval);

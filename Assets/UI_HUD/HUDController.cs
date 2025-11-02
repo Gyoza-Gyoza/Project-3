@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -73,6 +74,8 @@ public class HUDController : Singleton<HUDController>
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
     [SerializeField] private TextMeshProUGUI enemiesStopped;
+    [SerializeField] private TextMeshProUGUI timepassed;
+
 
     // Start is called before the first frame update
     void Start()
@@ -432,6 +435,14 @@ public class HUDController : Singleton<HUDController>
         }
     }
 
+    public void UpdateTimePassed(float input)
+    {
+        //Debug.Log($"Time passed called, {input}");
+        if (timepassed != null && timepassed.isActiveAndEnabled)
+        {
+            timepassed.text = ((int)(input / 60)).ToString() + " Min " + ((int)(input % 60)).ToString() + "Sec";
+        }
+    }
     #endregion
 
 

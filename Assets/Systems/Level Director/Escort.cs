@@ -54,6 +54,7 @@ public class Escort : Stage
     {
         //FaceForward();
         PayloadBehaviour.Instance.Agent.SetDestination(EscortPosition);
+        PayloadBehaviour.Instance.MovementSpeed = payloadSpeed;
     }
     public override void DoPayloadBehaviour()
     {

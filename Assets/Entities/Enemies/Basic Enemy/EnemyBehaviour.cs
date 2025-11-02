@@ -51,8 +51,8 @@ public class EnemyBehaviour : Entity
     }
     protected virtual void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
+        if (!TryGetComponent<NavMeshAgent>(out agent)) Debug.Log("Enemy Agent component not found");
+        if (!TryGetComponent<Rigidbody>(out rb)) Debug.Log("Enemy Rigibody component not found");
     }
     protected override void Start()
     {
@@ -61,7 +61,7 @@ public class EnemyBehaviour : Entity
     }
     protected virtual void Update()
     {
-        state.DoEnemyAction();
+        state?.DoEnemyAction();
 
         if (Input.GetKeyDown(KeyCode.M)) TakeDamage(1, gameObject);
     }

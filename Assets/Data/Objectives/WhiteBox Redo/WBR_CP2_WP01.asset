@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: WBR_CP2_WP01
   m_EditorClassIdentifier: 
   isCheckpoint: 0
-  durationBetweenSpawns: 0
-  enemyPerGroup: 0
-  spawnMarkers: []
-  spawnCooldown: 0
-  maxEnemies: 0
+  durationBetweenSpawns: 10
+  enemyPerGroup: 4
+  spawnMarkers:
+  - {x: -108.7, y: 37, z: 463.2}
+  - {x: 42.4, y: 37, z: 513.3}
+  spawnCooldown: 30
+  maxEnemies: 50
   resumeThreshold: 0
   minSpawnDistance: 0
   maxSpawnDistance: 0
-  specialEnemyChance: 0
-  specialEnemiesIncluded: 
+  specialEnemyChance: 0.05
+  specialEnemiesIncluded: 0100
+  respawn: {fileID: 0}
   escortPosition: {x: 116, y: 25, z: 241}
-  payloadSpeed: 10
+  payloadSpeed: 6

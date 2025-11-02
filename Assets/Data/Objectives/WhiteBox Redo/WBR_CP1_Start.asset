@@ -22,6 +22,7 @@ MonoBehaviour:
   minSpawnDistance: 0
   maxSpawnDistance: 0
   specialEnemyChance: 0
-  specialEnemiesIncluded: 
-  escortPosition: {x: 0, y: 8, z: 103}
-  payloadSpeed: 10
+  specialEnemiesIncluded: 0000
+  respawn: {fileID: 0}
+  escortPosition: {x: 0, y: 8, z: 85.7}
+  payloadSpeed: 6

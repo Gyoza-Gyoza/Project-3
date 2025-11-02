@@ -104,6 +104,7 @@ public class ThirdPersonCamera : MonoBehaviour
         float mx = Input.GetAxis("Mouse X");
         float my = Input.GetAxis("Mouse Y");
         yaw   += mx * sensX * Time.deltaTime;
+        yaw    =  ClampYaw(yaw);
         pitch += (invertY ? 1f : -1f) * my * sensY * Time.deltaTime;
         pitch  = Mathf.Clamp(pitch, minPitch, maxPitch);
         pivot.localRotation = Quaternion.Euler(pitch, yaw, 0f);
@@ -117,17 +118,27 @@ public class ThirdPersonCamera : MonoBehaviour
         // --- Collision: sphere cast from pivot toward desired ---
         Vector3 dir  = (worldDesired - worldPivot);
         float   dist = dir.magnitude;
-        Vector3 nDir = dist > 1e-4f ? dir / dist : pivot.forward;
+        Vector3 nDir = dist > 1e-4f ? dir / dist : Vector3.zero; //pivot.forward; 
 
         float safeDist = dist; // default: no hit
+
+        //Debug.Log($"Flying from {worldPivot} towards {nDir} for {dist} with rad of {collisionRadius}");
         if (Physics.SphereCast(worldPivot, collisionRadius, nDir, out RaycastHit hit, dist, collisionMask, QueryTriggerInteraction.Ignore))
         {
+
             // Place camera just before the surface using the sphere radius
             safeDist = Mathf.Max(hit.distance - collisionRadius, 0f);
+
+            //Debug.Log($"Collision with {hit.collider.gameObject.name}, hitDist({hit.distance}) - collRad({collisionRadius}) = {hit.distance - collisionRadius} Safe dist at {safeDist}");
+        }
+        else
+        {
+            //Debug.Log($"No collision, Safe dist at {safeDist}");
         }
 
         // Set the target boom length and smooth toward it
         targetDistance  = Mathf.Clamp(safeDist, 0f, dist);
+        //Debug.Log($"Target, Safe dist at {safeDist}");
         currentDistance = SmoothToward(currentDistance, targetDistance, boomSmooth);
 
         // Final camera transform
@@ -151,6 +162,13 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible   = !locked;
+    }
+
+    float ClampYaw(float y)
+    {
+        if (y > 180f) y -= 360f;
+        else if (y < -180f) y += 360f;
+        return y;
     }
 
     float ClampPitch(float x)
@@ -191,6 +209,7 @@ public class ThirdPersonCamera : MonoBehaviour
     /// </summary>
     public void Shake(float magnitude = 0.2f, float duration = 0.15f)
     {
+        Debug.Log("Shaking is called");
         // If a shake is already playing, take the stronger magnitude and extend time if needed
         shakeMagnitude = Mathf.Max(shakeMagnitude, Mathf.Abs(magnitude));
         shakeTimeLeft  = Mathf.Max(shakeTimeLeft, duration);
