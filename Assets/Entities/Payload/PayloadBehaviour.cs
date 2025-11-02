@@ -315,7 +315,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
     private void InitializeAgent()
     {
-        agent.speed = movementSpeed;
+        agent.acceleration = agent.speed = movementSpeed;
         agent.angularSpeed = turnSpeed;
 
         //agent.updatePosition = false;
