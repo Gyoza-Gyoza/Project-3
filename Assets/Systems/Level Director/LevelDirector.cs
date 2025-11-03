@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -126,6 +127,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private NavMeshAgent deathZoneChaser;
     [SerializeField] private float deathZoneStartDelay = 3f;
     [SerializeField] private float deathBuffer = 1f;
+    [SerializeField] private Animator deathZoneAnimator;
     private Vector3 dir = Vector3.zero;
     private float deathZoneTraveled = 0f; 
     private bool deathZoneActive = false;
@@ -150,6 +152,8 @@ public class LevelDirector : Singleton<LevelDirector>
         dir = (levels[currentLevelCounter].stages[deathZoneStage] as Escort).EscortPosition - (levels[currentLevelCounter].stages[deathZoneStage - 1] as Escort).EscortPosition;
 
         StartCoroutine(DeathZoneCoroutine());
+
+        deathZoneAnimator.SetTrigger("StartChasing");
     }
 
     private void StopDeathZone()
@@ -256,7 +260,6 @@ public class LevelDirector : Singleton<LevelDirector>
     protected override void Awake()
     {
         base.Awake();
-
     }
 
     private void Start()
@@ -588,6 +591,13 @@ public class LevelDirector : Singleton<LevelDirector>
         Debug.Log("Quitted game");
         Application.Quit();
     }
+
+    public void Respawn()
+    {
+        PlayerController3P.Instance.gameObject.transform.position = Stages[currentStageCounter].Respawn;
+        //PlayerController3P.Instance.gameObject.transform.rotation = Stages[currentStageCounter].Respawn.rotation;
+    }
+
     #endregion
 
     private void OnDrawGizmos()
@@ -597,8 +607,22 @@ public class LevelDirector : Singleton<LevelDirector>
             switch (stage)
             {
                 case Escort escort:
-                    Gizmos.color = Color.red;
                     currentPosition = escort.EscortPosition;
+
+                    if (Selection.Contains(stage))
+                    {
+                        Gizmos.color = Color.cyan;
+                        Gizmos.DrawWireSphere(currentPosition, 7f);
+                    }
+                    else
+                    {
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawWireSphere(currentPosition, 5f);
+                    }
+
+
+
+
                     Gizmos.DrawWireSphere(currentPosition, 5f);
                     break;
                 case Defend defend:
@@ -614,19 +638,38 @@ public class LevelDirector : Singleton<LevelDirector>
                     break;
             }
 
-            if (stage?.SpawnMarkers != null)
+            if (stage?.SpawnMarkers != null && stage.SpawnMarkers.Length > 0)
             {
-                if (stage.SpawnMarkers.Length > 0)
+                if (Selection.Contains(stage))
                 {
-                    foreach (Vector3 marker in stage.SpawnMarkers)
-                    {
-                        Gizmos.color = new Color(0, 1, 0, 0.5f);
-                        Gizmos.DrawSphere(marker, spawnSpread);
-                    }
+                    Gizmos.color = new Color(0, 1, 0, 0.5f);
+                }
+                else
+                {
+                    Gizmos.color = new Color(1, 0, 0, 0.5f);
+                }
+
+                foreach (Vector3 marker in stage.SpawnMarkers)
+                {
+                    //Gizmos.color = new Color(0, 1, 0, 0.5f);
+                    Gizmos.DrawSphere(marker, spawnSpread);
                 }
             }
+            if (stage.Respawn != null)
+            {
+                if (Selection.Contains(stage))
+                {
+                    Gizmos.color = new Color(0, 0, 1, 0.7f);
+                }
+                else
+                {
+                    Gizmos.color = new Color(1, 0, 1, 0.7f);
+                }
 
+                Gizmos.DrawCube(stage.Respawn, new Vector3(5f,5f,5f));
+            }
         }
+
         if (presetStages != null && presetStages.Length > 0)
         {
             foreach (PresetStage ps in presetStages)
@@ -640,5 +683,6 @@ public class LevelDirector : Singleton<LevelDirector>
                 }
             }
         }
+
     }
 }

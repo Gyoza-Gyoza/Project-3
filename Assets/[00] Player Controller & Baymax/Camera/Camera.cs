@@ -209,7 +209,7 @@ public class ThirdPersonCamera : MonoBehaviour
     /// </summary>
     public void Shake(float magnitude = 0.2f, float duration = 0.15f)
     {
-        Debug.Log("Shaking is called");
+        //Debug.Log("Shaking is called");
         // If a shake is already playing, take the stronger magnitude and extend time if needed
         shakeMagnitude = Mathf.Max(shakeMagnitude, Mathf.Abs(magnitude));
         shakeTimeLeft  = Mathf.Max(shakeTimeLeft, duration);

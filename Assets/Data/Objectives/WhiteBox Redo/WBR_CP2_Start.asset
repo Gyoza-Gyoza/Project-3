@@ -16,8 +16,8 @@ MonoBehaviour:
   durationBetweenSpawns: 5
   enemyPerGroup: 3
   spawnMarkers:
-  - {x: 42.4, y: 14.8, z: 214.9}
-  - {x: -42.4, y: 14.8, z: 214.9}
+  - {x: 34.1, y: 14.8, z: 205.7}
+  - {x: -34.1, y: 14.8, z: 205.7}
   spawnCooldown: 30
   maxEnemies: 30
   resumeThreshold: 0
@@ -26,5 +26,5 @@ MonoBehaviour:
   specialEnemyChance: 0
   specialEnemiesIncluded: 0000
   respawn: {fileID: 0}
-  escortPosition: {x: 0, y: 15, z: 355.8}
+  escortPosition: {x: 0, y: 15, z: 316.4}
   payloadSpeed: 6

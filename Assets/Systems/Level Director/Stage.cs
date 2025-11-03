@@ -24,7 +24,7 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float maxSpawnDistance;
     [SerializeField] private float specialEnemyChance;
     [SerializeField] private bool[] specialEnemiesIncluded;
-    [SerializeField] private Transform respawn;
+    [SerializeField] private Vector3 respawn;
     private float progress = 0f;
     private float lengthFromPrevious;
 
@@ -54,6 +54,8 @@ public abstract class Stage : ScriptableObject
     { get { return specialEnemyChance; } }
     public bool[] SpecialEnemiesIncluded
     { get { return specialEnemiesIncluded; } }
+    public Vector3 Respawn
+    { get { return respawn; } }
 
     public abstract void StartStage();
     public abstract void DoPayloadBehaviour();
