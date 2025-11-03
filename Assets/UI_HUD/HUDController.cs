@@ -31,11 +31,13 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private Image payloadGasFill;
     [SerializeField] private Slider payloadGasCatchUp;
     [SerializeField] private float payloadEmberCatchUpTiming;
+    [SerializeField] private GameObject golemDefaultImage;
+    [SerializeField] private GameObject golemWarningImage;
     //-------------------  Flicker ------------------------
-    [SerializeField] private Color flickerColour;
-    [SerializeField] private Color originalColour;
-    [Tooltip("Seconds between each flicker")]
-    [SerializeField] private float flickerRate;
+    // [SerializeField] private Color flickerColour;
+    // [SerializeField] private Color originalColour;
+    // [Tooltip("Seconds between each flicker")]
+    // [SerializeField] private float flickerRate;
     [SerializeField] private float warningThreshold;
     //-------------------  Being attacked ------------------------
     [SerializeField] private CanvasGroup highlight;
@@ -80,7 +82,12 @@ public class HUDController : Singleton<HUDController>
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (golemDefaultImage != null && golemWarningImage != null)
+        {
+            Debug.Log("Golem Image Found");
+            golemDefaultImage.SetActive(false);
+            golemWarningImage.SetActive(true);
+        }
     }
 
     #region Health
@@ -210,16 +217,23 @@ public class HUDController : Singleton<HUDController>
             payloadEmber.value = payloadEmberTarget;
         }
 
-        if (input <= warningThreshold)
+        // if (input <= warningThreshold)
+        // {
+        //     if (flickering == false)
+        //     {
+        //         StartCoroutine(LowGasWarningFlicker());
+        //     }
+        // }
+        // else
+        // {
+        //     flickering = false;
+        // }
+
+        bool isWarning = input <= warningThreshold;
+        if (golemWarningImage != null && golemDefaultImage != null)
         {
-            if (flickering == false)
-            {
-                StartCoroutine(LowGasWarningFlicker());
-            }
-        }
-        else
-        {
-            flickering = false;
+            golemDefaultImage.SetActive(isWarning);
+            golemWarningImage.SetActive(!isWarning);
         }
     }
 
@@ -250,36 +264,36 @@ public class HUDController : Singleton<HUDController>
         yield break;
     }
 
-    IEnumerator LowGasWarningFlicker()
-    {
-        //Debug.Log("Start flickering");
-        flickering = true;
+    // IEnumerator LowGasWarningFlicker()
+    // {
+    //     //Debug.Log("Start flickering");
+    //     flickering = true;
 
-        while(flickering)
-        {
-            if (flickerSwitch)
-            {
-                payloadGasFill.color = originalColour;
-                flickerSwitch = false;
-                //Debug.Log("Original color");
-            }
-            else
-            {
-                payloadGasFill.color = flickerColour;
-                flickerSwitch = true;
-                //Debug.Log("Flicker color");
-            }
-            yield return new WaitForSeconds(flickerRate);
-        }
+    //     while(flickering)
+    //     {
+    //         if (flickerSwitch)
+    //         {
+    //             payloadGasFill.color = originalColour;
+    //             flickerSwitch = false;
+    //             //Debug.Log("Original color");
+    //         }
+    //         else
+    //         {
+    //             payloadGasFill.color = flickerColour;
+    //             flickerSwitch = true;
+    //             //Debug.Log("Flicker color");
+    //         }
+    //         yield return new WaitForSeconds(flickerRate);
+    //     }
 
-        payloadGasFill.color = originalColour;
+    //     payloadGasFill.color = originalColour;
 
-        //Redundancy
-        flickering = false;
-        flickerSwitch = false;
+    //     //Redundancy
+    //     flickering = false;
+    //     flickerSwitch = false;
 
-        yield break;
-    }
+    //     yield break;
+    // }
 
     public void StartHighlight()
     {
