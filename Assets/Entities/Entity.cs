@@ -68,7 +68,7 @@ public abstract class Entity : MonoBehaviour
     public virtual void TakeDamage(int amount, GameObject source = null)
     {
         source = source ?? gameObject;
-        Debug.Log($"{name} taking {amount} damage");
+        //Debug.Log($"{name} taking {amount} damage");
         health -= amount;
         if (health > 0) OnDamage(source);
         if (health <= 0)
