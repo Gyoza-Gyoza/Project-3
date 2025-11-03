@@ -73,7 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782366458ff1900428e48039ba2ff8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 500
   initialDamage: 5
   initialMovementSpeed: 6
   animator: {fileID: 5169975208432417997}
@@ -94,15 +94,15 @@ MonoBehaviour:
   mesh: {fileID: 7268949247338714290}
   deathParticleSystem: {fileID: 3442910432149426102}
   deathTime: 1
-  hitUpforce: 11
-  hitHorforce: 11
-  upDrag: 1
+  hitUpforce: 14
+  hitHorforce: 14
+  upDrag: 0.1
   fallForce: 17
-  downDrag: 1
-  knockupDuration: 0.3
+  downDrag: 0.1
+  knockupDuration: 0.06
   recoveryTime: 0.5
-  deathHitUpForce: 13
-  deathHitHorForce: 20
+  deathHitUpForce: 16
+  deathHitHorForce: 24
   deathUpDrag: 0.1
   deathFallForce: 17
   deathDownDrag: 0.1
