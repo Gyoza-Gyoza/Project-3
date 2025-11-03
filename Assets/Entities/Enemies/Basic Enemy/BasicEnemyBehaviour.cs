@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BasicEnemyBehaviour : EnemyBehaviour
@@ -8,6 +9,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     public float aggroRange = 1f;
     public float attackRange = 1f;
     public float attackCooldown = 1f;
+    public bool isDead = false;
     [SerializeField] private HitBox hb;
 
     [Header("Visual Variables")]
@@ -40,6 +42,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     {
         base.Start();
         State = new BasicEnemyChaseState(this);
+        isDead = false;
     }
     public override void Attack()
     {
@@ -67,11 +70,18 @@ public class BasicEnemyBehaviour : EnemyBehaviour
 
         return force;
     }
+
+    public bool ReturnDeathState()
+    {
+        if (isDead) return true;
+        else return false;
+    }
     public override void OnDeath()
     {
         //Do something else
-        Debug.Log("Enemy on death called");
+        //Debug.Log("Enemy on death called");
         base.OnDeath();
+        isDead = true;
         State = new BasicEnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack
             (true, PlayerController3P.Instance.transform), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
     }
@@ -89,7 +99,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     IEnumerator DamageFlicker()
     {
         skin.GetComponent<SkinnedMeshRenderer>().material = hitMat;
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(.22f);
         skin.GetComponent<SkinnedMeshRenderer>().material = oriMat;
         yield break;
     }
