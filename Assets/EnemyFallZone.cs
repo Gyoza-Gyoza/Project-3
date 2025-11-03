@@ -21,7 +21,7 @@ public class EnemyFallZone : MonoBehaviour
         if(other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             if (other.GetComponent<BasicEnemyBehaviour>().ReturnDeathState()) return;
-            other.GetComponent<BasicEnemyBehaviour>().OnDeath();
+            other.GetComponent<BasicEnemyBehaviour>().TakeDamage(99999);
         }
     }
 }
