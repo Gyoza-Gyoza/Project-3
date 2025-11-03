@@ -229,7 +229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b04ca7fda70942743aace6ae25c9980c, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b04ca7fda70942743aace6ae25c9980c, type: 3}
       propertyPath: m_IsActive
@@ -706,7 +706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7cdab0b3fd5739046978c1dcf8eea3ed, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1584,7 +1584,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 80718ebb3d3686045a04b3c7f955a9bd, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 80718ebb3d3686045a04b3c7f955a9bd, type: 3}
       propertyPath: m_IsActive
@@ -2139,6 +2139,10 @@ PrefabInstance:
     - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: m_Name
       value: EnemyBasic (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5497905881130254482, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: maxHealth
@@ -3183,6 +3187,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyBasic (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5497905881130254482, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: maxHealth
       value: 2000
@@ -3482,7 +3490,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b3ec026224de2754b869cf31afbccd8c, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3758,6 +3766,10 @@ PrefabInstance:
     - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: m_Name
       value: EnemyBasic (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5497905881130254482, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: maxHealth
@@ -5119,6 +5131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyBasic
       objectReference: {fileID: 0}
+    - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5497905881130254482, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: maxHealth
       value: 2000
@@ -5987,7 +6003,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 594f1f9937cb9674f9617f71a3ea74dc, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6337,6 +6353,10 @@ PrefabInstance:
     - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: m_Name
       value: EnemyBasic (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5497905881130254482, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: maxHealth
@@ -7756,7 +7776,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 00bc239b6754c05408d27a379a727212, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8235,6 +8255,10 @@ PrefabInstance:
     - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: m_Name
       value: EnemyBasic (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5497905881130254482, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
       propertyPath: maxHealth
@@ -9137,7 +9161,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: ea63314c19b981f4eb14bd858db59611, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

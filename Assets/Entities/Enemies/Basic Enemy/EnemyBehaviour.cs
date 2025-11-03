@@ -107,12 +107,14 @@ public class EnemyBehaviour : Entity
 
     public void Kickstart()
     {
-        if (agent != null && agent.isOnNavMesh)
+        //Debug.LogAssertion("Kickstart called");
+        if (agent != null)
         {
             agent.enabled = true;
             agent.isStopped = false;
             agent.velocity = Vector3.zero;
             agent.updateRotation = true;
+            //Debug.LogAssertion("Navmesh turned on");
         }
     }
 }

@@ -347,7 +347,7 @@ public class LevelDirector : Singleton<LevelDirector>
                                     if (NavMesh.SamplePosition(spawnPos, out NavMeshHit hit, spawnSpread, NavMesh.AllAreas))
                                     {
                                         enemy.Warp(hit.position);
-                                        enemy.GetComponent<EnemyBehaviour>().Kickstart();
+                                        enemy.gameObject.GetComponent<EnemyBehaviour>().Kickstart();
                                         break;
                                     }
                                 }

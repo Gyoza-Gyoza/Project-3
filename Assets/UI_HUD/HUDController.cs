@@ -72,6 +72,9 @@ public class HUDController : Singleton<HUDController>
 
     [Header("Devices / Abilities")]
     [SerializeField] private Slider tauntSlider;
+    [SerializeField] private Sprite tauntActive;
+    [SerializeField] private Sprite tauntInactive;
+    [SerializeField] private Image tauntAbility;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
@@ -422,6 +425,14 @@ public class HUDController : Singleton<HUDController>
     #endregion
 
     #region Abilities
+    public void ToggleTaunt(bool input)
+    {
+        if (input)
+        { tauntAbility.sprite = tauntActive; }
+        else 
+        { tauntAbility.sprite = tauntInactive; }
+    }
+
     public void SetTauntSlider(float input)
     {
         tauntSlider.value = input;

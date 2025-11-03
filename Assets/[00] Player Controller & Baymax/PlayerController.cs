@@ -325,7 +325,7 @@ void Awake()
 
     IEnumerator RegenHealth()
     {
-        Debug.Log("Regenerating Health");
+        //Debug.Log("Regenerating Health");
         regeneratingHealth = true;
         float count = 0f;
         //float buffercount = 0f;
@@ -1259,7 +1259,7 @@ void Awake()
 
     private void HandleDeviceInput()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             ThrowDevice();
         }
@@ -1289,6 +1289,9 @@ void Awake()
     {
         float count = 0f;
         _tauntThrown = true;
+
+        HUDController.Instance.ToggleTaunt(false);
+
         while (_tauntThrown)
         {
             count += Time.fixedDeltaTime;
@@ -1298,12 +1301,13 @@ void Awake()
             }
             else
             {
-                HUDController.Instance.SetTauntSlider(count / tauntCooldown);
+                //HUDController.Instance.SetTauntSlider(count / tauntCooldown);
             }
             yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
 
-        HUDController.Instance.SetTauntSlider(1f);
+        //HUDController.Instance.SetTauntSlider(1f);
+        HUDController.Instance.ToggleTaunt(true);
 
         yield break;
 
