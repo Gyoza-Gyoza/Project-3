@@ -594,6 +594,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
     public void Respawn()
     {
+        Debug.Log("Respawning");
         PlayerController3P.Instance.gameObject.transform.position = Stages[currentStageCounter].Respawn;
         //PlayerController3P.Instance.gameObject.transform.rotation = Stages[currentStageCounter].Respawn.rotation;
     }

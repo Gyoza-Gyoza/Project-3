@@ -17,6 +17,19 @@ public class FallZone : MonoBehaviour
         
     }
 
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+
+            //if (!triggered)
+            //{
+            //    triggered = true;
+            LevelDirector.Instance.Respawn();
+            //}
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag ==  "Player")
