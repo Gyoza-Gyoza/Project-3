@@ -284,15 +284,32 @@ void Awake()
         HandleMovement();    // Movement depends on dash/attack
         HandleJump();        // Blocked during attacks
         UpdatePlunge();      // Timers
-        //UpdateHealth();
+        UpdateHealth();      
     }
 
     // -------------------- Health NOT USED ------------------------------------
+
+
+    private float healthRegenCounter = 0f;
+    //[SerializeField] private float regenBuffer = 5f;
+
     public void UpdateHealth()
     {
-        if (Health <= MaxHealth && !regeneratingHealth)
+        if (Health <= MaxHealth )
         {
-            StartCoroutine(RegenHealth());
+            if (!regeneratingHealth)
+            {
+                if (healthRegenCounter < healthRegenCooldown)
+                {
+                    healthRegenCounter += Time.deltaTime;
+                }
+                else
+                {
+                    healthRegenCounter = 0f;
+                    StartCoroutine(RegenHealth());
+                }
+            }
+
         }
         else
         {
@@ -301,30 +318,27 @@ void Awake()
     }
 
     public void StopRegen()
-    { regeneratingHealth = false; }
+    { 
+        regeneratingHealth = false;
+        healthRegenCounter = 0f;
+    }
 
     IEnumerator RegenHealth()
     {
-
+        Debug.Log("Regenerating Health");
         regeneratingHealth = true;
         float count = 0f;
-        float buffercount = 0f;
+        //float buffercount = 0f;
 
         while (regeneratingHealth)
         {
-            if (buffercount < healthRegenCooldown)
+            count += Time.deltaTime;
+            if (count > 1f / healthRegenRate)
             {
-                buffercount += Time.deltaTime;
+                Heal(1);
+                count = 0f;
             }
-            else
-            {
-                count += Time.deltaTime;
-                if (count > 1f / healthRegenRate)
-                {
-                    Heal(1);
-                    count = 0f;
-                }
-            }
+            yield return new WaitForSeconds(Time.deltaTime);
         }
 
         regeneratingHealth = false;
@@ -1297,8 +1311,8 @@ void Awake()
 
         #endregion
 
-        // -------------------- Helpers ------------------------------------------------------------------------------------------
-        bool TryGetCameraRelativeMove(out Vector3 dir)
+    // -------------------- Helpers ------------------------------------------------------------------------------------------
+    bool TryGetCameraRelativeMove(out Vector3 dir)
     {
         float ix = Input.GetAxisRaw("Horizontal");
         float iz = Input.GetAxisRaw("Vertical");

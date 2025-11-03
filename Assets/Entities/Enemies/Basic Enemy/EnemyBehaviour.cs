@@ -64,6 +64,9 @@ public class EnemyBehaviour : Entity
         state?.DoEnemyAction();
 
         if (Input.GetKeyDown(KeyCode.M)) TakeDamage(1, gameObject);
+
+
+
     }
     protected virtual void InitializeStats()
     {
