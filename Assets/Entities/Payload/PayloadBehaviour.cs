@@ -72,6 +72,18 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     private bool playerInRange = false;
     private PayloadStepper stepper;
 
+    [Header("Proximity Shake")]
+    public ThirdPersonCamera camRig;
+    [SerializeField] private float minRange = 1f;
+    [SerializeField] private float maxRange = 10f;
+    [SerializeField] private float minShakeAmount = 2f;
+    [SerializeField] private float maxShakeAmount = 10f;
+    [SerializeField] private float minShakeDuration = 0.06f;
+    [SerializeField] private float maxShakeDuration = 0.12f;
+    [SerializeField] private float manualShakeDelay = 0.12f;
+    private Coroutine _shakeCoroutine = null;
+    private bool _shakePending = false;
+
     protected override void Awake()
     {
         base.Awake();
@@ -571,11 +583,17 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     public void PlayStepLeftSFX()
     {
         AudioManager.Instance.PlaySFX("Golem_LeftStomp", transform.position);
+        
+        if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
+        _shakeCoroutine = StartCoroutine(DelayedShakeCoroutine());
     }
 
     public void PlayStepRightSFX()
     {
         AudioManager.Instance.PlaySFX("Golem_RightStomp", transform.position);
+        
+        if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
+        _shakeCoroutine = StartCoroutine(DelayedShakeCoroutine());
     }
 
     public void PlayStopSFX()
@@ -591,6 +609,33 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     public void PlayStandSFX()
     {
         AudioManager.Instance.PlaySFX("Golem_Stand", transform.position);
+    }
+
+    private bool TryGetProximityShake(out float outAmount, out float outDuration)
+    {
+        outAmount = minShakeAmount;
+        outDuration = minShakeDuration;
+
+        float dist = Vector3.Distance(PlayerController3P.Instance.transform.position, transform.position);
+        if (dist > maxRange) return false;
+
+        float t = Mathf.InverseLerp(maxRange, minRange, dist);
+        outAmount = Mathf.Lerp(minShakeAmount, maxShakeAmount, t);
+        outDuration = Mathf.Lerp(minShakeDuration, maxShakeDuration, t);
+        return true;
+    }
+    private IEnumerator DelayedShakeCoroutine()
+    {
+        _shakePending = true;
+        yield return new WaitForSeconds(manualShakeDelay);
+        _shakePending = false;
+        if (camRig == null) yield break;
+
+        if (TryGetProximityShake(out float shakeAmt, out float shakeDur))
+        {
+            camRig.Shake(shakeAmt, shakeDur);
+        }
+        _shakeCoroutine = null;
     }
 
     #endregion

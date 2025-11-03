@@ -84,7 +84,6 @@ public class HUDController : Singleton<HUDController>
     {
         if (golemDefaultImage != null && golemWarningImage != null)
         {
-            Debug.Log("Golem Image Found");
             golemDefaultImage.SetActive(false);
             golemWarningImage.SetActive(true);
         }
@@ -232,8 +231,8 @@ public class HUDController : Singleton<HUDController>
         bool isWarning = input <= warningThreshold;
         if (golemWarningImage != null && golemDefaultImage != null)
         {
-            golemDefaultImage.SetActive(isWarning);
-            golemWarningImage.SetActive(!isWarning);
+            golemDefaultImage.SetActive(!isWarning);
+            golemWarningImage.SetActive(isWarning);
         }
     }
 
@@ -349,15 +348,15 @@ public class HUDController : Singleton<HUDController>
 
     public void SetUpProgressBar(Stage[] stages, float levelLength)
     {
-        float count = 0f;
-        foreach (Stage stage in stages)
-        {
-            count += stage.Length;
-            if (stage != null && stage.IsCheckpoint == true)
-            {
-                SpawnCheckpointMarker(count / levelLength);
-            }
-        }
+        // float count = 0f;
+        // foreach (Stage stage in stages)
+        // {
+        //     count += stage.Length;
+        //     if (stage != null && stage.IsCheckpoint == true)
+        //     {
+        //         SpawnCheckpointMarker(count / levelLength);
+        //     }
+        // }
     }
 
     public void SpawnCheckpointMarker(float percentage)

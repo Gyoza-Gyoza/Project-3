@@ -1462,6 +1462,7 @@ MonoBehaviour:
   deathZoneStartDelay: 100
   deathBuffer: 1
   deathZoneAnimator: {fileID: 1353343207}
+  respawnDamage: 20
 --- !u!120 &354849556
 LineRenderer:
   serializedVersion: 2
@@ -2380,7 +2381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 252.2
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2388,7 +2389,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 222.7
+      value: 65.8
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6453,12 +6454,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: camRig
+      value: 
+      objectReference: {fileID: 1764181207}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: iniGas
-      value: 150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: maxGas
       value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: maxRange
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: burningRate
@@ -6467,6 +6476,30 @@ PrefabInstance:
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: stepInterval
       value: 2.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: rendererWidth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: maxShakeAmount
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: minShakeAmount
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: manualShakeDelay
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: maxShakeDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: minShakeDuration
+      value: 0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
