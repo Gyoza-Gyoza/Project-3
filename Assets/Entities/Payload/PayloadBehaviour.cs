@@ -529,7 +529,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     [Tooltip("Duration that the payload will move before stopping")]
     [SerializeField] private float stepDuration = 0.35f;
     [Tooltip("Pause before starting the next step")]
-    [SerializeField] private float stepInterval = 0.5f;
+    [SerializeField] private float stepInterval = 2.4f;
     private bool leftStep;
     private bool stepping;
 

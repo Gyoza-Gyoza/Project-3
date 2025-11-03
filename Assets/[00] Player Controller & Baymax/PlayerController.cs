@@ -216,7 +216,10 @@ public class PlayerController3P : Entity
     // Instance
     public static PlayerController3P Instance;
 
-    void Awake()
+    // Skip Frame
+    private bool ignoreMovementThisFrame = false;
+
+void Awake()
     {
         controller = GetComponent<CharacterController>();
         if (!animator) animator = GetComponentInChildren<Animator>();
@@ -266,6 +269,13 @@ public class PlayerController3P : Entity
     void Update()
     {
         if (LevelDirector.Instance.lost) return;
+
+        if (ignoreMovementThisFrame)
+        {
+            ignoreMovementThisFrame = false; // eat 1 frame
+            return;
+        }
+
         HandleDashInput();   // RMB cancels attacks
         HandleAttackInput(); // LMB starts/queues
         HandleDeviceInput(); // Device inputs
@@ -321,6 +331,28 @@ public class PlayerController3P : Entity
 
         yield break;
     }
+    //------------- Force Warp -------------
+    #region Force Warp
+
+    public void ForceWarp(Vector3 worldPosition)
+    {
+        // block movement logic this frame
+        ignoreMovementThisFrame = true;
+        velocity = Vector3.zero;
+        isGroundDashing = false;
+        isAirDashing = false;
+        isPlunging = false;
+        isAttacking = false;
+        jumpRequested = false;
+
+        // disable controller before setting position
+        controller.enabled = false;
+        transform.position = worldPosition;
+        controller.enabled = true;
+    }
+
+    #endregion
+
 
     // -------------------- Movement ------------------------------------------------------------------------------------------
     #region Movement

@@ -592,10 +592,14 @@ public class LevelDirector : Singleton<LevelDirector>
         Application.Quit();
     }
 
+
+    [SerializeField] private int respawnDamage = 20;
+
     public void Respawn()
     {
         Debug.Log("Respawning");
-        PlayerController3P.Instance.gameObject.transform.position = Stages[currentStageCounter].Respawn;
+        PlayerController3P.Instance.ForceWarp(Stages[currentStageCounter].Respawn);
+        PlayerController3P.Instance.TakeDamage(respawnDamage);
         //PlayerController3P.Instance.gameObject.transform.rotation = Stages[currentStageCounter].Respawn.rotation;
     }
 
