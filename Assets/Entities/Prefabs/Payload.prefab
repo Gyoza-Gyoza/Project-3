@@ -83,7 +83,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.7, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7942674866136472463}
@@ -104,16 +104,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e499d4842070c04e943cbe6ac0f7bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 1.5
+  movementSpeed: 100
   turnSpeed: 60
   returnSpeed: 0
   gasSlider: {fileID: 8114945958036792584}
-  burningRate: 3
-  fillingRate: 20
-  maxGas: 100
+  burningRate: 4.5
+  fillingRate: 40
+  maxGas: 150
   iniGas: 0
   animator: {fileID: 7456513972836290463}
-  rendererWidth: 0.15
+  camRig: {fileID: 0}
+  minRange: 1
+  maxRange: 70
+  minShakeAmount: 20
+  maxShakeAmount: 20
+  minShakeDuration: 0.05
+  maxShakeDuration: 0.3
+  manualShakeDelay: 0.15
+  rendererWidth: 0
   forwardStartColor:
     serializedVersion: 2
     rgba: 4278838783
@@ -128,7 +136,7 @@ MonoBehaviour:
     rgba: 549047295
   verticleOffset: 1
   stepDuration: 1
-  stepInterval: 2
+  stepInterval: 2.4
 --- !u!195 &6056036887826652567
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -139,8 +147,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 5
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 5
+  m_Acceleration: 80
   avoidancePriority: 0
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -1897,7 +1905,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 1.99
+      value: 3.98
       objectReference: {fileID: 0}
     - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: InitialModule.startSizeZ.scalar
@@ -1932,6 +1940,10 @@ PrefabInstance:
       value: 0.14600551
       objectReference: {fileID: 0}
     - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].inSlope
       value: 1.0808853
       objectReference: {fileID: 0}
@@ -1945,7 +1957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4201535272362470580, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.26
+      value: -0.43
       objectReference: {fileID: 0}
     - target: {fileID: 4201535272362470580, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1954,6 +1966,10 @@ PrefabInstance:
     - target: {fileID: 4622037857349049918, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622037857349049918, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.17
       objectReference: {fileID: 0}
     - target: {fileID: 6725022981596696884, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1997,7 +2013,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8992135312521607198, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 0.38
+      value: 0.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3142,7 +3158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 1.99
+      value: 3.98
       objectReference: {fileID: 0}
     - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: InitialModule.startSizeZ.scalar
@@ -3177,6 +3193,10 @@ PrefabInstance:
       value: 0.14600551
       objectReference: {fileID: 0}
     - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1360718383504640544, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: SizeModule.curve.maxCurve.m_Curve.Array.data[0].inSlope
       value: 1.0808853
       objectReference: {fileID: 0}
@@ -3190,7 +3210,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4201535272362470580, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.26
+      value: -0.51
       objectReference: {fileID: 0}
     - target: {fileID: 4201535272362470580, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3199,6 +3219,10 @@ PrefabInstance:
     - target: {fileID: 4622037857349049918, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4622037857349049918, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6725022981596696884, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3242,7 +3266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8992135312521607198, guid: b258c0e44af2f5245992c256b7065d64, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 0.38
+      value: 0.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

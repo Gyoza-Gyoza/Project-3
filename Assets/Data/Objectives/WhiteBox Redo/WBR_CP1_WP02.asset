@@ -18,7 +18,7 @@ MonoBehaviour:
   spawnMarkers:
   - {x: 28.26, y: 2.15, z: 151.42}
   - {x: -28.26, y: 2.15, z: 151.42}
-  - {x: 0, y: 14.71, z: 172.1}
+  - {x: 0, y: 14.71, z: 243.7}
   spawnCooldown: 10
   maxEnemies: 10
   resumeThreshold: 4
@@ -28,4 +28,4 @@ MonoBehaviour:
   specialEnemiesIncluded: 0000
   respawn: {x: 0, y: 11.66, z: 73.1}
   escortPosition: {x: 0, y: 15, z: 183.9}
-  payloadSpeed: 6
+  payloadSpeed: 8
