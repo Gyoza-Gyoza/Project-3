@@ -43,7 +43,7 @@ public class FallZone : MonoBehaviour
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            other.GetComponent<EnemyBehaviour>().TakeDamage(10000);
+            other.GetComponent<EnemyBehaviour>().OnDeath();
         }
     }
 }
