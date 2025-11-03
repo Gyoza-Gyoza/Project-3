@@ -37,14 +37,14 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            SetLetterboxActive(true);
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            SetLetterboxActive(false);
-        }
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    SetLetterboxActive(true);
+        //}
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    SetLetterboxActive(false);
+        //}
     }
     /// <summary>
     /// Performs a full screen fade in and out
@@ -197,14 +197,14 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
     /// </summary>
     /// <param name="active">Activates/Deactivates the effect</param>
     /// <param name="size">Percentage of the screen that it'll cover</param>
-    /// <param name="duration">Duration of the effect</param>
+    /// <param name="transitionDuration">Duration that it takes to transition between states</param>
     /// <param name="color">Color of the effect</param>
-    public void SetLetterboxActive(bool active, float size = 0.2f, float duration = 2f, Color? color = null)
+    public void SetLetterboxActive(bool active, float size = 0.2f, float transitionDuration = 2f, Color? color = null)
     {
         if (letterboxCoroutine != null) StopCoroutine(letterboxCoroutine);
-        letterboxCoroutine = StartCoroutine(SetLetterboxActiveCoroutine(active, size, duration, color));
+        letterboxCoroutine = StartCoroutine(SetLetterboxActiveCoroutine(active, size, transitionDuration, color));
     }
-    public IEnumerator SetLetterboxActiveCoroutine(bool active, float size = 0.1f, float duration = 2f, Color? color = null)
+    public IEnumerator SetLetterboxActiveCoroutine(bool active, float size = 0.1f, float transitionDuration = 2f, Color? color = null)
     {
         color = color ?? Color.black;
         float timer = 0f;
@@ -216,11 +216,11 @@ public class ScreenEffectsManager : Singleton<ScreenEffectsManager>
         float startSize = topBar.offsetMin.y;
         float targetSize = active? canvasHeight - size * (canvasHeight / 2f) : canvasHeight;
 
-        while (timer <= duration)
+        while (timer <= transitionDuration)
         {
             timer += Time.deltaTime;
 
-            float offsetSize = Mathf.Lerp(startSize, targetSize, timer / duration);
+            float offsetSize = Mathf.Lerp(startSize, targetSize, timer / transitionDuration);
 
             topBar.offsetMin = new Vector2(topBar.offsetMin.x, offsetSize);
             bottomBar.offsetMax = new Vector2(bottomBar.offsetMax.x, -offsetSize); // Not a typo, offsetMax is set to negative by unity so it has to be negative to counter it

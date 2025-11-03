@@ -81,6 +81,7 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private TextMeshProUGUI enemiesStopped;
     [SerializeField] private TextMeshProUGUI timepassed;
 
+    public CanvasGroup hideableUIs;
 
     // Start is called before the first frame update
     void Start()
@@ -481,11 +482,27 @@ public class HUDController : Singleton<HUDController>
             yield return null;
         }
     }
+    public void SetUIVisible(bool state)
+    {
+        StartCoroutine(SetUIVisibleCoroutine(state));
+    }
+    private IEnumerator SetUIVisibleCoroutine(bool state)
+    {
+        float start = hideableUIs.alpha;
+        float end = state ? 1f : 0f;
+        float duration = 0.5f;
+        float timer = 0f;
 
+        while (timer <= duration)
+        {
+            timer += Time.deltaTime;
+            hideableUIs.alpha = Mathf.Lerp(start, end, timer / duration);
+            yield return null;
+        }
+    }
 
-
-// Update is called once per frame
-void Update()
+    // Update is called once per frame
+    void Update()
     {
         
     }
