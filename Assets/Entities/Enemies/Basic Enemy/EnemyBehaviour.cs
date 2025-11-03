@@ -101,4 +101,15 @@ public class EnemyBehaviour : Entity
     {
         LevelDirector.Instance.RemoveEnemy(this);
     }
+
+    public void Kickstart()
+    {
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.enabled = true;
+            agent.isStopped = false;
+            agent.velocity = Vector3.zero;
+            agent.updateRotation = true;
+        }
+    }
 }
