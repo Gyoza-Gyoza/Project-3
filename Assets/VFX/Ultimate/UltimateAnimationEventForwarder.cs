@@ -86,7 +86,8 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
     public void SetCameraActive(bool state)
     {
         thirdPersonCamera.SetActive(state);
-        Camera.main.enabled = state;
+        if (state) thirdPersonCamera.transform.position = ultimateCamera.position;
+        //Camera.main.enabled = state;
         HUDController.Instance.SetUIVisible(state);
         depthOfField.active = state;
     }
