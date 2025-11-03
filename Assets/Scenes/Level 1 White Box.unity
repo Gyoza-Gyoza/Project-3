@@ -3869,6 +3869,10 @@ PrefabInstance:
       propertyPath: volume
       value: 
       objectReference: {fileID: 3062140}
+    - target: {fileID: 1313290868309985054, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
+      propertyPath: damageInterval
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -9281,6 +9285,18 @@ PrefabInstance:
     - target: {fileID: 1097998747333207002, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517607239944977062, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517607239944977062, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517607239944977062, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2692629534848051451, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: m_AnchorMax.x

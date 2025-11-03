@@ -60,6 +60,11 @@ public class BasicEnemyBehaviour : EnemyBehaviour
             (false, source.transform), upDrag, fallForce, downDrag, recoveryTime);
         Debug.Log("Enemy on damage called");
     }
+    public override void TakeDamageNoKnockback()
+    {
+        State = new BasicEnemyStunState(this, 2.5f); 
+        StartCoroutine(DamageFlicker());
+    }
     private Vector3 CalculateKnockBack(bool death, Transform source)
     {
         // Calculate force and direction 

@@ -42,6 +42,11 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
 
         return force;
     }
+    public override void TakeDamageNoKnockback()
+    {
+        State = new ChargerEnemyStunState(this, 2.5f, Vector3.zero);
+        StartCoroutine(DamageFlicker());
+    }
     IEnumerator DamageFlicker()
     {
         foreach (MeshRenderer mr in meshRenderers)

@@ -92,6 +92,10 @@ public class EnemyBehaviour : Entity
             agent.updateRotation = true;
         }
     }
+    public virtual void TakeDamageNoKnockback()
+    {
+
+    }
     protected override void OnHeal()
     {
 
