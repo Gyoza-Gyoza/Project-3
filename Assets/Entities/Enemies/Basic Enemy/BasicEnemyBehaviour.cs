@@ -54,6 +54,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     }
     protected override void OnDamage(GameObject source)
     {
+        base.OnDamage(source);
         if (State is BasicEnemyDeathState) return;
         StartCoroutine(DamageFlicker());
         State = new BasicEnemyKnockUpState(this, knockupDuration, CalculateKnockBack

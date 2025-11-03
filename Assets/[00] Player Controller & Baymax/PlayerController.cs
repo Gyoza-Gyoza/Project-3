@@ -158,6 +158,8 @@ public class PlayerController3P : Entity
 
     // ----------------- AUDIO ------------------------------------------------------------------------------------------
     [SerializeField] private AudioSource walkAudioSource;
+    public AudioSource slimeHitAudioSource;
+    public bool canPlaySlimeHitSFX = true;
 
     // ------------------ INTERNALS ------------------------------------------------------------------------------------------
     [HideInInspector] public CharacterController controller;
@@ -890,6 +892,7 @@ void Awake()
 
     void BeginAttack(int index)
     {
+        canPlaySlimeHitSFX = true;
         isAttacking = true;
         attackIndex = index;
         attackTimer = 0f;

@@ -102,7 +102,11 @@ public class EnemyBehaviour : Entity
     }
     protected override void OnDamage(GameObject source)
     {
-
+        if (PlayerController3P.Instance.canPlaySlimeHitSFX)
+        {
+            PlayerController3P.Instance.slimeHitAudioSource.Play();
+            PlayerController3P.Instance.canPlaySlimeHitSFX = false;
+        }
     }
     public override void OnDeath()
     {
