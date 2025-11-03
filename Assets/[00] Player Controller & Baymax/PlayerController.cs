@@ -134,6 +134,7 @@ public class PlayerController3P : Entity
     [SerializeField] private VFX[] slashVFX;
     [SerializeField] private VFX[] dashVFX;
     [SerializeField] private float lensDistortionDuration, playerGlowDuration;
+    [SerializeField] private GameObject ultimate;
     private Coroutine dashEffectsCoroutine;
     private LensDistortion lensDistortion;
     private List<MeshRenderer> playerMat = new List<MeshRenderer>();
@@ -168,6 +169,7 @@ public class PlayerController3P : Entity
     private bool jumpImpulseApplied;
     private float jumpApplyAtTime;
     private bool doubleJumpAvailable;
+    [HideInInspector] public bool canInput = true;
 
     // Dash runtime
     private bool isGroundDashing = false;
@@ -266,9 +268,13 @@ public class PlayerController3P : Entity
     void Update()
     {
         if (LevelDirector.Instance.lost) return;
-        HandleDashInput();   // RMB cancels attacks
-        HandleAttackInput(); // LMB starts/queues
-        HandleDeviceInput(); // Device inputs
+        if (canInput)
+        {
+            HandleDashInput();   // RMB cancels attacks
+            HandleAttackInput(); // LMB starts/queues
+            HandleDeviceInput(); // Device inputs
+            if (Input.GetKeyDown(KeyCode.Q)) ultimate.SetActive(true);
+        }
         UpdateDash();        // Timers
         UpdateAttack();      // Timers
         HandleMovement();    // Movement depends on dash/attack
