@@ -138,7 +138,13 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     }
 
     public void StartFillingGas()
-    { fillingGas = true; StartCoroutine(fillGas()); }
+    { 
+        if (!fillingGas)
+        {
+            fillingGas = true;
+            StartCoroutine(fillGas());
+        }
+    }
 
     public void StopFillingGas()
     { fillingGas = false; }
@@ -371,6 +377,15 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
 
     private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            playerInRange = true;
+            stages[LevelDirector.Instance.CurrentStageCounter].PlayerInRange();
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {

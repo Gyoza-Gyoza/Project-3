@@ -41,5 +41,9 @@ public class FallZone : MonoBehaviour
                 LevelDirector.Instance.Respawn();
             //}
         }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            other.GetComponent<EnemyBehaviour>().TakeDamage(10000);
+        }
     }
 }

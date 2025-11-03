@@ -1456,13 +1456,13 @@ MonoBehaviour:
   - {fileID: 3454796461600382455, guid: 14becbd755d878048b9d5c4652a07643, type: 3}
   - {fileID: 579452246062201755, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
   specialEnemyChance: 0.1
-  spawnEnemies: 0
+  spawnEnemies: 1
   deathZoneRate: 2
   deathZoneChaser: {fileID: 2040034584}
   deathZoneStartDelay: 100
   deathBuffer: 1
   deathZoneAnimator: {fileID: 1353343207}
-  respawnDamage: 20
+  respawnDamage: 25
 --- !u!120 &354849556
 LineRenderer:
   serializedVersion: 2
@@ -2381,15 +2381,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 49
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 65.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1330839295798266682, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6471,7 +6471,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: burningRate
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7600468172597304842, guid: f2d95766659fb98488b5fe77635c8bfb, type: 3}
       propertyPath: stepInterval

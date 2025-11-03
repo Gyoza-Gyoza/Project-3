@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WBR_CP3_START
   m_EditorClassIdentifier: 
   isCheckpoint: 0
-  durationBetweenSpawns: 5
+  durationBetweenSpawns: 0
   enemyPerGroup: 3
   spawnMarkers:
   - {x: 336.8, y: 27.9, z: 129.9}
@@ -22,7 +22,7 @@ MonoBehaviour:
   - {x: 280.8, y: 27.9, z: 351}
   - {x: 137.9, y: 24.8, z: 227.5}
   spawnCooldown: 0
-  maxEnemies: 70
+  maxEnemies: 100
   resumeThreshold: 30
   minSpawnDistance: 0
   maxSpawnDistance: 0

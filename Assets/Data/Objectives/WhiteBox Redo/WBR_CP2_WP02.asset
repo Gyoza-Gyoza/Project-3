@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: WBR_CP2_WP02
   m_EditorClassIdentifier: 
   isCheckpoint: 0
-  durationBetweenSpawns: 10
+  durationBetweenSpawns: 0
   enemyPerGroup: 4
   spawnMarkers:
   - {x: 120.6, y: 35.8, z: 121}
   - {x: 118.4, y: 35.8, z: 327.5}
   - {x: 14.77, y: 14.7, z: 303.5}
-  spawnCooldown: 30
-  maxEnemies: 50
+  spawnCooldown: 0
+  maxEnemies: 70
   resumeThreshold: 10
   minSpawnDistance: 0
   maxSpawnDistance: 0
