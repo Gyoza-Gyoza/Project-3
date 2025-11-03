@@ -4591,6 +4591,10 @@ PrefabInstance:
       propertyPath: globalVolume
       value: 
       objectReference: {fileID: 3062140}
+    - target: {fileID: 4563402284226776312, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
+      propertyPath: healthRegenRate
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4689959993685403621, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -4779,6 +4783,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0.00001691576
       objectReference: {fileID: 0}
+    - target: {fileID: 6562132277962124344, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 69280c844ca07564188f2a1214e5055b, type: 3}
     - target: {fileID: 6635605558555817671, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 8.762807
