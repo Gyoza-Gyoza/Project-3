@@ -11,6 +11,7 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     private SkinnedMeshRenderer[] meshRenderers;
     private Material oriMat;
     [SerializeField] private Material hitMat;
+    public float attackInterval, attackRange;
 
     [Header("Physics Variables")]
     [SerializeField] private float hitHorforce = 1f;
@@ -27,6 +28,10 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     {
         base.Start();
         State = new ChargerEnemyChaseState(this);
+    }
+    public override void Attack()
+    {
+
     }
     protected override void OnDamage(GameObject source)
     {

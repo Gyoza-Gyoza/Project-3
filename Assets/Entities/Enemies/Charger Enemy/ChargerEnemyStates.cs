@@ -41,6 +41,37 @@ public class ChargerEnemyChaseState : ChargerEnemyState
     public override void DoEnemyAction()
     {
         enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+
+        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.attackRange)
+        {
+            ReachTargetAction();
+        }
+    }
+    public override void ReachTargetAction()
+    {
+        enemy.State = new ChargerEnemyAttackState(enemy);
+    }
+}
+public class ChargerEnemyAttackState : ChargerEnemyState
+{
+    float timer = 0f;
+    public ChargerEnemyAttackState(ChargerEnemyBehaviour enemy) : base(enemy)
+    {
+        enemy.agent.isStopped = true;
+        enemy.Rb.angularVelocity = Vector3.zero;
+        enemy.Animator.Play("Attack");
+    }
+    public override void DoEnemyAction()
+    {
+        timer += Time.deltaTime;
+        if (timer >= enemy.attackInterval)
+        {
+            ReachTargetAction();
+        }
+    }
+    public override void ReachTargetAction()
+    {
+        enemy.State = new ChargerEnemyChaseState(enemy);
     }
 }
 public class ChargerEnemyStunState : ChargerEnemyState

@@ -84,6 +84,8 @@ MonoBehaviour:
   deathTime: 1
   mesh: {fileID: 1165328172966799035}
   hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
+  attackInterval: 2
+  attackRange: 20
   hitHorforce: 10
   stunDuration: 1
   deathHitHorForce: 1
