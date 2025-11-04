@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 // Basic enemy state for basic functions that all states can inherit from 
 // Used to implement empty functions or shared behaviours 
@@ -40,18 +41,26 @@ public class BasicEnemyChaseState : BasicEnemyState
         //Debug.Log("Chase Do Enemy Action being called");
         if (enemy.agent.isActiveAndEnabled)
         {
-            //Debug.Log("Agent is active and enabled, resuming chase");
-            enemy.agent.SetDestination(GetTarget().position);
-        }
+            NavMeshHit navMesh;
+            if (enemy.agent.isOnNavMesh) enemy.agent.SetDestination(GetTarget().position);
+            else
+            {
+                if (NavMesh.SamplePosition(enemy.transform.position, out navMesh, Mathf.Infinity, NavMesh.AllAreas))
+                {
+                    enemy.agent.Warp(navMesh.position);
+                    enemy.agent.SetDestination(GetTarget().position);
+                }
+            }
 
-        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
-        {
-            enemy.State = new BasicEnemyPayloadState(enemy);
-        }
+            if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
+            {
+                enemy.State = new BasicEnemyPayloadState(enemy);
+            }
 
-        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
-        {
-            enemy.State = new BasicEnemyAttackState(enemy);
+            if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
+            {
+                enemy.State = new BasicEnemyAttackState(enemy);
+            }
         }
     }
     private Transform GetTarget()
