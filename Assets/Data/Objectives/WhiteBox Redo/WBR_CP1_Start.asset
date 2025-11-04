@@ -16,13 +16,13 @@ MonoBehaviour:
   durationBetweenSpawns: 0
   enemyPerGroup: 6
   spawnMarkers: []
-  spawnCooldown: 300
-  maxEnemies: 6
+  spawnCooldown: 10
+  maxEnemies: 12
   resumeThreshold: 0
   minSpawnDistance: 0
   maxSpawnDistance: 0
-  specialEnemyChance: 0
-  specialEnemiesIncluded: 0000
+  specialEnemyChance: 100
+  specialEnemiesIncluded: 0101
   respawn: {x: 0, y: 5, z: 5}
   escortPosition: {x: 0, y: 8, z: 88}
   payloadSpeed: 8

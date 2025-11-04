@@ -1482,6 +1482,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &272861158
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 272861159}
+  m_Layer: 0
+  m_Name: EnemySpawn (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &272861159
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272861158}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 70.7, y: 23.8, z: 244.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &302070401
 GameObject:
   m_ObjectHideFlags: 0
@@ -2077,10 +2108,14 @@ MonoBehaviour:
   enemyPrefab: {fileID: 1255745766610047194, guid: 139e53f25f3ccae47a485c7f882ecb87, type: 3}
   enemySpawnerPrefab: {fileID: 6322387330183314530, guid: d5a1d96fdf9c56c4b96daa5856bb8893, type: 3}
   presetStages:
-  - chargerSpawnPoint: {fileID: 0}
-    chargerAmountSpawned: 0
-    drainerSpawnPoint: {fileID: 0}
+  - chargerSpawnPoint: {fileID: 1801606138}
+    chargerAmountSpawned: 1
+    drainerSpawnPoint: {fileID: 272861159}
     drainerAmountSpawned: 0
+  - chargerSpawnPoint: {fileID: 1801606138}
+    chargerAmountSpawned: 0
+    drainerSpawnPoint: {fileID: 272861159}
+    drainerAmountSpawned: 1
   specialEnemyPrefabs:
   - {fileID: 3454796461600382455, guid: 14becbd755d878048b9d5c4652a07643, type: 3}
   - {fileID: 579452246062201755, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
@@ -4219,6 +4254,10 @@ PrefabInstance:
       propertyPath: globalVolume
       value: 
       objectReference: {fileID: 3062140}
+    - target: {fileID: 5334502618601870077, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
+      propertyPath: m_Volume
+      value: 0.449
+      objectReference: {fileID: 0}
     - target: {fileID: 8832224516698119203, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: m_Name
       value: Player_M1
@@ -7668,6 +7707,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1799569544}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1801606137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1801606138}
+  m_Layer: 0
+  m_Name: EnemySpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1801606138
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801606137}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 109.5, y: 36.7, z: 333.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1815223875
 GameObject:
   m_ObjectHideFlags: 0
@@ -9908,3 +9978,5 @@ SceneRoots:
   - {fileID: 1353343208}
   - {fileID: 132789236}
   - {fileID: 1570905721693051522}
+  - {fileID: 1801606138}
+  - {fileID: 272861159}
