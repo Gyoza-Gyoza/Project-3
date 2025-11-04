@@ -13,7 +13,7 @@ public class PlayerController3P : Entity
     [SerializeField] private Volume globalVolume;
     private bool dead = false;
 
-    [Header("Attaack Damages")]
+    [Header("Attack Damages")]
     public int attack1_Damage = 20;
     public int attack2_Damage = 30;
     public int attack3_Damage = 50;
@@ -158,6 +158,8 @@ public class PlayerController3P : Entity
 
     // ----------------- AUDIO ------------------------------------------------------------------------------------------
     [SerializeField] private AudioSource walkAudioSource;
+    public AudioSource slimeHitAudioSource;
+    public bool canPlaySlimeHitSFX = true;
 
     // ------------------ INTERNALS ------------------------------------------------------------------------------------------
     [HideInInspector] public CharacterController controller;
@@ -890,6 +892,7 @@ void Awake()
 
     void BeginAttack(int index)
     {
+        canPlaySlimeHitSFX = true;
         isAttacking = true;
         attackIndex = index;
         attackTimer = 0f;
@@ -1424,6 +1427,11 @@ void Awake()
 
     // -------------------- Entity Overrides ------------------------------------------------------------------------------------------
     #region Entity Overrides
+    public override void TakeDamage(int amount, GameObject source = null)
+    {
+        if (UltimateAnimationEventForwarder.IsUlting) return;
+        base.TakeDamage(amount, source);
+    }
     protected override void OnHeal()
     {
         //throw new System.NotImplementedException();

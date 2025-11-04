@@ -73,9 +73,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782366458ff1900428e48039ba2ff8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 500
+  maxHealth: 80
   initialDamage: 5
-  initialMovementSpeed: 6
+  initialMovementSpeed: 10
   animator: {fileID: 5169975208432417997}
   burnAdjAmount: 0
   speedAdjAmount: 0
@@ -84,7 +84,7 @@ MonoBehaviour:
   groundCheck: {fileID: 0}
   payloadRange: 1
   aggroRange: 15
-  attackRange: 4
+  attackRange: 3
   attackCooldown: 1
   isDead: 0
   hb: {fileID: 361636551238153991}

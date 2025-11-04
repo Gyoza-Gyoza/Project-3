@@ -11,11 +11,17 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
     private DepthOfField depthOfField;
     [SerializeField] private Transform ultimateCamera;
     [SerializeField] private float duration = 0.5f, longerDuration;
+    [SerializeField] private float damageInterval = 0.1f;
     private Vector3 originalLocalPos;
     private Coroutine shakeCoroutine;
+    private Coroutine dealDamageCoroutine;
     private bool shakeRoutineOn;
+    private bool dealDamageOn;
     private GameObject thirdPersonCamera;
-
+    private List<EnemyBehaviour> enemies = new List<EnemyBehaviour>();
+    private static bool isUlting = false;
+    public static bool IsUlting 
+    { get { return isUlting; } }
     void Awake()
     {
         originalLocalPos = transform.localPosition;
@@ -90,6 +96,7 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
         //Camera.main.enabled = state;
         HUDController.Instance.SetUIVisible(state);
         depthOfField.active = state;
+        isUlting = !state;
     }
     public void SetPlayerInputActive(bool state)
     {
@@ -100,8 +107,55 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
     {
         ScreenEffectsManager.Instance.SetLetterboxActive(state, 0.2f, 0.2f);
     }
+    public void DealDamageNoKnockback(bool state)
+    {
+        dealDamageOn = state;
+
+        if (state)
+        {
+            if (dealDamageCoroutine != null) StopCoroutine(dealDamageCoroutine);
+            dealDamageCoroutine = StartCoroutine(DealDamageNoKnockbackCoroutine());
+        }
+    }
+    private IEnumerator DealDamageNoKnockbackCoroutine()
+    {
+        while (true)
+        {
+            foreach (EnemyBehaviour enemy in enemies)
+            {
+                enemy.TakeDamageNoKnockback();
+            }
+            yield return new WaitForSeconds(damageInterval);
+
+            if (!dealDamageOn)
+            {
+                break;
+            }
+        }
+    }
+    public void DealDamage()
+    {
+        foreach (EnemyBehaviour enemy in enemies)
+        {
+            enemy.TakeDamage(enemy.Health);
+        }
+    }
     public void End()
     {
         gameObject.SetActive(false);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        {
+            enemies.Add(enemy);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<EnemyBehaviour>(out EnemyBehaviour enemy))
+        {
+            enemies.Remove(enemy);
+        }
     }
 }

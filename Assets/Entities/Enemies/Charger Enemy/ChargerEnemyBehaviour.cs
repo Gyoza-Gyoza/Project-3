@@ -8,9 +8,10 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
 {
     [SerializeField] private float deathTime = 1f;
     [SerializeField] private GameObject mesh;
-    private MeshRenderer[] meshRenderers;
+    private SkinnedMeshRenderer[] meshRenderers;
     private Material oriMat;
     [SerializeField] private Material hitMat;
+    public float attackInterval, attackRange;
 
     [Header("Physics Variables")]
     [SerializeField] private float hitHorforce = 1f;
@@ -20,13 +21,17 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     protected override void Awake()
     {
         base.Awake();
-        meshRenderers = mesh.GetComponentsInChildren<MeshRenderer>();
+        meshRenderers = mesh.GetComponentsInChildren<SkinnedMeshRenderer>();
         oriMat = meshRenderers[0].material;
     }
     protected override void Start()
     {
         base.Start();
         State = new ChargerEnemyChaseState(this);
+    }
+    public override void Attack()
+    {
+
     }
     protected override void OnDamage(GameObject source)
     {
@@ -42,16 +47,21 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
 
         return force;
     }
+    public override void TakeDamageNoKnockback()
+    {
+        State = new ChargerEnemyStunState(this, 2.5f, Vector3.zero);
+        StartCoroutine(DamageFlicker());
+    }
     IEnumerator DamageFlicker()
     {
-        foreach (MeshRenderer mr in meshRenderers)
+        foreach (SkinnedMeshRenderer mr in meshRenderers)
         {
             mr.material = hitMat;
         }
 
         yield return new WaitForSeconds(.1f);
 
-        foreach (MeshRenderer mr in meshRenderers)
+        foreach (SkinnedMeshRenderer mr in meshRenderers)
         {
             mr.material = oriMat;
         }

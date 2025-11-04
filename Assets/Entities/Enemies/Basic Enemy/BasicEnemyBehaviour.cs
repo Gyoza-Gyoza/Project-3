@@ -54,11 +54,17 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     }
     protected override void OnDamage(GameObject source)
     {
+        base.OnDamage(source);
         if (State is BasicEnemyDeathState) return;
         StartCoroutine(DamageFlicker());
         State = new BasicEnemyKnockUpState(this, knockupDuration, CalculateKnockBack
             (false, source.transform), upDrag, fallForce, downDrag, recoveryTime);
         Debug.Log("Enemy on damage called");
+    }
+    public override void TakeDamageNoKnockback()
+    {
+        State = new BasicEnemyStunState(this, 2.5f); 
+        StartCoroutine(DamageFlicker());
     }
     private Vector3 CalculateKnockBack(bool death, Transform source)
     {

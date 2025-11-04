@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22a0577b18a6a7f40bc7c5fe25e25c31, type: 3}
-  m_Name: WBR_CP0_START
+  m_Name: WBR_CP0_Start
   m_EditorClassIdentifier: 
   isCheckpoint: 1
   durationBetweenSpawns: 0
@@ -25,4 +25,4 @@ MonoBehaviour:
   specialEnemiesIncluded: 0000
   respawn: {x: 0, y: 5, z: 5}
   escortPosition: {x: 0, y: 0, z: 12}
-  payloadSpeed: 6
+  payloadSpeed: 10
