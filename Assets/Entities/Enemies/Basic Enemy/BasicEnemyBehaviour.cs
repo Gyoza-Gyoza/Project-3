@@ -10,6 +10,8 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     public float attackRange = 1f;
     public float attackCooldown = 1f;
     public bool isDead = false;
+    [Tooltip("How often the enemy checks for targets, measured in once per x seconds")]
+    public float targetCheckInterval = 3f;
     [SerializeField] private HitBox hb;
 
     [Header("Visual Variables")]

@@ -28,6 +28,7 @@ public class BasicEnemyState : EnemyState
 }
 public class BasicEnemyChaseState : BasicEnemyState
 {
+    float timer;
     public BasicEnemyChaseState(BasicEnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Chase State");
@@ -35,10 +36,20 @@ public class BasicEnemyChaseState : BasicEnemyState
         else enemy.Animator.SetTrigger("Recover");
         if (enemy.agent.isOnNavMesh) enemy.agent.isStopped = false;
         enemy.agent.updateRotation = true;
+        timer = 0f;
     }
     public override void DoEnemyAction()
     {
-        //Debug.Log("Chase Do Enemy Action being called");
+        timer += Time.deltaTime;
+        if (timer >= enemy.targetCheckInterval)
+        {
+            timer = 0f;
+            ChaseLogic();
+        }
+        CheckAttack();
+    }
+    private void ChaseLogic()
+    {
         if (enemy.agent.isActiveAndEnabled)
         {
             NavMeshHit navMesh;
@@ -50,16 +61,6 @@ public class BasicEnemyChaseState : BasicEnemyState
                     enemy.agent.Warp(navMesh.position);
                     enemy.agent.SetDestination(GetTarget().position);
                 }
-            }
-
-            if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
-            {
-                enemy.State = new BasicEnemyPayloadState(enemy);
-            }
-
-            if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
-            {
-                enemy.State = new BasicEnemyAttackState(enemy);
             }
         }
     }
@@ -73,6 +74,18 @@ public class BasicEnemyChaseState : BasicEnemyState
         else
         {
             return PayloadBehaviour.Instance.transform;
+        }
+    }
+    private void CheckAttack()
+    {
+        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
+        {
+            enemy.State = new BasicEnemyPayloadState(enemy);
+        }
+
+        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
+        {
+            enemy.State = new BasicEnemyAttackState(enemy);
         }
     }
 }
