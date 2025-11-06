@@ -448,9 +448,8 @@ public class LevelDirector : Singleton<LevelDirector>
             drainerTimer = 0f;
             for (int i = 0; i < CurrentStage.DrainerEnemyCount; i++)
             {
-                GameObject drainer = GameObjectPool.GetObject(specialEnemyPrefabs[1]);
-                drainer.GetComponent<NavMeshAgent>().
-                    Warp(CurrentStage.SpawnMarkers[CurrentStage.DrainerEnemyLocation]);
+                GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position =
+                    CurrentStage.SpawnMarkers[CurrentStage.DrainerEnemyLocation];
             }
         }
     }
