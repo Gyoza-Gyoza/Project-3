@@ -22,8 +22,10 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private int resumeThreshold;
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
-    [SerializeField] private float specialEnemyChance;
-    [SerializeField] private bool[] specialEnemiesIncluded;
+    [SerializeField] private float chargerEnemyInterval;
+    [SerializeField] private int chargerEnemyCount, chargerEnemyWaves, chargerEnemyLocation;
+    [SerializeField] private float drainerEnemyInterval;
+    [SerializeField] private int drainerEnemyCount, drainerEnemyWaves, drainerEnemyLocation;
     [SerializeField] private Vector3 respawn;
     private float progress = 0f;
     private float lengthFromPrevious;
@@ -50,10 +52,22 @@ public abstract class Stage : ScriptableObject
     { get { return lengthFromPrevious; } set { lengthFromPrevious = value; }}
     public bool IsCheckpoint
     { get { return isCheckpoint; }}
-    public float SpecialEnemyChance
-    { get { return specialEnemyChance; } }
-    public bool[] SpecialEnemiesIncluded
-    { get { return specialEnemiesIncluded; } }
+    public float ChargerEnemyInterval
+    {  get { return chargerEnemyInterval; }}
+    public int ChargerEnemyCount
+    { get { return chargerEnemyCount; }}
+    public int ChargerEnemyWaves
+    {  get { return chargerEnemyWaves; }}
+    public int ChargerEnemyLocation
+    {  get { return chargerEnemyLocation; }}
+    public float DrainerEnemyInterval
+    {  get { return drainerEnemyInterval; }}
+    public int DrainerEnemyCount
+    { get { return drainerEnemyCount; }}
+    public int DrainerEnemyWaves
+    {  get { return drainerEnemyWaves; }}
+    public int DrainerEnemyLocation
+    {  get { return drainerEnemyLocation; }}
     public Vector3 Respawn
     { get { return respawn; } }
 

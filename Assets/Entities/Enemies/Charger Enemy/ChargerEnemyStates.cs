@@ -17,6 +17,9 @@ public class ChargerEnemyState : EnemyState
     {
 
     }
+    public override void DoEnemyActionFixed()
+    {
+    }
     public override void OnCollide()
     {
 
@@ -28,6 +31,9 @@ public class ChargerEnemyState : EnemyState
     public override void ReachTargetAction()
     {
 
+    }
+    public override void OnDamaged()
+    {
     }
 }
 public class ChargerEnemyChaseState : ChargerEnemyState

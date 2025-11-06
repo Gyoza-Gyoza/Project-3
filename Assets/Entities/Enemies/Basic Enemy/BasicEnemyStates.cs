@@ -16,6 +16,9 @@ public class BasicEnemyState : EnemyState
     public override void DoEnemyAction()
     {
     }
+    public override void DoEnemyActionFixed()
+    {
+    }
     public override void ReachTargetAction()
     {
     }
@@ -24,6 +27,9 @@ public class BasicEnemyState : EnemyState
     }
     public override void OnCollide()
     {
+    }
+    public override void OnDamaged()
+    { 
     }
 }
 public class BasicEnemyChaseState : BasicEnemyState
@@ -34,8 +40,11 @@ public class BasicEnemyChaseState : BasicEnemyState
         //Debug.Log("Enemy entering Chase State");
         if (enemy.PreviousState is not BasicEnemyKnockUpState) enemy.Animator.Play("Walk");
         else enemy.Animator.SetTrigger("Recover");
+
         if (enemy.agent.isOnNavMesh) enemy.agent.isStopped = false;
         enemy.agent.updateRotation = true;
+        enemy.agent.SetDestination(GetTarget().position);
+
         timer = 0f;
     }
     public override void DoEnemyAction()
@@ -44,11 +53,11 @@ public class BasicEnemyChaseState : BasicEnemyState
         if (timer >= enemy.targetCheckInterval)
         {
             timer = 0f;
-            ChaseLogic();
+            Chase();
         }
         CheckAttack();
     }
-    private void ChaseLogic()
+    private void Chase()
     {
         if (enemy.agent.isActiveAndEnabled)
         {
@@ -238,7 +247,9 @@ public class BasicEnemyKnockUpState : BasicEnemyStunState
     public override void DoEnemyAction()
     {
         timer += Time.deltaTime;
-
+    }
+    public override void DoEnemyActionFixed()
+    {
         // First stage: in the air
         // Reusing stun bool for airtime
         if (stunned)
@@ -248,13 +259,14 @@ public class BasicEnemyKnockUpState : BasicEnemyStunState
                 enemy.Rb.drag = downDrag;
                 enemy.Rb.AddForce(downwardForce, ForceMode.Impulse);
                 stunned = false;
-                landed = enemy.groundCheck.Grounded; 
+                landed = enemy.groundCheck.Grounded;
+                timer = 0f;
             }
         }
         // Second stage: landed and recovering 
         else
         {
-            if (landed)
+            if (landed || enemy.groundCheck.Grounded)
             {
                 if (timer >= recoveryTime)
                 {

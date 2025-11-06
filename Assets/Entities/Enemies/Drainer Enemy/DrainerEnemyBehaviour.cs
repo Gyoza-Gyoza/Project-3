@@ -48,7 +48,7 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     {
         Debug.Log($"{name} taking {amount} damage");
         health -= (int)(amount / defense);
-        if (health > 0) OnDamage(source);
+        if (health > 0) OnDamaged(source);
         if (health <= 0)
         {
             health = 0; // Ensure health doesn't go below zero
@@ -102,7 +102,7 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
             yield return null;
         }
     }
-    protected override void OnDamage(GameObject source)
+    protected override void OnDamaged(GameObject source)
     {
         StartCoroutine(DamageFlicker());
         Debug.Log(Health);

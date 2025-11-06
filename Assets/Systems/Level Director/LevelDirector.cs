@@ -285,10 +285,14 @@ public class LevelDirector : Singleton<LevelDirector>
                 HUDController.Instance.EnemiesStopped(false);
             }
         }
-        if (spawnEnemies) SpawnEnemies();
-        if (Input.GetKeyDown(KeyCode.J)) SpawnSpecialEnemies(-1);
-        if (Input.GetKeyDown(KeyCode.K)) SpawnSpecialEnemies(0);
-        if (Input.GetKeyDown(KeyCode.L)) SpawnSpecialEnemies(1);
+        if (spawnEnemies)
+        {
+            SpawnEnemies();
+            SpawnSpecialEnemies();
+        }
+        if (Input.GetKeyDown(KeyCode.J)) SpawnPresetEnemies(-1);
+        if (Input.GetKeyDown(KeyCode.K)) SpawnPresetEnemies(0);
+        if (Input.GetKeyDown(KeyCode.L)) SpawnPresetEnemies(1);
         if (Input.GetKeyDown(KeyCode.F12)) Application.Quit();
         HUDController.Instance.UpdateTimePassed(Time.time);
     }
@@ -297,7 +301,11 @@ public class LevelDirector : Singleton<LevelDirector>
     #region ---- Enemy Spawning ----
 
     private float timer;
-    private void SpawnSpecialEnemies(int counter)
+    private float chargerTimer;
+    private int chargerCount; 
+    private float drainerTimer;
+    private int drainerCount;
+    private void SpawnPresetEnemies(int counter)
     {
         PresetStage chosenStage = presetStages[Mathf.Clamp(presetStageCounter += counter, 0, presetStages.Length - 1)];
         for(int i = 0; i < chosenStage.chargerAmountSpawned;  i++)
@@ -337,7 +345,6 @@ public class LevelDirector : Singleton<LevelDirector>
                         for (int i = 0; i < Stages[currentStageCounter].EnemyPerGroup; i++)
                         {
                             GameObject enemyToSpawn = enemyPrefab;
-                            if (Random.Range(0, 1f) <= specialEnemyChance) enemyToSpawn = specialEnemyPool[Random.Range(0, specialEnemyPrefabs.Length - 1)];
                             NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
                             if (enemy != null)
                             {
@@ -417,6 +424,36 @@ public class LevelDirector : Singleton<LevelDirector>
         timer = 0f;
         return true;
     }
+    private void SpawnSpecialEnemies()
+    {
+        if (chargerCount > CurrentStage.ChargerEnemyCount &&
+            drainerCount > CurrentStage.DrainerEnemyCount) return;
+
+        chargerTimer = drainerTimer += Time.deltaTime;
+
+        if (chargerTimer >= CurrentStage.ChargerEnemyInterval)
+        {
+            chargerCount++;
+            chargerTimer = 0f;
+            for (int i = 0; i < CurrentStage.ChargerEnemyCount; i++)
+            {
+                GameObject charger = GameObjectPool.GetObject(specialEnemyPrefabs[0]);
+                charger.GetComponent<NavMeshAgent>().
+                    Warp(CurrentStage.SpawnMarkers[CurrentStage.ChargerEnemyLocation]);
+            }
+        }
+        if (drainerTimer >= CurrentStage.DrainerEnemyInterval)
+        {
+            drainerCount++; 
+            drainerTimer = 0f;
+            for (int i = 0; i < CurrentStage.DrainerEnemyCount; i++)
+            {
+                GameObject drainer = GameObjectPool.GetObject(specialEnemyPrefabs[1]);
+                drainer.GetComponent<NavMeshAgent>().
+                    Warp(CurrentStage.SpawnMarkers[CurrentStage.DrainerEnemyLocation]);
+            }
+        }
+    }
 
     #region ############################ NOT IN USE #############################
     // Getting a random spawn location around the player that has line of sight to the player
@@ -487,17 +524,8 @@ public class LevelDirector : Singleton<LevelDirector>
 
         SpawnSpawners();
 
-        specialEnemyChance = Stages[currentStageCounter].SpecialEnemyChance;
-
-        // Adding Special enemies
-        specialEnemyPool.Clear();
-
-        for (int i = 0; i < Stages[currentStageCounter].SpecialEnemiesIncluded.Length; i++)
-        {
-            if (Stages[currentStageCounter].SpecialEnemiesIncluded[i])
-                specialEnemyPool.Add(specialEnemyPrefabs[i]);
-        }
-
+        chargerCount = 0;
+        drainerCount = 0;
 
         //Hardcode to start death zone on 3rd check point
         if (currentStageCounter == 2)
@@ -517,6 +545,11 @@ public class LevelDirector : Singleton<LevelDirector>
         foreach (EnemyBehaviour enemy in enemyList)
         {
             enemy.TakeDamage(enemy.Health);
+        }
+        foreach (GameObject specialEnemy in specialEnemyPool)
+        {
+            EnemyBehaviour sp = specialEnemy.GetComponent<EnemyBehaviour>();
+            sp.TakeDamage(sp.Health);
         }
         if (currentLevelCounter >= levels.Length)
         {

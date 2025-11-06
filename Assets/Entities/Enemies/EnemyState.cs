@@ -7,9 +7,10 @@ using UnityEngine;
 public abstract class EnemyState
 {
     public abstract void DoEnemyAction();
-
+    public abstract void DoEnemyActionFixed();
     public abstract void ReachTargetAction();
     public abstract void OnLanding();
     public abstract void OnCollide();
+    public abstract void OnDamaged();
 }
 

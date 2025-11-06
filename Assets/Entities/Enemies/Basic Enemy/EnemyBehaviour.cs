@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using static Unity.VisualScripting.Member;
 
 public class EnemyBehaviour : Entity
 {
@@ -13,6 +15,7 @@ public class EnemyBehaviour : Entity
     public float burnAdjAmount;
     public float speedAdjAmount;
     public float retreatAdjAmount;
+    [SerializeField] private TextMeshProUGUI debugText;
 
     // Internal Variables
     [HideInInspector] public NavMeshAgent agent;
@@ -24,8 +27,8 @@ public class EnemyBehaviour : Entity
         set
         {
             previousState = state; 
-            state = value; 
-            //Debug.Log($"{name} entering {state.GetType()} state");
+            state = value;
+            //if (debugText != null) debugText.text = value.ToString();
         }
     }
     private EnemyState previousState;
@@ -51,6 +54,7 @@ public class EnemyBehaviour : Entity
     }
     protected virtual void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         if (!TryGetComponent<NavMeshAgent>(out agent)) Debug.Log("Enemy Agent component not found");
         if (!TryGetComponent<Rigidbody>(out rb)) Debug.Log("Enemy Rigibody component not found");
     }
@@ -65,8 +69,11 @@ public class EnemyBehaviour : Entity
 
         if (Input.GetKeyDown(KeyCode.M)) TakeDamage(1, gameObject);
 
-
-
+        //debugText.text = $"\nRb.isKinematic: {Rb.isKinematic}, \nDrag: {Rb.drag}, \nVelocity: {Rb.velocity}, \nGrounded: {groundCheck.Grounded}";
+    }
+    protected virtual void FixedUpdate()
+    {
+        state?.DoEnemyActionFixed();
     }
     protected virtual void InitializeStats()
     {
@@ -100,7 +107,7 @@ public class EnemyBehaviour : Entity
     {
 
     }
-    protected override void OnDamage(GameObject source)
+    protected override void OnDamaged(GameObject source)
     {
         if (PlayerController3P.Instance.canPlaySlimeHitSFX)
         {

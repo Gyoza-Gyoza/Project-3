@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
 
     [Header("Visual Variables")]
     [SerializeField] protected GameObject skin;
+    private SkinnedMeshRenderer skinRenderer;
     [SerializeField] protected Material hitMat;
     protected Material oriMat;
     [SerializeField] private GameObject ball;
@@ -39,6 +41,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         base.Awake();
         oriMat = skin.GetComponent<SkinnedMeshRenderer>().material;
         hb.HitBoxListeners += DamagePlayer;
+        skinRenderer = skin.GetComponent<SkinnedMeshRenderer>();
     }
     protected override void Start()
     {
@@ -54,9 +57,9 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         agent.updateRotation = false;
         Animator.Play("Attack");
     }
-    protected override void OnDamage(GameObject source)
+    protected override void OnDamaged(GameObject source)
     {
-        base.OnDamage(source);
+        base.OnDamaged(source);
         if (State is BasicEnemyDeathState) return;
         StartCoroutine(DamageFlicker());
         State = new BasicEnemyKnockUpState(this, knockupDuration, CalculateKnockBack
@@ -106,9 +109,9 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     }
     IEnumerator DamageFlicker()
     {
-        skin.GetComponent<SkinnedMeshRenderer>().material = hitMat;
+        skinRenderer.material = hitMat;
         yield return new WaitForSeconds(.22f);
-        skin.GetComponent<SkinnedMeshRenderer>().material = oriMat;
+        skinRenderer.material = oriMat;
         yield break;
     }
     IEnumerator DeathCouroutine()
