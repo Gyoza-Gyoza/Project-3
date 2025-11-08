@@ -10,19 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22a0577b18a6a7f40bc7c5fe25e25c31, type: 3}
-  m_Name: WBR_CP1_Start
+  m_Name: WBR_CP3_WP02
   m_EditorClassIdentifier: 
-  isCheckpoint: 1
+  isCheckpoint: 0
   durationBetweenSpawns: 0
-  enemyPerGroup: 6
+  enemyPerGroup: 0
   spawnMarkers: []
-  spawnCooldown: 10
-  maxEnemies: 12
+  spawnCooldown: 0
+  maxEnemies: 0
   resumeThreshold: 0
   minSpawnDistance: 0
   maxSpawnDistance: 0
-  specialEnemyChance: 100
-  specialEnemiesIncluded: 0101
-  respawn: {x: 0, y: 5, z: 5}
-  escortPosition: {x: 0, y: 8, z: 88}
-  payloadSpeed: 10
+  chargerEnemyInterval: 0
+  chargerEnemyCount: 0
+  chargerEnemyWaves: 0
+  chargerEnemyLocation: 0
+  drainerEnemyInterval: 0
+  drainerEnemyCount: 0
+  drainerEnemyWaves: 0
+  drainerEnemyLocation: 0
+  respawn: {x: 220, y: 40, z: 297.4}
+  escortPosition: {x: 255, y: 37.6, z: 297.4}
+  payloadSpeed: 15

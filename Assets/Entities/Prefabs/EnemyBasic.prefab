@@ -97,12 +97,12 @@ MonoBehaviour:
   mesh: {fileID: 7268949247338714290}
   deathParticleSystem: {fileID: 3442910432149426102}
   deathTime: 1
-  hitUpforce: 14
-  hitHorforce: 14
+  hitUpforce: 16
+  hitHorforce: 9
   upDrag: 0.1
   fallForce: 17
   downDrag: 0.1
-  knockupDuration: 0.06
+  knockupDuration: 0.1
   recoveryTime: 0.5
   deathHitUpForce: 16
   deathHitHorForce: 24

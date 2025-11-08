@@ -49,22 +49,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb3e4d587ad90884b84b2d83394f09b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 200
   initialDamage: 5
   initialMovementSpeed: 5
   animator: {fileID: 6667058055344779242}
   burnAdjAmount: 1
   speedAdjAmount: 0
   retreatAdjAmount: 0
+  debugText: {fileID: 0}
   agent: {fileID: 0}
   groundCheck: {fileID: 0}
-  payloadRange: 1
+  payloadRange: 2000
   skin: {fileID: 6920748275748137612}
   targetCheckFrequency: 10
   hitMat: {fileID: 2100000, guid: ce49ec91a844164428a4d399ba86e80c, type: 2}
   shield: {fileID: 4701581051582791084}
   shieldUpTime: 0.5
-  aggroRange: 50
+  aggroRange: 2000
   defendingDefense: 2
   defendRange: 10
   line: {fileID: 7102680025765401633}

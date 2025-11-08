@@ -68,13 +68,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba2111c28a9cc34e9a4191bab225822, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 300
+  maxHealth: 150
   initialDamage: 5
   initialMovementSpeed: 5
   animator: {fileID: 0}
   burnAdjAmount: 0
   speedAdjAmount: 0
   retreatAdjAmount: 0
+  debugText: {fileID: 0}
   agent: {fileID: 0}
   groundCheck: {fileID: 0}
   payloadRange: 1
