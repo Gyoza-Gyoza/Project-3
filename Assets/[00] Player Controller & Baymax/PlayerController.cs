@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -135,6 +136,7 @@ public class PlayerController3P : Entity
     [SerializeField] private VFX[] dashVFX;
     [SerializeField] private float lensDistortionDuration, playerGlowDuration;
     [SerializeField] private GameObject ultimate;
+    [SerializeField] private float ultiCooldown = 60f;
     private Coroutine dashEffectsCoroutine;
     private LensDistortion lensDistortion;
     private List<MeshRenderer> playerMat = new List<MeshRenderer>();
@@ -268,6 +270,8 @@ void Awake()
         doubleJumpAvailable = enableDoubleJump && !groundedNow;
 
         InitializeHitboxes();
+
+        StartCoroutine(UltiCooldown());
     }
 
     void Update()
@@ -284,7 +288,7 @@ void Awake()
             HandleDashInput();   // RMB cancels attacks
             HandleAttackInput(); // LMB starts/queues
             HandleDeviceInput(); // Device inputs
-            if (Input.GetKeyDown(KeyCode.Q)) ultimate.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.Q)) TryToUlt();
         }
         UpdateDash();        // Timers
         UpdateAttack();      // Timers
@@ -1319,10 +1323,61 @@ void Awake()
 
         yield break;
 
-    }    
+    }
 
-        #endregion
+    #endregion
 
+    // -------------------- Ultimate ------
+
+    #region Ultimate
+
+
+    bool _ultiOnCooldown = true;
+
+
+    public void TryToUlt()
+    {
+        if (!_ultiOnCooldown)
+        {
+            ultimate.SetActive(true);
+
+            StartCoroutine(UltiCooldown());
+        }
+    }
+
+    IEnumerator UltiCooldown()
+    {
+        float count = 0f;
+        _ultiOnCooldown = true;
+
+        //HUDController.Instance.ToggleTaunt(false);
+
+        HUDController.Instance.UltimateUsed();
+
+        while (_ultiOnCooldown)
+        {
+            count += Time.fixedDeltaTime;
+            if (count >= ultiCooldown)
+            {
+                _ultiOnCooldown = false;
+            }
+            else
+            {
+                //HUDController.Instance.SetTauntSlider(count / tauntCooldown);
+                HUDController.Instance.SetUltimateSlider(count / ultiCooldown);
+            }
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+        }
+
+        //HUDController.Instance.SetTauntSlider(1f);
+        //HUDController.Instance.ToggleTaunt(true);
+        HUDController.Instance.UltimateReady();
+
+        yield break;
+
+    }
+
+    #endregion
     // -------------------- Helpers ------------------------------------------------------------------------------------------
     bool TryGetCameraRelativeMove(out Vector3 dir)
     {
