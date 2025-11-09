@@ -427,7 +427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 326827560348200875, guid: 4863a8a861b57364393c55128b30134e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1633885466674818180, guid: 4863a8a861b57364393c55128b30134e, type: 3}
       propertyPath: golemDefaultImage
@@ -5433,6 +5433,10 @@ PrefabInstance:
       propertyPath: globalVolume
       value: 
       objectReference: {fileID: 3062140}
+    - target: {fileID: 4563402284226776312, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
+      propertyPath: ultiCooldown
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 4563402284226776312, guid: 437923b7f61db25459a25056f3d1a47a, type: 3}
       propertyPath: airDashCooldown
       value: 0.6
