@@ -93,7 +93,7 @@ public class TauntDevice : Device
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.layer == 6) // Ground layer is 6
+        if(collision.gameObject.layer == 7) // Environment layer is 7
         {
             rb.isKinematic = true;
             StartCoroutine(ActivateDeviceCoroutine());
