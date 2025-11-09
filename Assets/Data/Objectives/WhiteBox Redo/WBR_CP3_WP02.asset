@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: WBR_CP3_WP02
   m_EditorClassIdentifier: 
   isCheckpoint: 0
-  durationBetweenSpawns: 0
-  enemyPerGroup: 0
-  spawnMarkers: []
-  spawnCooldown: 0
-  maxEnemies: 0
-  resumeThreshold: 0
+  durationBetweenSpawns: 2
+  enemyPerGroup: 10
+  spawnMarkers:
+  - {x: 227.8, y: 35.1, z: 327.4}
+  - {x: 227.8, y: 35.1, z: 267}
+  spawnCooldown: 5
+  maxEnemies: 50
+  resumeThreshold: 20
   minSpawnDistance: 0
-  maxSpawnDistance: 0
+  maxSpawnDistance: 999
   chargerEnemyInterval: 0
   chargerEnemyCount: 0
   chargerEnemyWaves: 0
@@ -31,4 +33,4 @@ MonoBehaviour:
   drainerEnemyLocation: 0
   respawn: {x: 220, y: 40, z: 297.4}
   escortPosition: {x: 255, y: 37.6, z: 297.4}
-  payloadSpeed: 15
+  payloadSpeed: 10

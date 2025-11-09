@@ -13,25 +13,24 @@ MonoBehaviour:
   m_Name: WBR_CP2_WP03
   m_EditorClassIdentifier: 
   isCheckpoint: 0
-  durationBetweenSpawns: 0
-  enemyPerGroup: 0
+  durationBetweenSpawns: 2
+  enemyPerGroup: 5
   spawnMarkers:
-  - {x: 116.3, y: 26.2, z: 229.7}
   - {x: 161.6, y: 33.4, z: 265.2}
-  - {x: 161.6, y: 33.4, z: 329.1}
-  spawnCooldown: 0
-  maxEnemies: 0
-  resumeThreshold: 0
+  - {x: 210.4, y: 37, z: 297.6}
+  spawnCooldown: 2
+  maxEnemies: 15
+  resumeThreshold: 5
   minSpawnDistance: 0
-  maxSpawnDistance: 0
+  maxSpawnDistance: 999
   chargerEnemyInterval: 0
   chargerEnemyCount: 0
   chargerEnemyWaves: 0
   chargerEnemyLocation: 0
   drainerEnemyInterval: 0
-  drainerEnemyCount: 0
+  drainerEnemyCount: 1
   drainerEnemyWaves: 0
-  drainerEnemyLocation: 0
+  drainerEnemyLocation: 2
   respawn: {x: 32, y: 20, z: 315}
   escortPosition: {x: 113.6, y: 23.4, z: 268.2}
-  payloadSpeed: 15
+  payloadSpeed: 10
