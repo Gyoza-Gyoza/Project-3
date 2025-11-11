@@ -17,6 +17,9 @@ public class DrainerEnemyState : EnemyState
     {
 
     }
+    public override void DoEnemyActionFixed()
+    {
+    }
     public override void ReachTargetAction()
     {
 
@@ -28,6 +31,9 @@ public class DrainerEnemyState : EnemyState
     public override void OnCollide()
     {
 
+    }
+    public override void OnDamaged()
+    {
     }
 }
 

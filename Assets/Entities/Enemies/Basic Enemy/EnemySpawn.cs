@@ -67,7 +67,7 @@ public class EnemySpawn : EnemyBehaviour
         this.gameObject.SetActive(false);
     }
 
-    protected override void OnDamage(GameObject source)
+    protected override void OnDamaged(GameObject source)
     {
         if (_flickering)
         {

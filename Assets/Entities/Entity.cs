@@ -70,7 +70,7 @@ public abstract class Entity : MonoBehaviour
         source = source ?? gameObject;
         //Debug.Log($"{name} taking {amount} damage");
         health -= amount;
-        if (health > 0) OnDamage(source);
+        if (health > 0) OnDamaged(source);
         if (health <= 0)
         {
             health = 0; // Ensure health doesn't go below zero
@@ -78,6 +78,6 @@ public abstract class Entity : MonoBehaviour
         }
     }
     protected abstract void OnHeal();
-    protected abstract void OnDamage(GameObject source);
+    protected abstract void OnDamaged(GameObject source);
     public abstract void OnDeath();
 }

@@ -33,7 +33,7 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     {
 
     }
-    protected override void OnDamage(GameObject source)
+    protected override void OnDamaged(GameObject source)
     {
         StartCoroutine(DamageFlicker());
         State = new ChargerEnemyStunState(this, stunDuration, CalculateKnockBack(PlayerController3P.Instance.transform));

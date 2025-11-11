@@ -22,7 +22,7 @@ public class DeathZoneChaserBehaviour : Entity
         //throw new System.NotImplementedException();
     }
 
-    protected override void OnDamage(GameObject source)
+    protected override void OnDamaged(GameObject source)
     {
         //throw new System.NotImplementedException();
     }

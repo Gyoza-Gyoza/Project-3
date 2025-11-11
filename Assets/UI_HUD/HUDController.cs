@@ -76,6 +76,11 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private Sprite tauntInactive;
     [SerializeField] private Image tauntAbility;
 
+    [Header("Ultimate")]
+    [SerializeField] private Slider ultimateSlider;
+    [SerializeField] private GameObject ultimateReady;
+    [SerializeField] private GameObject ultimateButtonReady;
+
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI enemyCount;
     [SerializeField] private TextMeshProUGUI enemiesStopped;
@@ -438,6 +443,27 @@ public class HUDController : Singleton<HUDController>
     {
         tauntSlider.value = input;
     }
+    #endregion
+
+    #region Ultimate
+
+    public void SetUltimateSlider(float input)
+    {
+        ultimateSlider.value = input;
+    }
+
+    public void UltimateReady()
+    {
+        ultimateReady.SetActive(true);
+        ultimateButtonReady.SetActive(true);
+    }
+
+    public void UltimateUsed()
+    {
+        ultimateReady.SetActive(false);
+        ultimateButtonReady.SetActive(false);
+    }
+
     #endregion
 
     #region Debug

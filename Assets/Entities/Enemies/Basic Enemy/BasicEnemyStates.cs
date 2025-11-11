@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 // Basic enemy state for basic functions that all states can inherit from 
 // Used to implement empty functions or shared behaviours 
@@ -15,6 +16,9 @@ public class BasicEnemyState : EnemyState
     public override void DoEnemyAction()
     {
     }
+    public override void DoEnemyActionFixed()
+    {
+    }
     public override void ReachTargetAction()
     {
     }
@@ -24,34 +28,49 @@ public class BasicEnemyState : EnemyState
     public override void OnCollide()
     {
     }
+    public override void OnDamaged()
+    { 
+    }
 }
 public class BasicEnemyChaseState : BasicEnemyState
 {
+    float timer;
     public BasicEnemyChaseState(BasicEnemyBehaviour enemy) : base(enemy)
     {
         //Debug.Log("Enemy entering Chase State");
         if (enemy.PreviousState is not BasicEnemyKnockUpState) enemy.Animator.Play("Walk");
         else enemy.Animator.SetTrigger("Recover");
+
         if (enemy.agent.isOnNavMesh) enemy.agent.isStopped = false;
         enemy.agent.updateRotation = true;
+        enemy.agent.SetDestination(GetTarget().position);
+
+        timer = 0f;
     }
     public override void DoEnemyAction()
     {
-        //Debug.Log("Chase Do Enemy Action being called");
+        timer += Time.deltaTime;
+        if (timer >= enemy.targetCheckInterval)
+        {
+            timer = 0f;
+            Chase();
+        }
+        CheckAttack();
+    }
+    private void Chase()
+    {
         if (enemy.agent.isActiveAndEnabled)
         {
-            //Debug.Log("Agent is active and enabled, resuming chase");
-            enemy.agent.SetDestination(GetTarget().position);
-        }
-
-        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
-        {
-            enemy.State = new BasicEnemyPayloadState(enemy);
-        }
-
-        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
-        {
-            enemy.State = new BasicEnemyAttackState(enemy);
+            NavMeshHit navMesh;
+            if (enemy.agent.isOnNavMesh) enemy.agent.SetDestination(GetTarget().position);
+            else
+            {
+                if (NavMesh.SamplePosition(enemy.transform.position, out navMesh, Mathf.Infinity, NavMesh.AllAreas))
+                {
+                    enemy.agent.Warp(navMesh.position);
+                    enemy.agent.SetDestination(GetTarget().position);
+                }
+            }
         }
     }
     private Transform GetTarget()
@@ -64,6 +83,18 @@ public class BasicEnemyChaseState : BasicEnemyState
         else
         {
             return PayloadBehaviour.Instance.transform;
+        }
+    }
+    private void CheckAttack()
+    {
+        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
+        {
+            enemy.State = new BasicEnemyPayloadState(enemy);
+        }
+
+        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
+        {
+            enemy.State = new BasicEnemyAttackState(enemy);
         }
     }
 }
@@ -216,7 +247,9 @@ public class BasicEnemyKnockUpState : BasicEnemyStunState
     public override void DoEnemyAction()
     {
         timer += Time.deltaTime;
-
+    }
+    public override void DoEnemyActionFixed()
+    {
         // First stage: in the air
         // Reusing stun bool for airtime
         if (stunned)
@@ -226,13 +259,14 @@ public class BasicEnemyKnockUpState : BasicEnemyStunState
                 enemy.Rb.drag = downDrag;
                 enemy.Rb.AddForce(downwardForce, ForceMode.Impulse);
                 stunned = false;
-                landed = enemy.groundCheck.Grounded; 
+                landed = enemy.groundCheck.Grounded;
+                timer = 0f;
             }
         }
         // Second stage: landed and recovering 
         else
         {
-            if (landed)
+            if (landed || enemy.groundCheck.Grounded)
             {
                 if (timer >= recoveryTime)
                 {

@@ -3147,6 +3147,9 @@ MonoBehaviour:
   tauntActive: {fileID: 21300000, guid: 9431bce351e147f499be3d33c15da6fb, type: 3}
   tauntInactive: {fileID: 21300000, guid: 0529feef9acfb624585c9a975019e874, type: 3}
   tauntAbility: {fileID: 4197832792626685482}
+  ultimateSlider: {fileID: 6000340959291559564}
+  ultimateReady: {fileID: 1045871626935136452}
+  ultimateButtonReady: {fileID: 4636827317770199954}
   enemyCount: {fileID: 690412243276271068}
   enemiesStopped: {fileID: 8321910825603189076}
   timepassed: {fileID: 4200873673402259011}
@@ -8845,7 +8848,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &41195612570507283
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11586,7 +11589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8764333402576169618
 RectTransform:
   m_ObjectHideFlags: 0
