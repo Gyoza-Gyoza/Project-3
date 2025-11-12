@@ -27,10 +27,10 @@ public class HUDController : Singleton<HUDController>
     private bool updatingPlayerEmber = false;
 
     [Header("Payload Gas")]
-    [SerializeField] private Slider payloadEmber;
-    [SerializeField] private Image payloadGasFill;
-    [SerializeField] private Slider payloadGasCatchUp;
-    [SerializeField] private float payloadEmberCatchUpTiming;
+    [SerializeField] private Slider payloadHealth;
+    [SerializeField] private Image payloadHealthFill;
+    [SerializeField] private Slider payloadHealthCatchUp;
+    [SerializeField] private float payloadHealthCatchUpTiming;
     [SerializeField] private GameObject golemDefaultImage;
     [SerializeField] private GameObject golemWarningImage;
     //-------------------  Flicker ------------------------
@@ -44,7 +44,7 @@ public class HUDController : Singleton<HUDController>
     private bool highlighting = false;
     private bool highlightSwitch = false;
     public float highlightSpeed = 1f;
-    private int enemiesPushing = 0;
+    private int enemiesAttacking = 0;
     public float highlightSpeedUpPer = 0.1f;
 
 
@@ -206,23 +206,23 @@ public class HUDController : Singleton<HUDController>
     }
     #endregion
 
-    #region Payload Gas
-    public void SetPayloadEmber(float input)
+    #region Payload Health
+    public void SetPayloadHealth(float input)
     {
 
         //Debug.Log($"Updating Payload Gas Input is {input}");
 
         if (updatingPayloadEmber == false)
         {
-            payloadEmberOrigin = payloadEmber.value;
+            payloadEmberOrigin = payloadHealth.value;
             payloadEmberTarget = Mathf.Clamp(input, 0f, 1f);
-            payloadEmber.value = payloadEmberTarget;
-            StartCoroutine(UpdatePayloadEmberSequence());
+            payloadHealth.value = payloadEmberTarget;
+            StartCoroutine(UpdatePayloadHealthSequence());
         }
         else
         {
             payloadEmberTarget = Mathf.Clamp(input, 0f, 1f);
-            payloadEmber.value = payloadEmberTarget;
+            payloadHealth.value = payloadEmberTarget;
         }
 
         // if (input <= warningThreshold)
@@ -245,7 +245,7 @@ public class HUDController : Singleton<HUDController>
         }
     }
 
-    IEnumerator UpdatePayloadEmberSequence()
+    IEnumerator UpdatePayloadHealthSequence()
     {
         //Debug.Log("Start Setting Payload Gas");
         updatingPayloadEmber = true;
@@ -254,17 +254,17 @@ public class HUDController : Singleton<HUDController>
 
         while (updatingPayloadEmber)
         {
-            if (catchupCount < payloadEmberCatchUpTiming)
+            if (catchupCount < payloadHealthCatchUpTiming)
             {
                 catchupCount += Time.deltaTime;
 
-                payloadGasCatchUp.value = Mathf.SmoothStep(payloadEmberOrigin, payloadEmberTarget, (float)(catchupCount / payloadEmberCatchUpTiming));
+                payloadHealthCatchUp.value = Mathf.SmoothStep(payloadEmberOrigin, payloadEmberTarget, (float)(catchupCount / payloadHealthCatchUpTiming));
                 yield return new WaitForSeconds(Time.deltaTime);
             }
             else
             {
                 updatingPayloadEmber = false;
-                payloadGasCatchUp.value = payloadEmberTarget;
+                payloadHealthCatchUp.value = payloadEmberTarget;
             }
         }
 
@@ -281,20 +281,20 @@ public class HUDController : Singleton<HUDController>
     //     {
     //         if (flickerSwitch)
     //         {
-    //             payloadGasFill.color = originalColour;
+    //             payloadHealthFill.color = originalColour;
     //             flickerSwitch = false;
     //             //Debug.Log("Original color");
     //         }
     //         else
     //         {
-    //             payloadGasFill.color = flickerColour;
+    //             payloadHealthFill.color = flickerColour;
     //             flickerSwitch = true;
     //             //Debug.Log("Flicker color");
     //         }
     //         yield return new WaitForSeconds(flickerRate);
     //     }
 
-    //     payloadGasFill.color = originalColour;
+    //     payloadHealthFill.color = originalColour;
 
     //     //Redundancy
     //     flickering = false;
@@ -306,7 +306,7 @@ public class HUDController : Singleton<HUDController>
     public void StartHighlight()
     {
         //Debug.Log("Start Highling called");
-        enemiesPushing += 1;
+        enemiesAttacking += 1;
         if (!highlighting)
         {
             highlighting = true;
@@ -316,8 +316,8 @@ public class HUDController : Singleton<HUDController>
 
     public void StopHighlight()
     {
-        enemiesPushing -= 1;
-        if (enemiesPushing <= 0)
+        enemiesAttacking -= 1;
+        if (enemiesAttacking <= 0)
         {
             highlighting = false;
         }
@@ -345,7 +345,7 @@ public class HUDController : Singleton<HUDController>
             highlight.alpha = Mathf.MoveTowards(
                 highlight.alpha,
                 target,
-                (highlightSpeed + (enemiesPushing * highlightSpeedUpPer)) * Time.deltaTime // uses current fadeSpeed continuously
+                (highlightSpeed + (enemiesAttacking * highlightSpeedUpPer)) * Time.deltaTime // uses current fadeSpeed continuously
             );
             yield return null;
         }

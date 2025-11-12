@@ -183,7 +183,7 @@ public class AttackHitBox : MonoBehaviour
         if (!string.IsNullOrEmpty(keyToPlay))
         {
             // Keep using your existing AudioManager API. No changes made.
-            AudioManager.Instance?.PlaySFX(keyToPlay, avgPos);
+            AudioManager.instance?.PlaySFX(keyToPlay, avgPos);
         }
 
         // ---- Aggregated VFX with random selection ----

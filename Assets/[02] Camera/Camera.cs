@@ -58,11 +58,11 @@ public class ThirdPersonCamera : MonoBehaviour
     // FOV runtime
     Coroutine fovKickCR;
 
-    public static ThirdPersonCamera Instance;
+    public static ThirdPersonCamera instance;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (instance == null) instance = this;
         else Destroy(this);
     }
     void OnEnable()

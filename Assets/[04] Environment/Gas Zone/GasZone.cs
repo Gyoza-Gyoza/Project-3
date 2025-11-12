@@ -44,7 +44,7 @@ public class GasZone : MonoBehaviour
             if (count > 1f / addRate)
             {
                 count -= (1f / addRate);
-                if (PlayerController3P.Instance.AddGas(1) == false)
+                //if (PlayerController3P.instance.AddGas(1) == false)
                 {
                     addingGas = false;
                 }
@@ -65,7 +65,7 @@ public class GasZone : MonoBehaviour
             if (count > 1f / regenRate)
             {
                 count -= (1f / regenRate);
-                PlayerController3P.Instance.Heal(1);
+                PlayerController3P.instance.Heal(1);
             }
             yield return new WaitForSeconds(Time.deltaTime);
         }

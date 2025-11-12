@@ -73,7 +73,7 @@ public class DrainerEnemyDrainState : DrainerEnemyState
     }
     public override void DoEnemyAction()
     {
-        Vector3 target = PayloadBehaviour.Instance.transform.position;
+        Vector3 target = PayloadBehaviour.instance.transform.position;
         target.y += enemy.payloadTargetOffsetY;
         enemy.transform.LookAt(new Vector3(target.x, enemy.transform.position.y, target.z));
         enemy.Line.SetPositions(new Vector3[] { enemy.LineStart.transform.position, target });
@@ -88,9 +88,9 @@ public class DrainerEnemyDefendState : DrainerEnemyState
     }
     public override void DoEnemyAction()
     {
-        Vector3 target = PlayerController3P.Instance.transform.position;
+        Vector3 target = PlayerController3P.instance.transform.position;
         enemy.transform.LookAt(new Vector3(target.x, enemy.transform.position.y, target.z));
-        if (Vector3.Distance(PlayerController3P.Instance.transform.position, enemy.transform.position) >= enemy.DefendRange)
+        if (Vector3.Distance(PlayerController3P.instance.transform.position, enemy.transform.position) >= enemy.DefendRange)
         {
             enemy.defense = 1f;
             enemy.State = new DrainerEnemyIdleState(enemy);

@@ -41,6 +41,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         base.Awake();
         oriMat = skin.GetComponent<SkinnedMeshRenderer>().material;
         hb.HitBoxListeners += DamagePlayer;
+        hb.HitBoxListeners += DamagePayload;
         skinRenderer = skin.GetComponent<SkinnedMeshRenderer>();
     }
     protected override void Start()
@@ -94,13 +95,21 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         base.OnDeath();
         isDead = true;
         State = new BasicEnemyDeathState(this, deathKnockUpDuration, CalculateKnockBack
-            (true, PlayerController3P.Instance.transform), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
+            (true, PlayerController3P.instance.transform), deathUpDrag, deathFallForce, deathDownDrag, recoveryTime);
     }
     public virtual void DamagePlayer(GameObject toDamage)
     {
         if (toDamage.TryGetComponent<PlayerController3P>(out PlayerController3P player))
         {
             player.TakeDamage(Damage, gameObject);
+        }
+    }
+
+    public virtual void DamagePayload(GameObject toDamage)
+    {
+        if (toDamage.TryGetComponent<PayloadBehaviour>(out PayloadBehaviour payload))
+        {
+            payload.TakeDamage(Damage, gameObject);
         }
     }
     public void PlayDeathCoroutine()

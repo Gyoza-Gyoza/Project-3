@@ -35,7 +35,7 @@ public abstract class Entity : MonoBehaviour
 
     [SerializeField]
     private float initialMovementSpeed = 5f;
-    private float movementSpeed;
+    protected float movementSpeed;
 
     // Property used by other scripts to interact with the Entity's Movement Speed value
     public virtual float MovementSpeed 

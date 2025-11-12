@@ -32,17 +32,17 @@ public class Escort : Stage
             //I think its inefficient since this is being called like almost every tick.
             //Its either calculating like crazy or storing the progress like crazy
 
-            if (PayloadBehaviour.Instance.Agent.destination == escortPosition)
+            if (PayloadBehaviour.instance.Agent.destination == escortPosition)
             {
                 //Debug.Log("Position is correct");
-                return PayloadBehaviour.Instance.Agent.remainingDistance;
+                return PayloadBehaviour.instance.Agent.remainingDistance;
             }
 
             else
             {
-                //Debug.Log($"Position is incorrect, {escortDistance}, {PayloadBehaviour.Instance.Agent.remainingDistance}");
+                //Debug.Log($"Position is incorrect, {escortDistance}, {PayloadBehaviour.instance.Agent.remainingDistance}");
 
-                return (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance; 
+                return (escortDistance - PayloadBehaviour.instance.Agent.remainingDistance) / escortDistance; 
 
             }
         } 
@@ -53,21 +53,21 @@ public class Escort : Stage
     public override void StartStage()
     {
         //FaceForward();
-        PayloadBehaviour.Instance.Agent.SetDestination(EscortPosition);
-        PayloadBehaviour.Instance.MovementSpeed = payloadSpeed;
+        PayloadBehaviour.instance.Agent.SetDestination(EscortPosition);
+        PayloadBehaviour.instance.MovementSpeed = payloadSpeed;
     }
     public override void DoPayloadBehaviour()
     {
         HUDController.Instance.SetProgressBar(LevelDirector.Instance.StageProgress);
         //Basically check if the 
-        if (PayloadBehaviour.Instance.Agent.hasPath && PayloadBehaviour.Instance.Agent.pathStatus == NavMeshPathStatus.PathComplete)
+        if (PayloadBehaviour.instance.Agent.hasPath && PayloadBehaviour.instance.Agent.pathStatus == NavMeshPathStatus.PathComplete)
         {
-            //Debug.Log("Remaining distance: " + PayloadBehaviour.Instance.Agent.remainingDistance);
+            //Debug.Log("Remaining distance: " + PayloadBehaviour.instance.Agent.remainingDistance);
 
-            if (!PayloadBehaviour.Instance.Agent.pathPending && PayloadBehaviour.Instance.Agent.remainingDistance <= 1f)
+            if (!PayloadBehaviour.instance.Agent.pathPending && PayloadBehaviour.instance.Agent.remainingDistance <= 1f)
             {
                 //Debug.Log($"Super Close to point, completing point");
-                PayloadBehaviour.Instance.CompleteStage();
+                PayloadBehaviour.instance.CompleteStage();
             }
 
         }
@@ -80,11 +80,15 @@ public class Escort : Stage
 
     public override void PlayerInRange()
     {
-        PayloadBehaviour.Instance.StartFillingGas();
+        /* //=== EZE'S GAS REMOVE EDIT ===
+        PayloadBehaviour.instance.StartFillingGas();
+        */
     }
     public override void PlayerOutOfRange()
     {
-        PayloadBehaviour.Instance.StopFillingGas();
+        /* //=== EZE'S GAS REMOVE EDIT ===
+        PayloadBehaviour.instance.StopFillingGas();
+        */
     }
 
 
@@ -100,16 +104,16 @@ public class Escort : Stage
     //{
     //    Debug.Log("Facing Forward");
     //    storedProgress = 0;
-    //    PayloadBehaviour.Instance.Agent.SetDestination(EscortPosition);
+    //    PayloadBehaviour.instance.Agent.SetDestination(EscortPosition);
     //}
 
     //public void FaceBackwards()
     //{
     //    Debug.Log("Facing Backward");
-    //    storedProgress = (escortDistance - PayloadBehaviour.Instance.Agent.remainingDistance) / escortDistance;
+    //    storedProgress = (escortDistance - PayloadBehaviour.instance.Agent.remainingDistance) / escortDistance;
     //    //Eze's note to self
     //    //This stored progress is very wrong btw. It does not go down when the player goes backwards.
-    //    PayloadBehaviour.Instance.Agent.SetDestination(previousStage);
+    //    PayloadBehaviour.instance.Agent.SetDestination(previousStage);
     //}
     //#endregion
 

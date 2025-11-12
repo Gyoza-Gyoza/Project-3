@@ -36,7 +36,7 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     protected override void OnDamaged(GameObject source)
     {
         StartCoroutine(DamageFlicker());
-        State = new ChargerEnemyStunState(this, stunDuration, CalculateKnockBack(PlayerController3P.Instance.transform));
+        State = new ChargerEnemyStunState(this, stunDuration, CalculateKnockBack(PlayerController3P.instance.transform));
     }
     private Vector3 CalculateKnockBack(Transform source)
     {
@@ -75,7 +75,7 @@ public class ChargerEnemyBehaviour : EnemyBehaviour
     {
         base.OnDeath();
         if (State is not ChargerEnemyDeathState)
-            State = new ChargerEnemyDeathState(this, stunDuration, CalculateKnockBack(PlayerController3P.Instance.transform));
+            State = new ChargerEnemyDeathState(this, stunDuration, CalculateKnockBack(PlayerController3P.instance.transform));
     }
     public void PlayDeathCoroutine()
     {

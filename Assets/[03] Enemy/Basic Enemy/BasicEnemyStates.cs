@@ -55,7 +55,7 @@ public class BasicEnemyChaseState : BasicEnemyState
             timer = 0f;
             Chase();
         }
-        CheckAttack();
+        CheckWhoIsInRange();
     }
     private void Chase()
     {
@@ -76,23 +76,23 @@ public class BasicEnemyChaseState : BasicEnemyState
     private Transform GetTarget()
     {
         // Chooses target based on aggro range 
-        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.aggroRange)
+        if (Vector3.Distance(enemy.transform.position, PlayerController3P.instance.transform.position) <= enemy.aggroRange)
         {
-            return PlayerController3P.Instance.transform;
+            return PlayerController3P.instance.transform;
         }
         else
         {
-            return PayloadBehaviour.Instance.transform;
+            return PayloadBehaviour.instance.transform;
         }
     }
-    private void CheckAttack()
+    private void CheckWhoIsInRange()
     {
-        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.payloadRange)
+        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.instance.transform.position) <= enemy.payloadRange)
         {
             enemy.State = new BasicEnemyPayloadState(enemy);
         }
 
-        if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange)
+        if (Vector3.Distance(enemy.transform.position, PlayerController3P.instance.transform.position) <= enemy.attackRange)
         {
             enemy.State = new BasicEnemyAttackState(enemy);
         }
@@ -110,14 +110,14 @@ public class BasicEnemyAttackState : BasicEnemyState
     public override void DoEnemyAction()
     {
         //if (enemy.agent.isActiveAndEnabled)
-        //    enemy.agent.SetDestination(PlayerController3P.Instance.transform.position);
+        //    enemy.agent.SetDestination(PlayerController3P.instance.transform.position);
 
-        //if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) > enemy.aggroRange)
+        //if (Vector3.Distance(enemy.transform.position, PlayerController3P.instance.transform.position) > enemy.aggroRange)
         //{
         //    enemy.StopAttack();
         //    enemy.state = new EnemyChaseState(enemy);
         //}
-        //else if (Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
+        //else if (Vector3.Distance(enemy.transform.position, PlayerController3P.instance.transform.position) <= enemy.attackRange && !enemy.IsAttacking)
         //{
         //    ReachTargetAction();
         //}
@@ -127,8 +127,8 @@ public class BasicEnemyAttackState : BasicEnemyState
         //}
 
         // Keeps enemy facing player while attacking
-        enemy.gameObject.transform.LookAt(new Vector3(PlayerController3P.Instance.transform.position.x,
-            enemy.gameObject.transform.position.y, PlayerController3P.Instance.transform.position.z), Vector3.up);
+        enemy.gameObject.transform.LookAt(new Vector3(PlayerController3P.instance.transform.position.x,
+            enemy.gameObject.transform.position.y, PlayerController3P.instance.transform.position.z), Vector3.up);
 
         // Cools down before starting to chase again 
         timer += Time.deltaTime;
@@ -146,27 +146,31 @@ public class BasicEnemyAttackState : BasicEnemyState
 }
 public class BasicEnemyPayloadState : BasicEnemyState
 {
-    bool pushing = false;
+    bool attackingPayload = false;
     public BasicEnemyPayloadState(BasicEnemyBehaviour enemy) : base(enemy)
     {
 
     }
     public override void DoEnemyAction()
     {
-        float d = Vector3.Distance(enemy.transform.position, PlayerController3P.Instance.transform.position);
+        float d = Vector3.Distance(enemy.transform.position, PlayerController3P.instance.transform.position);
         if (d <= enemy.aggroRange) ReachTargetAction();
-        else if (pushing == false)
+        else
         {
-            PayloadBehaviour.Instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
-            pushing = true;
+            if (attackingPayload == false)
+            {
+                PayloadBehaviour.instance.EnemyPushing(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
+                attackingPayload = true;
+            }
+            enemy.Attack();
         }
 
     }
     public override void ReachTargetAction()
     {
-        if (pushing == true)
+        if (attackingPayload == true)
         {
-            PayloadBehaviour.Instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
+            PayloadBehaviour.instance.EnemyExit(enemy.burnAdjAmount, enemy.speedAdjAmount/*, enemy.retreatAdjAmount*/);
         }
         enemy.State = new BasicEnemyAttackState(enemy);
     }

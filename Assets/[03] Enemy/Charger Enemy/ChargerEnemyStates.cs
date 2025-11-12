@@ -46,9 +46,9 @@ public class ChargerEnemyChaseState : ChargerEnemyState
     }
     public override void DoEnemyAction()
     {
-        enemy.agent.SetDestination(PayloadBehaviour.Instance.transform.position);
+        enemy.agent.SetDestination(PayloadBehaviour.instance.transform.position);
 
-        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.Instance.transform.position) <= enemy.attackRange)
+        if (Vector3.Distance(enemy.transform.position, PayloadBehaviour.instance.transform.position) <= enemy.attackRange)
         {
             ReachTargetAction();
         }

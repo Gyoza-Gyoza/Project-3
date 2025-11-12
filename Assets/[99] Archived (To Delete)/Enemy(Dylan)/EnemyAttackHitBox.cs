@@ -58,7 +58,7 @@ public class EnemyAttackHitbox : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         //Not sure if to use playercontroller instance or entity abstract class
-        PlayerController3P.Instance.TakeDamage(damage, gameObject);
+        PlayerController3P.instance.TakeDamage(damage, gameObject);
         active = false;
         col.enabled = false;
     }

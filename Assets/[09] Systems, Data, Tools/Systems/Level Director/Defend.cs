@@ -16,7 +16,7 @@ public class Defend : Stage
     public override void StartStage()
     {
         timer = 0f;
-        PayloadBehaviour.Instance.Agent.isStopped = true; // Stops the payload from moving
+        PayloadBehaviour.instance.Agent.isStopped = true; // Stops the payload from moving
     }
     public override void DoPayloadBehaviour()
     {
@@ -29,7 +29,7 @@ public class Defend : Stage
             timer += Time.deltaTime;
             if (timer >= defendDuration)
             {
-                PayloadBehaviour.Instance.CompleteStage();
+                PayloadBehaviour.instance.CompleteStage();
             }
         }
     }

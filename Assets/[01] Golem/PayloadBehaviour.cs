@@ -2,29 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class PayloadBehaviour : Singleton<PayloadBehaviour>
+public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
 {
     private float hinderedMovementSpeed;
-    [SerializeField] private float movementSpeed;
+    [SerializeField] private float payloadMovementSpeed;
+    [SerializeField] private bool startPayload = false;
+
+    public void StartPayload()
+    {
+        if (startPayload == false)
+        {
+            SetStepsActive(true);
+        }
+    }
+
+    public void StopPayload()
+    {
+        if (startPayload == true)
+        {
+            SetStepsActive(false);
+        }
+    }
+
 
     public float MovementSpeed
     {
-        get { return movementSpeed; }
+        get { return payloadMovementSpeed; }
         set { 
-              movementSpeed = value;
-            agent.acceleration = agent.speed = movementSpeed;
+              this.payloadMovementSpeed = value;
+            if (agent == null)
+            {
+                Debug.Log("Agent is empty");
+            }
+            this.agent.acceleration = this.agent.speed = payloadMovementSpeed;
         }        
     }
     [SerializeField] private float turnSpeed;
     [SerializeField] private float returnSpeed;
     private float extraReturnSpeed;
 
+
     [SerializeField] private Slider gasSlider;
 
+    /* //=== EZE'S GAS REMOVE EDIT ===
     [SerializeField] private float burningRate = 0.5f;
     private bool burningGas = false;
     private float extraBurningRate = 0f;
@@ -46,6 +71,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             UpdateGasSlider(); 
         }
     }
+    */ //=== EZE'S GAS REMOVE EDIT ===
 
     [SerializeField] private Animator animator;
 
@@ -84,19 +110,27 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     private Coroutine _shakeCoroutine = null;
     private bool _shakePending = false;
 
-    protected override void Awake()
+    //instance
+    public static PayloadBehaviour instance = null;
+
+    protected void Awake()
     {
-        base.Awake();
+
+        //Instancing
+        if (instance == null) instance = this;
+        else Destroy(this);
 
     }
-    protected void Start()
+    protected override void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        //if (agent != null)
-        //{
-        //    agent.updatePosition = false;
-        //    agent.updateRotation = false;
-        //}
+        base.Start();
+
+        this.agent = GetComponent<NavMeshAgent>();
+
+        if (this.agent == null)
+        {
+            Debug.Log("Agent is empty from the start");
+        }
 
         stepper = GetComponent<PayloadStepper>();
 
@@ -107,34 +141,54 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         stages = LevelDirector.Instance.Stages;
 
         InitializeAgent();
+        /* //=== EZE'S GAS REMOVE EDIT ===
         CurrentGas = iniGas;
+        */ //=== EZE'S GAS REMOVE EDIT ===
+
+        //=== EZE'S GAS REMOVE EDIT ===
+        if (startPayload)
+        {
+            SetStepsActive(true);
+        }
+        
+        //=== EZE'S GAS REMOVE EDIT ===
     }
     private void Update()
     {
+        if (LevelDirector.Instance.CurrentStageCounter == null)
+        {
+            Debug.Log("Level director instance missing");
+        }
+
         if (LevelDirector.Instance.CurrentStageCounter < stages.Length) stages[LevelDirector.Instance.CurrentStageCounter].DoPayloadBehaviour();
 
+        /* //=== EZE'S GAS REMOVE EDIT ===
         if (CurrentGas > 0 && !burningGas)
         {
             //Debug.Log("Burning conditions triggered");
             StartBurningGas();
         }
 
-        gasSlider.transform.parent.transform.LookAt(PlayerController3P.Instance.transform, Vector3.up);
+        gasSlider.transform.parent.transform.LookAt(PlayerController3P.instance.transform, Vector3.up);
+        */ //=== EZE'S GAS REMOVE EDIT ===
 
         if (agent.hasPath)
         {
             DrawPath();
         }
+
         //TickStep(Time.deltaTime);           // drive manual movement if a step is active
         //agent.nextPosition = transform.position; // keep agent synced to our manual motion
 
     }
 
+    /* //=== EZE'S GAS REMOVE EDIT ===
+
     #region --------------------------Gas--------------------------------
     private void UpdateGasSlider()
     {
         gasSlider.value = (float)CurrentGas / (float)maxGas;
-        HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
+        HUDController.Instance.SetPayloadHealth((float)CurrentGas / (float)maxGas);
     }
 
     public void StartFillingGas()
@@ -156,12 +210,12 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         //Debug.Log("Starting to fill playerEmber");
         while (fillingGas)
         {
-            HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
+            HUDController.Instance.SetPayloadHealth((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
             if (count > 1f / fillingRate)
             {
                 count -= (1f / fillingRate);
-                if (PlayerController3P.Instance.RemoveGas(1) == false)
+                if (PlayerController3P.instance.RemoveGas(1) == false)
                 {
                     StopFillingGas();
                 }
@@ -263,9 +317,9 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
         while (CurrentGas > 0)
         {
-            //PayloadBehaviour.Instance.agent.isStopped = false;
+            //PayloadBehaviour.instance.agent.isStopped = false;
             //Debug.Log($"Payload Moving, current Gas {CurrentGas}");
-            HUDController.Instance.SetPayloadEmber((float)CurrentGas / (float)maxGas);
+            HUDController.Instance.SetPayloadHealth((float)CurrentGas / (float)maxGas);
             count += Time.deltaTime;
             if (count > 1f / (burningRate + extraBurningRate))
             {
@@ -279,7 +333,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         CurrentGas = 0;
         StopBurningGas();
 
-        //PayloadBehaviour.Instance.agent.isStopped = true;
+        //PayloadBehaviour.instance.agent.isStopped = true;
         //Debug.Log($"Payload Stopped, current Gas is {currentGas}");
         yield break;
     }
@@ -288,43 +342,19 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         CurrentGas -= gasToRemove;
     }
 
-    #endregion
+    
 
-    //#region -----------------------Facing--------------------------------
-
-    //private bool isFacingForward = true;
-    //public void ForwardFacing()
-    //{
-    //    Debug.Log("Front Facing on payload called");
-    //    //agent.SetDestination(stages[LevelDirector.Instance.CurrentStage].);
-    //    if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
-    //    {
-    //        Debug.Log("Front Facing Success");
-    //        stage.FaceForward();
-    //        isFacingForward = true;
-    //        //agent.SetDestination(stage.EscortPosition);
-    //    }
-    //}
-    //public void BackwardFacing()
-    //{
-    //    Debug.Log("Back Facing on payload called");
-    //    if (stages[LevelDirector.Instance.CurrentStage] is Escort stage)
-    //    {
-    //        Debug.Log("Back Success");
-    //        stage.FaceBackwards();
-    //        isFacingForward = false;
-    //        //agent.SetDestination(stage.PreviousStage);
-    //    }
-    //}
-    //#endregion
+#endregion
+    */ //=== EZE'S GAS REMOVE EDIT ===
 
     #region ------------------Enemy Surrounding Behaviour----------------
     public void EnemyPushing(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
     {
         //Debug.Log("Enemy Pushing");
+        /* //=== EZE'S GAS REMOVE EDIT ===
         extraBurningRate += burnAdj;
+        */ //=== EZE'S GAS REMOVE EDIT ===
         hinderedMovementSpeed += moveSpeedAdj;
-        //extraReturnSpeed += returnSpeedAdj;
         HUDController.Instance.StartHighlight();
     }
 
@@ -332,9 +362,10 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
     public void EnemyExit(float burnAdj, float moveSpeedAdj/*, float returnSpeedAdj*/)
     {
         //Debug.Log("Enemy Stop Pushing");
+        /* //=== EZE'S GAS REMOVE EDIT ===
         extraBurningRate -= burnAdj;
+        */ //=== EZE'S GAS REMOVE EDIT ===
         hinderedMovementSpeed -= moveSpeedAdj;
-        //extraReturnSpeed -= returnSpeedAdj;
         HUDController.Instance.StopHighlight();
     }
     #endregion
@@ -342,13 +373,14 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
     private void InitializeAgent()
     {
-        agent.acceleration = agent.speed = movementSpeed;
+        agent.acceleration = agent.speed = payloadMovementSpeed;
         agent.angularSpeed = turnSpeed;
 
         //agent.updatePosition = false;
 
         if (stages[LevelDirector.Instance.CurrentStageCounter] is Escort escort) agent.Warp(escort.EscortPosition);
         CompleteStage(); //Complete the beginning one
+        Debug.Log("Completing first stage (Initial spawn point)");
         agent.isStopped = true;
     }
     public void CompleteStage()
@@ -424,17 +456,6 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
         lineRenderer.startColor = forwardStartColor;
         lineRenderer.endColor = forwardEndColor;
-
-        //if (isFacingForward)
-        //{
-        //    lineRenderer.startColor = forwardStartColor;
-        //    lineRenderer.endColor = forwardEndColor;
-        //}
-        //else
-        //{
-        //    lineRenderer.startColor = backwardStartColor;
-        //    lineRenderer.endColor = backwardEndColor;
-        //}
 
         if (agent.path.corners.Length < 2)
         {
@@ -597,7 +618,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
     public void PlayStepLeftSFX()
     {
-        AudioManager.Instance.PlaySFX("Golem_LeftStomp", transform.position);
+        AudioManager.instance.PlaySFX("Golem_LeftStomp", transform.position);
         
         if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
         _shakeCoroutine = StartCoroutine(DelayedShakeCoroutine());
@@ -605,7 +626,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
     public void PlayStepRightSFX()
     {
-        AudioManager.Instance.PlaySFX("Golem_RightStomp", transform.position);
+        AudioManager.instance.PlaySFX("Golem_RightStomp", transform.position);
         
         if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
         _shakeCoroutine = StartCoroutine(DelayedShakeCoroutine());
@@ -613,17 +634,17 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
 
     public void PlayStopSFX()
     {
-        AudioManager.Instance.PlaySFX("Golem_Stop", transform.position);
+        AudioManager.instance.PlaySFX("Golem_Stop", transform.position);
     }
 
     public void PlayPreStopSFX()
     {
-        AudioManager.Instance.PlaySFX("Golem_PreStop", transform.position);
+        AudioManager.instance.PlaySFX("Golem_PreStop", transform.position);
     }
 
     public void PlayStandSFX()
     {
-        AudioManager.Instance.PlaySFX("Golem_Stand", transform.position);
+        AudioManager.instance.PlaySFX("Golem_Stand", transform.position);
     }
 
     private bool TryGetProximityShake(out float outAmount, out float outDuration)
@@ -631,7 +652,7 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
         outAmount = minShakeAmount;
         outDuration = minShakeDuration;
 
-        float dist = Vector3.Distance(PlayerController3P.Instance.transform.position, transform.position);
+        float dist = Vector3.Distance(PlayerController3P.instance.transform.position, transform.position);
         if (dist > maxRange) return false;
 
         float t = Mathf.InverseLerp(maxRange, minRange, dist);
@@ -651,6 +672,36 @@ public class PayloadBehaviour : Singleton<PayloadBehaviour>
             camRig.Shake(shakeAmt, shakeDur);
         }
         _shakeCoroutine = null;
+    }
+
+    #endregion
+
+    #region Overrides
+
+    public override void TakeDamage(int amount, GameObject source = null)
+    {
+        base.TakeDamage(amount, source);
+    }
+    protected override void OnHeal()
+    {
+        //throw new System.NotImplementedException();
+        HUDController.Instance.SetPayloadHealth(health / MaxHealth);
+    }
+
+    protected override void OnDamaged(GameObject source)
+    {
+        HUDController.Instance.SetPayloadHealth((float)health / (float)MaxHealth);
+    }
+
+    bool dead = false;
+
+    public override void OnDeath()
+    {
+        if (dead != true)
+        {
+            LevelDirector.Instance.LoseGame();
+            dead = true;
+        }
     }
 
     #endregion

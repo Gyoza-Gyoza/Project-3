@@ -14,7 +14,6 @@ public class PlayerController : Entity
     [SerializeField] private LayerMask groundLayer;
     private bool isGrounded = false;
 
-
     private InputManager inputManager;
     private Rigidbody rb;
     private Animator animator;
@@ -25,15 +24,15 @@ public class PlayerController : Entity
         set { playerState = value; }
     }
     private Vector3 movement;
-    public static PlayerController Instance;
+    public static PlayerController instance;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
 
-        if (Instance == null) Instance = this;
-        else Destroy(Instance);
+        if (instance == null) instance = this;
+        else Destroy(instance);
 
     }
     protected override void Start()

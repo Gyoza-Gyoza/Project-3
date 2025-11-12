@@ -57,9 +57,9 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     }
     public bool CanHitTarget()
     {
-        if (Vector3.Distance(transform.position, PayloadBehaviour.Instance.transform.position) <= aggroRange)
+        if (Vector3.Distance(transform.position, PayloadBehaviour.instance.transform.position) <= aggroRange)
         {
-            Vector3 direction = (PayloadBehaviour.Instance.transform.position - transform.position).normalized;
+            Vector3 direction = (PayloadBehaviour.instance.transform.position - transform.position).normalized;
             
             if (Physics.Raycast(lineStart.position, direction , out RaycastHit hit, Mathf.Infinity))
             {
@@ -73,7 +73,7 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     }
     public bool CheckPlayerInRange()
     {
-        if (Vector3.Distance(transform.position, PlayerController3P.Instance.transform.position) <= defendRange)
+        if (Vector3.Distance(transform.position, PlayerController3P.instance.transform.position) <= defendRange)
         {
             return true;
         }
@@ -81,7 +81,9 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     }
     public override void Attack()
     {
-        PayloadBehaviour.Instance.RemoveGas(burnAdjAmount * Time.deltaTime);
+        /* //=== EZE'S GAS REMOVE EDIT ===
+        PayloadBehaviour.instance.RemoveGas(burnAdjAmount * Time.deltaTime);
+        */
     }
     public void SetShieldActive(bool active)
     {

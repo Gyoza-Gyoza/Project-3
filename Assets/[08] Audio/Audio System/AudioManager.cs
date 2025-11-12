@@ -7,7 +7,7 @@ using UnityEngine;
 /// Features:
 /// - Pooling of AudioSources
 /// - Inspector-editable SFX entries (key, clip list, per-sfx volume, spatial settings, max instances)
-/// - Per-key MaxInstances throttling
+/// - Per-key Maxinstances throttling
 /// - QueuePlay aggregator (collect requests per frame and flush in LateUpdate)
 /// - Safe stealing when pool exhausted
 /// </summary>
@@ -18,7 +18,7 @@ public class SFXEntry
     public string Key; // unique identifier used to play this sound
     public List<AudioClip> Clips = new List<AudioClip>(); // allow random variation
     [Range(0f, 1f)] public float Volume = 1f; // per-sfx volume multiplier
-    public int MaxInstances = 8; // max concurrent instances of this key
+    public int Maxinstances = 8; // max concurrent instances of this key
     public bool Spatial = false; // will set spatialBlend if true
     [Range(0f, 1f)] public float SpatialBlend = 1f; // 0 = 2D, 1 = 3D
     public float MinDistance = 1f;
@@ -30,7 +30,7 @@ public class SFXEntry
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; }
+    public static AudioManager instance { get; private set; }
 
     [Header("Pool")]
     public int PoolSize = 32;
@@ -53,8 +53,8 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
+        if (instance != null && instance != this) { Destroy(gameObject); return; }
+        instance = this;
         DontDestroyOnLoad(gameObject);
 
         BuildMap();
@@ -142,7 +142,7 @@ public class AudioManager : MonoBehaviour
             // compute a gentle volume scale for multiple hits: logarithmic-ish
             float scale = Mathf.Clamp01(Mathf.Log10(count + 1f) * 0.6f + 0.2f);
 
-            // Try to play aggregated result (the PlaySFX call will enforce MaxInstances and culling)
+            // Try to play aggregated result (the PlaySFX call will enforce Maxinstances and culling)
             PlaySFX(key, pos, scale);
         }
 
@@ -152,12 +152,12 @@ public class AudioManager : MonoBehaviour
 
     /// <summary>
     /// Play an SFX by key.
-    /// Returns true if played, false if blocked by MaxInstances or key missing.
+    /// Returns true if played, false if blocked by Maxinstances or key missing.
     /// position = null -> treat as 2D unless entry.Spatial == true
     /// </summary>
-    public bool PlaySFX(string key, Vector3? position = null, float volumeMultiplier = 1f, bool ignoreMaxInstances = false)
+    public bool PlaySFX(string key, Vector3? position = null, float volumeMultiplier = 1f, bool ignoreMaxinstances = false)
     {
-        if (!Instance) return false;
+        if (!instance) return false;
 
         if (!_sfxMap.TryGetValue(key, out var entry))
         {
@@ -169,7 +169,7 @@ public class AudioManager : MonoBehaviour
         if (entry.MinInterval > 0f && Time.time - entry._lastPlayed < entry.MinInterval)
             return false;
 
-        if (!ignoreMaxInstances && _activeCounts.TryGetValue(key, out var cur) && cur >= entry.MaxInstances)
+        if (!ignoreMaxinstances && _activeCounts.TryGetValue(key, out var cur) && cur >= entry.Maxinstances)
         {
             return false;
         }
@@ -297,7 +297,7 @@ public class AudioManager : MonoBehaviour
     public bool PlaySFX(string key, Vector3 position, float volumeMultiplier) => PlaySFX(key, position, volumeMultiplier, false);
 
     // Optional helper: get how many instances are active for a key
-    public int GetActiveInstanceCount(string key)
+    public int GetActiveinstanceCount(string key)
     {
         if (_activeCounts != null && _activeCounts.TryGetValue(key, out var c)) return c;
         return 0;

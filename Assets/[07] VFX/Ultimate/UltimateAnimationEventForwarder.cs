@@ -29,7 +29,7 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
         {
             depthOfField = dof;
         }
-        thirdPersonCamera = ThirdPersonCamera.Instance.gameObject;
+        thirdPersonCamera = ThirdPersonCamera.instance.gameObject;
     }
 
     public void CameraShake(float intensity = 0.1f)
@@ -100,7 +100,7 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
     }
     public void SetPlayerInputActive(bool state)
     {
-        PlayerController3P.Instance.canInput = state;
+        PlayerController3P.instance.canInput = state;
         playerHolder.SetActive(state);
     }
     public void SetLetterboxingActive(bool state)

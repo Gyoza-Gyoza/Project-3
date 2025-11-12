@@ -5457,14 +5457,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e499d4842070c04e943cbe6ac0f7bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 500
+  initialDamage: 5
+  initialMovementSpeed: 5
   movementSpeed: 100
   turnSpeed: 60
   returnSpeed: 0
   gasSlider: {fileID: 0}
-  burningRate: 8
-  fillingRate: 70
-  maxGas: 150
-  iniGas: 100
   animator: {fileID: 3535750526015686734}
   camRig: {fileID: 0}
   minRange: 1

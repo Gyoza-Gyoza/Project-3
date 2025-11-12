@@ -264,7 +264,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
     private void Start()
     {
-        payload = PayloadBehaviour.Instance;
+        payload = PayloadBehaviour.instance;
         AssignEscortStages();
         CalculateLevelLength();
         HUDController.Instance.SetUpProgressBar(levels[currentLevelCounter].stages, levelLength);
@@ -464,22 +464,22 @@ public class LevelDirector : Singleton<LevelDirector>
         for(int i = 0; i < 100; i++)
         {
             randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-            randomPosition = PlayerController3P.Instance.transform.position + 
+            randomPosition = PlayerController3P.instance.transform.position + 
                 randomDirection * (levels[currentLevelCounter].stages[currentStageCounter].MinSpawnDistance 
                 + Random.Range(0f, levels[currentLevelCounter].stages[currentStageCounter].MaxSpawnDistance));
             
-            Vector3 vectorToPlayer = PlayerController3P.Instance.transform.position - randomPosition;
+            Vector3 vectorToPlayer = PlayerController3P.instance.transform.position - randomPosition;
             float distanceToPlayer = vectorToPlayer.magnitude;
-            Debug.DrawLine(randomPosition, PlayerController3P.Instance.transform.position, Color.red, 1f);
+            Debug.DrawLine(randomPosition, PlayerController3P.instance.transform.position, Color.red, 1f);
 
-            if (Physics.Linecast(randomPosition, PlayerController3P.Instance.transform.position, environmentMask))
+            if (Physics.Linecast(randomPosition, PlayerController3P.instance.transform.position, environmentMask))
             {
-                Debug.DrawLine(randomPosition, PlayerController3P.Instance.transform.position, Color.green, 1f);
+                Debug.DrawLine(randomPosition, PlayerController3P.instance.transform.position, Color.green, 1f);
                 return true;
             }
             else
             {
-                Debug.DrawLine(randomPosition, PlayerController3P.Instance.transform.position, Color.red, 1f);
+                Debug.DrawLine(randomPosition, PlayerController3P.instance.transform.position, Color.red, 1f);
                 continue;
             }
         }
@@ -494,18 +494,18 @@ public class LevelDirector : Singleton<LevelDirector>
         foreach (Transform position in spawnMarker)
         {
             // Checks if position is within range
-            if (!(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) <= Stages[currentStageCounter].MaxSpawnDistance) ||
-                !(Vector3.Distance(PlayerController3P.Instance.transform.position, position.position) >= Stages[currentStageCounter].MinSpawnDistance)) continue;
+            if (!(Vector3.Distance(PlayerController3P.instance.transform.position, position.position) <= Stages[currentStageCounter].MaxSpawnDistance) ||
+                !(Vector3.Distance(PlayerController3P.instance.transform.position, position.position) >= Stages[currentStageCounter].MinSpawnDistance)) continue;
 
-            if (Physics.Linecast(position.position, PlayerController3P.Instance.transform.position, environmentMask))
+            if (Physics.Linecast(position.position, PlayerController3P.instance.transform.position, environmentMask))
             {
-                Debug.DrawLine(position.position, PlayerController3P.Instance.transform.position, Color.green, 1f);
+                Debug.DrawLine(position.position, PlayerController3P.instance.transform.position, Color.green, 1f);
                 pos = position.position;
                 break;
             }
             else
             {
-                Debug.DrawLine(position.position, PlayerController3P.Instance.transform.position, Color.red, 1f);
+                Debug.DrawLine(position.position, PlayerController3P.instance.transform.position, Color.red, 1f);
                 continue;
             }
         }
@@ -555,7 +555,7 @@ public class LevelDirector : Singleton<LevelDirector>
             WinGame();
         }
         ScreenEffectsManager.Instance.ScreenFade(() => 
-        PlayerController3P.Instance.transform.position = CurrentLevel.startPoint.position);
+        PlayerController3P.instance.transform.position = CurrentLevel.startPoint.position);
     }
 
     private void AssignEscortStages() // might become obselete when the baymax stops going backwards
@@ -631,14 +631,15 @@ public class LevelDirector : Singleton<LevelDirector>
     public void Respawn()
     {
         Debug.Log("Respawning");
-        PlayerController3P.Instance.ForceWarp(Stages[currentStageCounter].Respawn);
-        PlayerController3P.Instance.TakeDamage(respawnDamage);
-        //PlayerController3P.Instance.gameObject.transform.rotation = Stages[currentStageCounter].Respawn.rotation;
+        PlayerController3P.instance.ForceWarp(Stages[currentStageCounter].Respawn);
+        PlayerController3P.instance.TakeDamage(respawnDamage);
+        //PlayerController3P.instance.gameObject.transform.rotation = Stages[currentStageCounter].Respawn.rotation;
     }
 
     #endregion
 
-    /*
+    // REMEMEBER TO COMMENT OUT GIZMOS WHEN BUILDING
+    ///*
     private void OnDrawGizmos()
     {
         foreach (Stage stage in Stages)
@@ -725,5 +726,5 @@ public class LevelDirector : Singleton<LevelDirector>
 
     }
 
-    */
+    //*/
 }

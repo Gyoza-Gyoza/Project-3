@@ -25,7 +25,7 @@ public class Collect : Stage
     public override void StartStage()
     {
         AmountCollected = 0;
-        PayloadBehaviour.Instance.Agent.isStopped = true; // Stops the payload from moving
+        PayloadBehaviour.instance.Agent.isStopped = true; // Stops the payload from moving
 
         SpawnItems(amountToSpawn);
     }
@@ -40,12 +40,12 @@ public class Collect : Stage
     }
     private Vector3 GetLocation()
     {
-        float interactRadius = PayloadBehaviour.Instance.InteractRadius;
+        float interactRadius = PayloadBehaviour.instance.InteractRadius;
 
         Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
         float randomDistance = Random.Range(interactRadius, interactRadius + maxDistanceToSpawn);
         Vector3 randomOffset = randomDirection * randomDistance;
-        return PayloadBehaviour.Instance.transform.position + randomOffset;
+        return PayloadBehaviour.instance.transform.position + randomOffset;
     }
     public void Collected(int amount)
     {
@@ -65,12 +65,12 @@ public class Collect : Stage
                 GameObjectPool.ReturnObject(item);
             }
             itemsToCollect.Clear();
-            PayloadBehaviour.Instance.CompleteStage();
+            PayloadBehaviour.instance.CompleteStage();
         }
     }
     public override void PlayerInRange()
     {
-        AmountCollected += PlayerController3P.Instance.DropOffItems();
+        AmountCollected += PlayerController3P.instance.DropOffItems();
     }
     public override void PlayerOutOfRange()
     {

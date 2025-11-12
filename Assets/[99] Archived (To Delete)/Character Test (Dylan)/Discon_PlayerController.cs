@@ -77,8 +77,8 @@ public class Discon_PlayerController : Entity
     bool _firstJump = false;
 
 
-    //Instance
-    public static Discon_PlayerController Instance;
+    //instance
+    public static Discon_PlayerController instance;
 
     void Awake()
     {
@@ -101,8 +101,8 @@ public class Discon_PlayerController : Entity
         InitializeHitboxs();
 
 
-        if (Instance == null) Instance = this;
-        else Destroy(Instance);
+        if (instance == null) instance = this;
+        else Destroy(instance);
     }
 
     protected override void Start()

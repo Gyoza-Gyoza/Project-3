@@ -177,13 +177,13 @@ public class EnemyAI : MonoBehaviour
     void EnterPushing()
     {
         pushingPayload = true;
-        PayloadBehaviour.Instance.EnemyPushing(extraBurnAmt, moveSlowAmt);
+        PayloadBehaviour.instance.EnemyPushing(extraBurnAmt, moveSlowAmt);
     }
 
     void ExitPushing()
     {
         pushingPayload = false;
-        PayloadBehaviour.Instance.EnemyExit(extraBurnAmt, moveSlowAmt);
+        PayloadBehaviour.instance.EnemyExit(extraBurnAmt, moveSlowAmt);
         CurrentState = State.Chase;
     }
 
@@ -406,7 +406,7 @@ public class EnemyAI : MonoBehaviour
 
         if (anim) anim.SetTrigger("Death");
 
-        AudioManager.Instance.PlaySFX("Death");
+        AudioManager.instance.PlaySFX("Death");
 
         if (deathVfxPrefab)
         {

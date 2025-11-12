@@ -143,10 +143,12 @@ public class PlayerController3P : Entity
     private bool dashBackwards = false;
 
     // ------------------ EMBER ------------------------------------------------------------------------------------------
+    /* //=== EZE'S GAS REMOVE EDIT ===
     [Header("Ember")]
     [SerializeField] private int maxGas = 50;
     [SerializeField] private int startingGas = 0;
     private int currentGas;
+    */ //=== EZE'S GAS REMOVE EDIT ===
 
     // ------------------ TAUNT DEVICE ------------------------------------------------------------------------------------------
     [Header("Taunt Devices")]
@@ -219,27 +221,25 @@ public class PlayerController3P : Entity
     // Health runtime
     private bool regeneratingHealth = false;
 
-    // Instance
-    public static PlayerController3P Instance;
+    // instance
+    public static PlayerController3P instance;
 
     // Skip Frame
     private bool ignoreMovementThisFrame = false;
 
 void Awake()
     {
-        controller = GetComponent<CharacterController>();
-        if (!animator) animator = GetComponentInChildren<Animator>();
-        lastJumpPressedTime = float.NegativeInfinity;
-        lastGroundedTime = float.NegativeInfinity;
 
-        if (Instance == null) Instance = this;
-        else Destroy(Instance);
+        //Instancing
+        if (instance == null) instance = this;
+        else Destroy(this);
 
         if (globalVolume && globalVolume.profile && globalVolume.profile.TryGet(out LensDistortion ld))
         {
             lensDistortion = ld;
             lensDistortion.active = true;
         }
+
         else Debug.LogWarning("LensDistortion not found.");
         foreach (MeshRenderer mr in GetComponentsInChildren<MeshRenderer>())
         {
@@ -252,9 +252,17 @@ void Awake()
     {
         base.Start();
 
+        /* //=== EZE'S GAS REMOVE EDIT ===
         currentGas = startingGas;
-        HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         HUDController.Instance.SetPlayerEmber((float)currentGas / (float)maxGas);
+        */ //=== EZE'S GAS REMOVE EDIT ===
+
+        controller = GetComponent<CharacterController>();
+        if (!animator) animator = GetComponentInChildren<Animator>();
+        lastJumpPressedTime = float.NegativeInfinity;
+        lastGroundedTime = float.NegativeInfinity;
+
+        HUDController.Instance.SetHealth((float)Health / (float)MaxHealth);
         //mainAudioSource = this.GetComponent<AudioSource>();
         bool groundedNow = controller.isGrounded;
         wasGrounded = groundedNow;
@@ -486,7 +494,7 @@ void Awake()
 
             if (longEnoughAir && cooldownOK)
             {
-                AudioManager.Instance.PlaySFX("Land");
+                AudioManager.instance.PlaySFX("Land");
                 lastLandTime = Time.time;
 
                 if (animator)
@@ -547,7 +555,7 @@ void Awake()
             float jumpSpeed = Mathf.Sqrt(jumpHeight * -2f * gravity);
             velocity.y = jumpSpeed;
             jumpImpulseApplied = true;
-            AudioManager.Instance.PlaySFX("Jump");
+            AudioManager.instance.PlaySFX("Jump");
         }
 
         // Gravity
@@ -583,7 +591,7 @@ void Awake()
         float jumpSpeed = Mathf.Sqrt(doubleJumpHeight * -2f * gravity);
         velocity.y = jumpSpeed;
 
-        AudioManager.Instance.PlaySFX("DoubleJump");
+        AudioManager.instance.PlaySFX("DoubleJump");
 
         if (animator)
         {
@@ -690,7 +698,7 @@ void Awake()
             }
         }
 
-        AudioManager.Instance.PlaySFX("Dash");          //Play Dash SFX
+        AudioManager.instance.PlaySFX("Dash");          //Play Dash SFX
         StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
         if (dashEffectsCoroutine != null)
         {
@@ -735,7 +743,7 @@ void Awake()
             }
         }
 
-        AudioManager.Instance.PlaySFX("Dash");          //Play Dash SFX
+        AudioManager.instance.PlaySFX("Dash");          //Play Dash SFX
         StartCoroutine(SpawnVFX(dashVFX[0]));           //Dash VFX
         if (dashEffectsCoroutine != null)
         {
@@ -940,21 +948,21 @@ void Awake()
                 animator.ResetTrigger(atk1Trigger);
                 animator.SetTrigger(atk1Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[0]));
-                AudioManager.Instance.PlaySFX("A1");
+                AudioManager.instance.PlaySFX("A1");
             }
             else if (index == 2)
             {
                 animator.ResetTrigger(atk2Trigger);
                 animator.SetTrigger(atk2Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[1]));
-                AudioManager.Instance.PlaySFX("A2");
+                AudioManager.instance.PlaySFX("A2");
             }
             else
             {
                 animator.ResetTrigger(atk3Trigger);
                 animator.SetTrigger(atk3Trigger);
                 StartCoroutine(SpawnVFX(slashVFX[2]));
-                AudioManager.Instance.PlaySFX("A3");
+                AudioManager.instance.PlaySFX("A3");
             }
             animator.SetBool("IsAttacking", true);
         }
@@ -1190,7 +1198,7 @@ void Awake()
 
     void BeginPlunge()
     {
-        AudioManager.Instance.PlaySFX("Plunge");
+        AudioManager.instance.PlaySFX("Plunge");
         isPlunging = true;
         plungeTimer = 0f;
         plungeImpulseStarted = false;
@@ -1424,7 +1432,7 @@ void Awake()
 
     // -------------------- Ember ------------------------------------------------------------------------------------------
     #region Ember
-
+    /* //=== EZE'S GAS REMOVE EDIT ===
     public bool AddGas(int amount)
     {
         if (currentGas >= maxGas)
@@ -1456,6 +1464,7 @@ void Awake()
         }
     }
 
+    */ //=== EZE'S GAS REMOVE EDIT ===
     #endregion
 
     // -------------------- Item ------------------------------------------------------------------------------------------
