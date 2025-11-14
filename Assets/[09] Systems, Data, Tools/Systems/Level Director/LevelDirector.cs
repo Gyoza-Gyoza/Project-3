@@ -47,6 +47,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject enemySpawnerPrefab;
     [SerializeField] private PresetStage[] presetStages;
+    [SerializeField] private Transform[] specialSpawnPoints;
     private int presetStageCounter;
     [SerializeField] private GameObject[] specialEnemyPrefabs;
     [SerializeField] private float specialEnemyChance = 0.1f;
@@ -366,7 +367,7 @@ public class LevelDirector : Singleton<LevelDirector>
                     }
                 }
             }
-            timer = 0;
+            timer = 0f;
         }
     }
     // Use these to contain all logic for counting enemies
@@ -438,8 +439,8 @@ public class LevelDirector : Singleton<LevelDirector>
             for (int i = 0; i < CurrentStage.ChargerEnemyCount; i++)
             {
                 GameObject charger = GameObjectPool.GetObject(specialEnemyPrefabs[0]);
-                charger.GetComponent<NavMeshAgent>().
-                    Warp(CurrentStage.SpawnMarkers[CurrentStage.ChargerEnemyLocation]);
+                //charger.GetComponent<NavMeshAgent>().Warp(CurrentStage.SpawnMarkers[CurrentStage.ChargerEnemyLocation]);
+                charger.GetComponent<NavMeshAgent>().Warp(specialSpawnPoints[CurrentStage.DrainerEnemyLocation].position);
             }
         }
         if (drainerTimer >= CurrentStage.DrainerEnemyInterval)
@@ -448,8 +449,10 @@ public class LevelDirector : Singleton<LevelDirector>
             drainerTimer = 0f;
             for (int i = 0; i < CurrentStage.DrainerEnemyCount; i++)
             {
+                // GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position =
+                //    CurrentStage.SpawnMarkers[CurrentStage.DrainerEnemyLocation];
                 GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position =
-                    CurrentStage.SpawnMarkers[CurrentStage.DrainerEnemyLocation];
+                specialSpawnPoints[CurrentStage.DrainerEnemyLocation].position;
             }
         }
     }
@@ -527,10 +530,10 @@ public class LevelDirector : Singleton<LevelDirector>
         drainerCount = 0;
 
         //Hardcode to start death zone on 3rd check point
-        if (currentStageCounter == 2)
-        {
-            StartDeathZone();
-        }
+        //if (currentStageCounter == 2)
+        //{
+        //    StartDeathZone();
+        //}
 
         if (currentStageCounter >= levels[currentLevelCounter].stages.Length)
         {
@@ -575,7 +578,6 @@ public class LevelDirector : Singleton<LevelDirector>
     }
 
     #region --- Enemy Spawner ---
-
     private List<EnemySpawn> spawners = new List<EnemySpawn>();
 
     private void SpawnSpawners()
@@ -595,6 +597,9 @@ public class LevelDirector : Singleton<LevelDirector>
             spawners.Add(just);
             just.StartSpawning();
         }
+
+        SpawnEnemies();
+        SpawnSpecialEnemies();
     }
     #endregion
 

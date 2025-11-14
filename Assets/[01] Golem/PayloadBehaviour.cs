@@ -13,6 +13,11 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
     [SerializeField] private float payloadMovementSpeed;
     [SerializeField] private bool startPayload = false;
 
+    [SerializeField] private Transform teleportPoint;
+
+    public Transform TeleportPoint
+    {get { return teleportPoint; }}
+
     public void StartPayload()
     {
         if (startPayload == false)
@@ -146,6 +151,9 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
         */ //=== EZE'S GAS REMOVE EDIT ===
 
         //=== EZE'S GAS REMOVE EDIT ===
+
+        HUDController.Instance.SetPayloadHealth(1f);
+
         if (startPayload)
         {
             SetStepsActive(true);
@@ -155,10 +163,6 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
     }
     private void Update()
     {
-        if (LevelDirector.Instance.CurrentStageCounter == null)
-        {
-            Debug.Log("Level director instance missing");
-        }
 
         if (LevelDirector.Instance.CurrentStageCounter < stages.Length) stages[LevelDirector.Instance.CurrentStageCounter].DoPayloadBehaviour();
 
