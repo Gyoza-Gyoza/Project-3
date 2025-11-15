@@ -440,7 +440,10 @@ public class LevelDirector : Singleton<LevelDirector>
             {
                 GameObject charger = GameObjectPool.GetObject(specialEnemyPrefabs[0]);
                 //charger.GetComponent<NavMeshAgent>().Warp(CurrentStage.SpawnMarkers[CurrentStage.ChargerEnemyLocation]);
-                charger.GetComponent<NavMeshAgent>().Warp(specialSpawnPoints[CurrentStage.DrainerEnemyLocation].position);
+                foreach(int index in CurrentStage.ChargerEnemyLocation)
+                {
+                    charger.GetComponent<NavMeshAgent>().Warp(specialSpawnPoints[index].position);
+                }
             }
         }
         if (drainerTimer >= CurrentStage.DrainerEnemyInterval)
@@ -451,8 +454,12 @@ public class LevelDirector : Singleton<LevelDirector>
             {
                 // GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position =
                 //    CurrentStage.SpawnMarkers[CurrentStage.DrainerEnemyLocation];
-                GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position =
-                specialSpawnPoints[CurrentStage.DrainerEnemyLocation].position;
+
+                foreach (int index in CurrentStage.DrainerEnemyLocation)
+                {
+                    GameObjectPool.GetObject(specialEnemyPrefabs[1]).transform.position =
+                    specialSpawnPoints[index].position;
+                }
             }
         }
     }
@@ -647,6 +654,10 @@ public class LevelDirector : Singleton<LevelDirector>
     ///*
     private void OnDrawGizmos()
     {
+
+        int[] specialSpawnsSelected_Drainer = null;
+        int[] specialSpawnsSelected_Charger = null;
+
         foreach (Stage stage in Stages)
         {
             switch (stage)
@@ -713,8 +724,17 @@ public class LevelDirector : Singleton<LevelDirector>
 
                 Gizmos.DrawCube(stage.Respawn, new Vector3(5f,5f,5f));
             }
+            if (stage.DrainerEnemyLocation != null)
+            {
+                if (Selection.Contains(stage))
+                {
+                    specialSpawnsSelected_Drainer = stage.DrainerEnemyLocation;
+                    specialSpawnsSelected_Charger = stage.ChargerEnemyLocation;
+                }
+            }
         }
 
+        /*
         if (presetStages != null && presetStages.Length > 0)
         {
             foreach (PresetStage ps in presetStages)
@@ -726,6 +746,28 @@ public class LevelDirector : Singleton<LevelDirector>
                     Gizmos.color = Color.magenta;
                     Gizmos.DrawWireSphere(ps.drainerSpawnPoint.position, 3f);
                 }
+            }
+        }
+        */
+
+        if (specialSpawnPoints != null && specialSpawnPoints.Length > 0)
+        {
+            for (int i = 0; i < specialSpawnPoints.Length; i++)
+            {
+                if (specialSpawnsSelected_Drainer != null && specialSpawnsSelected_Charger != null)
+                {
+                    if (specialSpawnsSelected_Drainer.Contains<int>(i) || specialSpawnsSelected_Charger.Contains<int>(i))
+                    {
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawWireSphere(specialSpawnPoints[i].position, 5f);
+                    }
+                }
+                else
+                {
+                    Gizmos.color = Color.magenta;
+                    Gizmos.DrawWireSphere(specialSpawnPoints[i].position, 3f);
+                }
+
             }
         }
 

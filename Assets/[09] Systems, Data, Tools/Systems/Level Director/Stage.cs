@@ -23,9 +23,11 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
     [SerializeField] private float chargerEnemyInterval;
-    [SerializeField] private int chargerEnemyCount, chargerEnemyWaves, chargerEnemyLocation;
+    [SerializeField] private int chargerEnemyCount, chargerEnemyWaves;
+    [SerializeField] private int[] chargerEnemyLocation;
     [SerializeField] private float drainerEnemyInterval;
-    [SerializeField] private int drainerEnemyCount, drainerEnemyWaves, drainerEnemyLocation;
+    [SerializeField] private int drainerEnemyCount, drainerEnemyWaves;
+    [SerializeField] private int[] drainerEnemyLocation;
     [SerializeField] private Vector3 respawn;
     private float progress = 0f;
     private float lengthFromPrevious;
@@ -58,7 +60,7 @@ public abstract class Stage : ScriptableObject
     { get { return chargerEnemyCount; }}
     public int ChargerEnemyWaves
     {  get { return chargerEnemyWaves; }}
-    public int ChargerEnemyLocation
+    public int[] ChargerEnemyLocation
     {  get { return chargerEnemyLocation; }}
     public float DrainerEnemyInterval
     {  get { return drainerEnemyInterval; }}
@@ -66,7 +68,7 @@ public abstract class Stage : ScriptableObject
     { get { return drainerEnemyCount; }}
     public int DrainerEnemyWaves
     {  get { return drainerEnemyWaves; }}
-    public int DrainerEnemyLocation
+    public int[] DrainerEnemyLocation
     {  get { return drainerEnemyLocation; }}
     public Vector3 Respawn
     { get { return respawn; } }
