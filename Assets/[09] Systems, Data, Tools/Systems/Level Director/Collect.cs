@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Collect", menuName = "ScriptableObjects/Stages/Collect", order = 3)]
 public class Collect : Stage
 {
+    [SerializeField] private Vector3[] itemSpawnLocations;
+    private List<Vector3> validSpawnLocations = new();
     [Tooltip("Item that needs to be collected")]
     [SerializeField] private GameObject itemToCollect;
     private List<GameObject> itemsToCollect = new List<GameObject>();
@@ -12,8 +15,6 @@ public class Collect : Stage
     [SerializeField] private int amountToCollect;
     [Tooltip("Amount of items to spawn")]
     [SerializeField] private int amountToSpawn;
-    [Tooltip("Max distance from the payload to spawn")]
-    [SerializeField] private float maxDistanceToSpawn;
 
     private int amountCollected = 0;
     public int AmountToCollect
@@ -26,6 +27,8 @@ public class Collect : Stage
     {
         AmountCollected = 0;
         PayloadBehaviour.instance.Agent.isStopped = true; // Stops the payload from moving
+
+        foreach (Vector3 vector3 in itemSpawnLocations) validSpawnLocations.Add(vector3);
 
         SpawnItems(amountToSpawn);
     }
@@ -40,12 +43,12 @@ public class Collect : Stage
     }
     private Vector3 GetLocation()
     {
-        float interactRadius = PayloadBehaviour.instance.InteractRadius;
-
-        Vector3 randomDirection = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f)).normalized;
-        float randomDistance = Random.Range(interactRadius, interactRadius + maxDistanceToSpawn);
-        Vector3 randomOffset = randomDirection * randomDistance;
-        return PayloadBehaviour.instance.transform.position + randomOffset;
+        Vector3 location = new();
+        int randomIndex = Random.Range(0, itemSpawnLocations.Length);
+        location = validSpawnLocations[randomIndex];
+        validSpawnLocations.RemoveAt(randomIndex);
+        
+        return location;
     }
     public void Collected(int amount)
     {
