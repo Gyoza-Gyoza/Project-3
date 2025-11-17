@@ -1789,6 +1789,7 @@ MonoBehaviour:
     chargerAmountSpawned: 0
     drainerSpawnPoint: {fileID: 272861159}
     drainerAmountSpawned: 1
+  specialSpawnPoints: []
   specialEnemyPrefabs:
   - {fileID: 567388150959105438, guid: ee19ae1559eebea46b2aa1cb15510ae6, type: 3}
   - {fileID: 579452246062201755, guid: c0681d148b8371846b3cf5a0e879ac60, type: 3}
@@ -2560,7 +2561,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 1
   m_VoxelSize: 0.08333335
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 5aaf6f249c860d44fab39f7377d78c8d, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 47a337416c21d054ea152585f758336e, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &662156454
 Transform:
