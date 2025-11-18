@@ -383,7 +383,10 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
         //agent.updatePosition = false;
 
         if (stages[LevelDirector.Instance.CurrentStageCounter] is Escort escort) agent.Warp(escort.EscortPosition);
-        CompleteStage(); //Complete the beginning one
+        for (int i = 0; i <= LevelDirector.Instance.startLevel; i++)
+        {
+            CompleteStage(); //Complete the beginning one
+        }
         Debug.Log("Completing first stage (Initial spawn point)");
         agent.isStopped = true;
     }

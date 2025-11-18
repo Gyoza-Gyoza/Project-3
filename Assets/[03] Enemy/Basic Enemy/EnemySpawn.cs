@@ -18,7 +18,7 @@ public class EnemySpawn : EnemyBehaviour
     public void StartSpawning()
     { isSpawning = true; }
     public void StopSpawning()
-    { isSpawning = false; Debug.Log("Spawn has stopped spawning"); }
+    { isSpawning = false; Debug.Log("Spawn has stopped spawning"); LevelDirector.Instance.AddDeadSpawner(); }
 
 
     IEnumerator Damaged()
