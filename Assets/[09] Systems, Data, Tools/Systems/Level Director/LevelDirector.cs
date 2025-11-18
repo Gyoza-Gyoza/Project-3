@@ -25,7 +25,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private GameObject test;
     [SerializeField] private float spawnSpread;
     [SerializeField] private LayerMask environmentMask;
-    [SerializeField] private int startLevel;
+    public int startLevel;
     public bool lost = false;
 
     private LineRenderer lineRenderer;
@@ -53,11 +53,13 @@ public class LevelDirector : Singleton<LevelDirector>
     private int presetStageCounter;
     [SerializeField] private GameObject[] specialEnemyPrefabs;
     [SerializeField] private float specialEnemyChance = 0.1f;
-    [SerializeField] private bool spawnEnemies = true;
+    [SerializeField] private bool canSpawnEnemies = true;
+    public bool CanSpawnEnemies { get { return canSpawnEnemies; } set { canSpawnEnemies = value; } }
     private bool spawnCoolingDown = false;
     private bool startCooldown = false;
     private List<GameObject> specialEnemyPool = new List<GameObject>();
     private List<EnemyBehaviour> enemyList = new List<EnemyBehaviour>();
+    private int stageEnemyCount = 0;
 
     private Vector3 currentPosition; // Used for drawing gizmos
     private PayloadBehaviour payload;
@@ -277,18 +279,18 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         if (Input.GetKeyDown(KeyCode.F11))
         {
-            if (spawnEnemies == true)
+            if (canSpawnEnemies == true)
             {
-                spawnEnemies = false;
+                canSpawnEnemies = false;
                 HUDController.Instance.EnemiesStopped(true);
             }
             else
             {
-                spawnEnemies = true;
+                canSpawnEnemies = true;
                 HUDController.Instance.EnemiesStopped(false);
             }
         }
-        if (spawnEnemies)
+        if (canSpawnEnemies)
         {
             SpawnEnemies();
             SpawnSpecialEnemies();
@@ -326,19 +328,6 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         if (CanSpawn())
         {
-            //if (GetSpawnLocation(out Vector3 spawnPosition))
-            //{
-            //    for (int i = 0; i < Stages[currentStage].EnemyPerSpawn; i++)
-            //    {
-            //        GameObject enemy = GameObjectPool.GetObject(enemyPrefab);
-            //        enemy.transform.position = spawnPosition + new Vector3(Random.Range(-spawnSpread, spawnSpread), 0f, Random.Range(-spawnSpread, spawnSpread));
-            //    }
-            //}
-            //else
-            //{
-            //    Debug.Log("Failed to find a location, spawn cancelled");
-            //}
-
             if (spawners != null)
             {
                 foreach (EnemySpawn spawn in spawners)
@@ -355,6 +344,7 @@ public class LevelDirector : Singleton<LevelDirector>
                             {  enemyToSpawn = enemyPrefab; }
 
                             NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
+
                             if (enemy != null)
                             {
                                 while (true)
@@ -368,8 +358,10 @@ public class LevelDirector : Singleton<LevelDirector>
                                     }
                                 }
                             }
+
                             EnemyBehaviour enemyBehaviour = enemy.gameObject.GetComponent<EnemyBehaviour>();
                             AddEnemy(enemyBehaviour);
+
                             //Debug.Log("Enemy count being added");
                         }
                     }
@@ -383,6 +375,7 @@ public class LevelDirector : Singleton<LevelDirector>
     {
         enemyList.Add(enemy);
         HUDController.Instance.UpdateTotalEnemyCount(enemyList.Count);
+        stageEnemyCount++;
     }
     public void RemoveEnemy(EnemyBehaviour enemy)
     {
@@ -390,6 +383,7 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             enemyList.Remove(enemy);
             HUDController.Instance.UpdateTotalEnemyCount(enemyList.Count);
+            stageEnemyCount--;
         }
     }
     private bool CanSpawn()
@@ -400,7 +394,7 @@ public class LevelDirector : Singleton<LevelDirector>
         {
             if(!startCooldown) // Checks if the cooldown can be started
             {
-                if (enemyList.Count <= Stages[currentStageCounter].ResumeThreshold) // Checks if the enemy count is below the resume threshold and removes the spawn cooldown
+                if ( stageEnemyCount /*enemyList.Count*/ <= Stages[currentStageCounter].ResumeThreshold) // Checks if the enemy count is below the resume threshold and removes the spawn cooldown
                 {
                     startCooldown = true;
                     timer = 0f; // Starts the timer when the enemy goes below the threshold
@@ -419,7 +413,7 @@ public class LevelDirector : Singleton<LevelDirector>
             //Debug.Log($"Spawning on cooldown, timer: {timer}");
             return false; 
         }
-        if (enemyList.Count >= Stages[currentStageCounter].MaxEnemies) // Checks if the enemy count is at max and sets the spawn on cooldown
+        if (stageEnemyCount /*enemyList.Count */ >= Stages[currentStageCounter].MaxEnemies) // Checks if the enemy count is at max and sets the spawn on cooldown
         {
             spawnCoolingDown = true;
             //Debug.Log("Enemy cap reached, spawning on cooldown");
@@ -539,7 +533,11 @@ public class LevelDirector : Singleton<LevelDirector>
         currentStageCounter++;
         currentStageCounter = Mathf.Clamp(currentStageCounter, 0, Stages.Length);
 
+        ClearDeadSpawners();
+
         SpawnSpawners();
+
+        stageEnemyCount = 0;
 
         chargerCount = 0;
         drainerCount = 0;
@@ -594,7 +592,21 @@ public class LevelDirector : Singleton<LevelDirector>
 
     #region --- Enemy Spawner ---
     private List<EnemySpawn> spawners = new List<EnemySpawn>();
+    private int deadSpawners = 0;
 
+    public void AddDeadSpawner()    {   deadSpawners++;     }
+    public void ClearDeadSpawners() {   deadSpawners = 0;   }
+
+
+    public bool AreAllSpawnersGone()
+    {
+        if (spawners == null || spawners.Count == 0 || deadSpawners >= spawners.Count)
+        {
+            return true;
+        } 
+        
+        return false;
+    }
     private void SpawnSpawners()
     {
         if (spawners != null && spawners.Count > 0)
