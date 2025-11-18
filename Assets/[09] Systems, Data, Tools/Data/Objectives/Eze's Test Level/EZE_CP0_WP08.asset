@@ -15,10 +15,11 @@ MonoBehaviour:
   isCheckpoint: 1
   durationBetweenSpawns: 30
   enemyPerGroup: 3
+  playerEnemyPerGroup: 0
   spawnMarkers:
-  - {x: 235.2, y: 6.4, z: 243.7}
-  - {x: 235.2, y: 6.4, z: 263.5}
-  - {x: 162.9, y: 20.9, z: 254.3}
+  - {x: 235.2, y: 6.4, z: 325.7}
+  - {x: 235.2, y: 6.4, z: 345.5}
+  - {x: 162.9, y: 20.9, z: 336.3}
   spawnCooldown: 0
   maxEnemies: 20
   resumeThreshold: 5
@@ -32,6 +33,6 @@ MonoBehaviour:
   drainerEnemyCount: 1
   drainerEnemyWaves: 1
   drainerEnemyLocation: 0400000005000000
-  respawn: {x: 0, y: 34.2, z: 108.7}
-  escortPosition: {x: 254.9, y: 21.3, z: 254.4}
+  respawn: {x: 0, y: 34.2, z: 190.7}
+  escortPosition: {x: 254.9, y: 21.3, z: 336.4}
   payloadSpeed: 5

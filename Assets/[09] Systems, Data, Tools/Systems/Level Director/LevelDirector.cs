@@ -25,6 +25,7 @@ public class LevelDirector : Singleton<LevelDirector>
     [SerializeField] private GameObject test;
     [SerializeField] private float spawnSpread;
     [SerializeField] private LayerMask environmentMask;
+    [SerializeField] private int startLevel;
     public bool lost = false;
 
     private LineRenderer lineRenderer;
@@ -45,6 +46,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
     [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject playerEnemyPrefab;
     [SerializeField] private GameObject enemySpawnerPrefab;
     [SerializeField] private PresetStage[] presetStages;
     [SerializeField] private Transform[] specialSpawnPoints;
@@ -269,7 +271,7 @@ public class LevelDirector : Singleton<LevelDirector>
         AssignEscortStages();
         CalculateLevelLength();
         HUDController.Instance.SetUpProgressBar(levels[currentLevelCounter].stages, levelLength);
-        lineRenderer = new LineRenderer();
+        //lineRenderer = new LineRenderer();
     }
     private void Update()
     {
@@ -345,7 +347,13 @@ public class LevelDirector : Singleton<LevelDirector>
                     {
                         for (int i = 0; i < Stages[currentStageCounter].EnemyPerGroup; i++)
                         {
-                            GameObject enemyToSpawn = enemyPrefab;
+                            GameObject enemyToSpawn = null;
+                            // Spawn player targetting variant
+                            if (i < Stages[currentStageCounter].PlayerEnemyPerGroup)
+                            {  enemyToSpawn = playerEnemyPrefab; }
+                            else
+                            {  enemyToSpawn = enemyPrefab; }
+
                             NavMeshAgent enemy = GameObjectPool.GetObject(enemyToSpawn).GetComponent<NavMeshAgent>();
                             if (enemy != null)
                             {

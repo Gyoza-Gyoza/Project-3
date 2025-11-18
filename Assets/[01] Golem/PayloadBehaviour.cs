@@ -604,6 +604,7 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
             string sfx = leftStep ? "Golem_LeftStomp" : "Golem_RightStomp";
 
             animator.Play(clip);
+            agent.speed = MovementSpeed - hinderedMovementSpeed;
             agent.isStopped = false; 
 
             yield return new WaitForSeconds(stepDuration);

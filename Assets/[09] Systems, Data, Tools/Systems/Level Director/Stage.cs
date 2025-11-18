@@ -12,6 +12,8 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float durationBetweenSpawns;
     [Tooltip("Amount of enemies that the director will spawn each time")]
     [SerializeField] private int enemyPerGroup;
+    [Tooltip("Amongst the group, how many will be player directed")]
+    [SerializeField] private int playerEnemyPerGroup;
     [Tooltip("List of spawn points for the escortPosition")]
     [SerializeField] private Vector3[] spawnMarkers;
     [Tooltip("Cooldown for spawning after hitting cap")]
@@ -36,6 +38,8 @@ public abstract class Stage : ScriptableObject
     { get { return durationBetweenSpawns; } }
     public int EnemyPerGroup
     { get { return enemyPerGroup; } }
+    public int PlayerEnemyPerGroup
+    { get {return playerEnemyPerGroup ; } }
     public Vector3[] SpawnMarkers
     { get { return spawnMarkers; } }
     public float SpawnCooldown
