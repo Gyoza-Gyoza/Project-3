@@ -535,12 +535,14 @@ public class LevelDirector : Singleton<LevelDirector>
 
         ClearDeadSpawners();
 
-        SpawnSpawners();
+
 
         stageEnemyCount = 0;
 
         chargerCount = 0;
         drainerCount = 0;
+
+        SpawnSpawners();
 
         //Hardcode to start death zone on 3rd check point
         //if (currentStageCounter == 2)
