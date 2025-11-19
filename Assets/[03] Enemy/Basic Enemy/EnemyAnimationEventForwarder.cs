@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyAnimationEventForwarder : MonoBehaviour
 {
     [SerializeField] private BasicEnemyBehaviour enemy;
-    public void PlayAttackVFX()
+    public void PlayAttackVFX() 
     {
         enemy.PlayAttackVFX();
     }
