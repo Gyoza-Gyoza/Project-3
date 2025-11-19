@@ -25,6 +25,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     [SerializeField] private GameObject mesh;
     [SerializeField] private GameObject deathParticleSystem;
     [SerializeField] private float deathTime = 1f;
+    [SerializeField] private GameObject attackVFX;
 
     [Header("Physics Variables")]
     [SerializeField] private float hitUpforce = 1f;
@@ -112,6 +113,11 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         {
             payload.TakeDamage(Damage, gameObject);
         }
+    }
+    public void PlayAttackVFX()
+    {
+        attackVFX.SetActive(false);
+        attackVFX.SetActive(true);
     }
     public void PlayDeathCoroutine()
     {

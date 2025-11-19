@@ -12,11 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace2e4014a04daa409f5375ab84a6c8b, type: 3}
   m_Name: Stage6
   m_EditorClassIdentifier: 
-  spawnFrequency: 0.5
-  maxSpawnAmount: 5
+  isCheckpoint: 0
+  durationBetweenSpawns: 0
+  enemyPerGroup: 0
+  spawnMarkers: []
+  spawnCooldown: 0
+  maxEnemies: 0
+  resumeThreshold: 0
   minSpawnDistance: 5
   maxSpawnDistance: 10
+  chargerEnemyInterval: 0
+  chargerEnemyCount: 0
+  chargerEnemyWaves: 0
+  chargerEnemyLocation: 0
+  drainerEnemyInterval: 0
+  drainerEnemyCount: 0
+  drainerEnemyWaves: 0
+  drainerEnemyLocation: 0
+  respawn: {x: 0, y: 0, z: 0}
+  itemSpawnLocations: []
   itemToCollect: {fileID: 8840465649485089741, guid: b862b912792def546b7d61b6ee086a99, type: 3}
   amountToCollect: 10
   amountToSpawn: 15
-  maxDistanceToSpawn: 10
