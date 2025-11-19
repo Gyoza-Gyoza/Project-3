@@ -12,6 +12,8 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float durationBetweenSpawns;
     [Tooltip("Amount of enemies that the director will spawn each time")]
     [SerializeField] private int enemyPerGroup;
+    [Tooltip("Amongst the group, how many will be player directed")]
+    [SerializeField] private int playerEnemyPerGroup;
     [Tooltip("List of spawn points for the escortPosition")]
     [SerializeField] private Vector3[] spawnMarkers;
     [Tooltip("Cooldown for spawning after hitting cap")]
@@ -23,9 +25,11 @@ public abstract class Stage : ScriptableObject
     [SerializeField] private float minSpawnDistance;
     [SerializeField] private float maxSpawnDistance;
     [SerializeField] private float chargerEnemyInterval;
-    [SerializeField] private int chargerEnemyCount, chargerEnemyWaves, chargerEnemyLocation;
+    [SerializeField] private int chargerEnemyCount, chargerEnemyWaves;
+    [SerializeField] private int[] chargerEnemyLocation;
     [SerializeField] private float drainerEnemyInterval;
-    [SerializeField] private int drainerEnemyCount, drainerEnemyWaves, drainerEnemyLocation;
+    [SerializeField] private int drainerEnemyCount, drainerEnemyWaves;
+    [SerializeField] private int[] drainerEnemyLocation;
     [SerializeField] private Vector3 respawn;
     private float progress = 0f;
     private float lengthFromPrevious;
@@ -34,6 +38,8 @@ public abstract class Stage : ScriptableObject
     { get { return durationBetweenSpawns; } }
     public int EnemyPerGroup
     { get { return enemyPerGroup; } }
+    public int PlayerEnemyPerGroup
+    { get {return playerEnemyPerGroup ; } }
     public Vector3[] SpawnMarkers
     { get { return spawnMarkers; } }
     public float SpawnCooldown
@@ -58,7 +64,7 @@ public abstract class Stage : ScriptableObject
     { get { return chargerEnemyCount; }}
     public int ChargerEnemyWaves
     {  get { return chargerEnemyWaves; }}
-    public int ChargerEnemyLocation
+    public int[] ChargerEnemyLocation
     {  get { return chargerEnemyLocation; }}
     public float DrainerEnemyInterval
     {  get { return drainerEnemyInterval; }}
@@ -66,7 +72,7 @@ public abstract class Stage : ScriptableObject
     { get { return drainerEnemyCount; }}
     public int DrainerEnemyWaves
     {  get { return drainerEnemyWaves; }}
-    public int DrainerEnemyLocation
+    public int[] DrainerEnemyLocation
     {  get { return drainerEnemyLocation; }}
     public Vector3 Respawn
     { get { return respawn; } }

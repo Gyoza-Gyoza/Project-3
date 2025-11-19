@@ -14,6 +14,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
     [Tooltip("How often the enemy checks for targets, measured in once per x seconds")]
     public float targetCheckInterval = 3f;
     [SerializeField] private HitBox hb;
+    [SerializeField] private HitBox payloadhb;
 
     [Header("Visual Variables")]
     [SerializeField] protected GameObject skin;
@@ -41,7 +42,7 @@ public class BasicEnemyBehaviour : EnemyBehaviour
         base.Awake();
         oriMat = skin.GetComponent<SkinnedMeshRenderer>().material;
         hb.HitBoxListeners += DamagePlayer;
-        hb.HitBoxListeners += DamagePayload;
+        payloadhb.HitBoxListeners += DamagePayload;
         skinRenderer = skin.GetComponent<SkinnedMeshRenderer>();
     }
     protected override void Start()

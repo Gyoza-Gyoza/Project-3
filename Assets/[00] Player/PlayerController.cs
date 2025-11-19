@@ -159,6 +159,9 @@ public class PlayerController3P : Entity
     [SerializeField] private float tauntCooldown = 1f;
     bool _tauntThrown = false;
 
+    // ------------------ TAUNT DEVICE ------------------------------------------------------------------------------------------
+    [SerializeField] private float teleportCooldown = 10f;
+    bool _teleportCoolingDown = false;
 
     // ----------------- AUDIO ------------------------------------------------------------------------------------------
     [SerializeField] private AudioSource walkAudioSource;
@@ -1283,6 +1286,11 @@ void Awake()
         {
             ThrowDevice();
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            TeleportBack();
+        }
+
     }
     void ThrowDevice()
     {
@@ -1331,6 +1339,50 @@ void Awake()
 
         yield break;
 
+    }
+
+    void TeleportBack()
+    {
+        Debug.LogWarning("teleport called");
+        if ( !_teleportCoolingDown)
+        {
+            ignoreMovementThisFrame = true;
+
+            this.ForceWarp(PayloadBehaviour.instance.TeleportPoint.position);
+            //this.transform.position = PayloadBehaviour.instance.TeleportPoint.position;
+            //this.transform.rotation = Quaternion.Euler(new Vector3(0, PayloadBehaviour.instance.TeleportPoint.rotation.eulerAngles.y , 0));
+
+            StartCoroutine(TeleportCooldown());
+        }
+        else
+        {
+            Debug.LogWarning("Teleport on cooldown");
+        }
+    }
+
+    IEnumerator TeleportCooldown()
+    {
+        float count = 0f;
+        _teleportCoolingDown = true;
+
+        HUDController.Instance.ToggleTeleport(false);
+
+        while (_teleportCoolingDown)
+        {
+            count += Time.fixedDeltaTime;
+            if (count >= teleportCooldown)
+            {
+                _teleportCoolingDown = false;
+            }
+            else
+            {
+                //HUDController.Instance.SetTauntSlider(count / tauntCooldown);
+            }
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+        }
+
+        //HUDController.Instance.SetTauntSlider(1f);
+        HUDController.Instance.ToggleTeleport(true);
     }
 
     #endregion

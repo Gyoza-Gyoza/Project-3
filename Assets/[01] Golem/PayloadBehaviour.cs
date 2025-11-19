@@ -13,6 +13,11 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
     [SerializeField] private float payloadMovementSpeed;
     [SerializeField] private bool startPayload = false;
 
+    [SerializeField] private Transform teleportPoint;
+
+    public Transform TeleportPoint
+    {get { return teleportPoint; }}
+
     public void StartPayload()
     {
         if (startPayload == false)
@@ -146,6 +151,9 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
         */ //=== EZE'S GAS REMOVE EDIT ===
 
         //=== EZE'S GAS REMOVE EDIT ===
+
+        HUDController.Instance.SetPayloadHealth(1f);
+
         if (startPayload)
         {
             SetStepsActive(true);
@@ -155,10 +163,6 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
     }
     private void Update()
     {
-        if (LevelDirector.Instance.CurrentStageCounter == null)
-        {
-            Debug.Log("Level director instance missing");
-        }
 
         if (LevelDirector.Instance.CurrentStageCounter < stages.Length) stages[LevelDirector.Instance.CurrentStageCounter].DoPayloadBehaviour();
 
@@ -379,7 +383,10 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
         //agent.updatePosition = false;
 
         if (stages[LevelDirector.Instance.CurrentStageCounter] is Escort escort) agent.Warp(escort.EscortPosition);
-        CompleteStage(); //Complete the beginning one
+        for (int i = 0; i <= LevelDirector.Instance.startLevel; i++)
+        {
+            CompleteStage(); //Complete the beginning one
+        }
         Debug.Log("Completing first stage (Initial spawn point)");
         agent.isStopped = true;
     }
@@ -600,6 +607,7 @@ public class PayloadBehaviour : Entity //Singleton<PayloadBehaviour>
             string sfx = leftStep ? "Golem_LeftStomp" : "Golem_RightStomp";
 
             animator.Play(clip);
+            agent.speed = MovementSpeed - hinderedMovementSpeed;
             agent.isStopped = false; 
 
             yield return new WaitForSeconds(stepDuration);

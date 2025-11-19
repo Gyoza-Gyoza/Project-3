@@ -143,7 +143,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7866669384431691078
 Transform:
   m_ObjectHideFlags: 0
@@ -865,6 +865,7 @@ MonoBehaviour:
   upwardsForce: 5
   throwPoint: {fileID: 7081617587772717745}
   tauntCooldown: 3
+  teleportCooldown: 10
   walkAudioSource: {fileID: 6886843657780469280}
   slimeHitAudioSource: {fileID: 5334502618601870077}
   canPlaySlimeHitSFX: 1
@@ -1570,7 +1571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1103087947890303848, guid: 9ce90dee1f6d63240a0460f99fc08a74, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1242240443692587562, guid: 9ce90dee1f6d63240a0460f99fc08a74, type: 3}
       propertyPath: randomSeed

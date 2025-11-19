@@ -75,6 +75,9 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private Sprite tauntActive;
     [SerializeField] private Sprite tauntInactive;
     [SerializeField] private Image tauntAbility;
+    [SerializeField] private Sprite teleportActive;
+    [SerializeField] private Sprite teleportInactive;
+    [SerializeField] private Image  teleportAbility;
 
     [Header("Ultimate")]
     [SerializeField] private Slider ultimateSlider;
@@ -442,6 +445,14 @@ public class HUDController : Singleton<HUDController>
     public void SetTauntSlider(float input)
     {
         tauntSlider.value = input;
+    }
+
+    public void ToggleTeleport(bool input)
+    {
+        if (input)
+        { teleportAbility.sprite = teleportActive; }
+        else
+        { teleportAbility.sprite = teleportInactive; }
     }
     #endregion
 
