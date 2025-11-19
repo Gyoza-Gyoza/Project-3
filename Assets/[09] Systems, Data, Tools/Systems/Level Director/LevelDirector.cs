@@ -535,8 +535,6 @@ public class LevelDirector : Singleton<LevelDirector>
 
         ClearDeadSpawners();
 
-        timer = 0f;
-
         stageEnemyCount = 0;
 
         chargerCount = 0;
@@ -673,127 +671,127 @@ public class LevelDirector : Singleton<LevelDirector>
     #endregion
 
     // REMEMEBER TO COMMENT OUT GIZMOS WHEN BUILDING
-    ///*
-    private void OnDrawGizmos()
-    {
+    //*
+    //private void OnDrawGizmos()
+    //{
 
-        int[] specialSpawnsSelected_Drainer = null;
-        int[] specialSpawnsSelected_Charger = null;
+    //    int[] specialSpawnsSelected_Drainer = null;
+    //    int[] specialSpawnsSelected_Charger = null;
 
-        foreach (Stage stage in Stages)
-        {
-            switch (stage)
-            {
-                case Escort escort:
-                    currentPosition = escort.EscortPosition;
+    //    foreach (Stage stage in Stages)
+    //    {
+    //        switch (stage)
+    //        {
+    //            case Escort escort:
+    //                currentPosition = escort.EscortPosition;
 
-                    if (Selection.Contains(stage))
-                    {
-                        Gizmos.color = Color.cyan;
-                        Gizmos.DrawWireSphere(currentPosition, 7f);
-                    }
-                    else
-                    {
-                        Gizmos.color = Color.red;
-                        Gizmos.DrawWireSphere(currentPosition, 5f);
-                    }
-
-
+    //                if (Selection.Contains(stage))
+    //                {
+    //                    Gizmos.color = Color.cyan;
+    //                    Gizmos.DrawWireSphere(currentPosition, 7f);
+    //                }
+    //                else
+    //                {
+    //                    Gizmos.color = Color.red;
+    //                    Gizmos.DrawWireSphere(currentPosition, 5f);
+    //                }
 
 
-                    Gizmos.DrawWireSphere(currentPosition, 5f);
-                    break;
-                case Defend defend:
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawWireSphere(currentPosition, 5f);
-                    break;
-                case Collect collect:
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawWireSphere(currentPosition, 5f);
-                    break;
-                default:
-                    Gizmos.color = Color.white;
-                    break;
-            }
 
-            if (stage?.SpawnMarkers != null && stage.SpawnMarkers.Length > 0)
-            {
-                if (Selection.Contains(stage))
-                {
-                    Gizmos.color = new Color(0, 1, 0, 0.5f);
-                }
-                else
-                {
-                    Gizmos.color = new Color(1, 0, 0, 0.5f);
-                }
 
-                foreach (Vector3 marker in stage.SpawnMarkers)
-                {
-                    //Gizmos.color = new Color(0, 1, 0, 0.5f);
-                    Gizmos.DrawSphere(marker, spawnSpread);
-                }
-            }
-            if (stage.Respawn != null)
-            {
-                if (Selection.Contains(stage))
-                {
-                    Gizmos.color = new Color(0, 0, 1, 0.7f);
-                }
-                else
-                {
-                    Gizmos.color = new Color(1, 0, 1, 0.7f);
-                }
+    //                Gizmos.DrawWireSphere(currentPosition, 5f);
+    //                break;
+    //            case Defend defend:
+    //                Gizmos.color = Color.blue;
+    //                Gizmos.DrawWireSphere(currentPosition, 5f);
+    //                break;
+    //            case Collect collect:
+    //                Gizmos.color = Color.yellow;
+    //                Gizmos.DrawWireSphere(currentPosition, 5f);
+    //                break;
+    //            default:
+    //                Gizmos.color = Color.white;
+    //                break;
+    //        }
 
-                Gizmos.DrawCube(stage.Respawn, new Vector3(5f,5f,5f));
-            }
-            if (stage.DrainerEnemyLocation != null)
-            {
-                if (Selection.Contains(stage))
-                {
-                    specialSpawnsSelected_Drainer = stage.DrainerEnemyLocation;
-                    specialSpawnsSelected_Charger = stage.ChargerEnemyLocation;
-                }
-            }
-        }
+    //        if (stage?.SpawnMarkers != null && stage.SpawnMarkers.Length > 0)
+    //        {
+    //            if (Selection.Contains(stage))
+    //            {
+    //                Gizmos.color = new Color(0, 1, 0, 0.5f);
+    //            }
+    //            else
+    //            {
+    //                Gizmos.color = new Color(1, 0, 0, 0.5f);
+    //            }
 
-        /*
-        if (presetStages != null && presetStages.Length > 0)
-        {
-            foreach (PresetStage ps in presetStages)
-            {
-                if (ps.drainerSpawnPoint != null && ps.chargerSpawnPoint != null)
-                {
-                    Gizmos.color = Color.cyan;
-                    Gizmos.DrawWireSphere(ps.chargerSpawnPoint.position, 3f);
-                    Gizmos.color = Color.magenta;
-                    Gizmos.DrawWireSphere(ps.drainerSpawnPoint.position, 3f);
-                }
-            }
-        }
-        */
+    //            foreach (Vector3 marker in stage.SpawnMarkers)
+    //            {
+    //                //Gizmos.color = new Color(0, 1, 0, 0.5f);
+    //                Gizmos.DrawSphere(marker, spawnSpread);
+    //            }
+    //        }
+    //        if (stage.Respawn != null)
+    //        {
+    //            if (Selection.Contains(stage))
+    //            {
+    //                Gizmos.color = new Color(0, 0, 1, 0.7f);
+    //            }
+    //            else
+    //            {
+    //                Gizmos.color = new Color(1, 0, 1, 0.7f);
+    //            }
 
-        if (specialSpawnPoints != null && specialSpawnPoints.Length > 0)
-        {
-            for (int i = 0; i < specialSpawnPoints.Length; i++)
-            {
-                if (specialSpawnsSelected_Drainer != null && specialSpawnsSelected_Charger != null)
-                {
-                    if (specialSpawnsSelected_Drainer.Contains<int>(i) || specialSpawnsSelected_Charger.Contains<int>(i))
-                    {
-                        Gizmos.color = Color.red;
-                        Gizmos.DrawWireSphere(specialSpawnPoints[i].position, 5f);
-                    }
-                }
-                else
-                {
-                    Gizmos.color = Color.magenta;
-                    Gizmos.DrawWireSphere(specialSpawnPoints[i].position, 3f);
-                }
+    //            Gizmos.DrawCube(stage.Respawn, new Vector3(5f,5f,5f));
+    //        }
+    //        if (stage.DrainerEnemyLocation != null)
+    //        {
+    //            if (Selection.Contains(stage))
+    //            {
+    //                specialSpawnsSelected_Drainer = stage.DrainerEnemyLocation;
+    //                specialSpawnsSelected_Charger = stage.ChargerEnemyLocation;
+    //            }
+    //        }
+    //    }
 
-            }
-        }
+    //    /*
+    //    if (presetStages != null && presetStages.Length > 0)
+    //    {
+    //        foreach (PresetStage ps in presetStages)
+    //        {
+    //            if (ps.drainerSpawnPoint != null && ps.chargerSpawnPoint != null)
+    //            {
+    //                Gizmos.color = Color.cyan;
+    //                Gizmos.DrawWireSphere(ps.chargerSpawnPoint.position, 3f);
+    //                Gizmos.color = Color.magenta;
+    //                Gizmos.DrawWireSphere(ps.drainerSpawnPoint.position, 3f);
+    //            }
+    //        }
+    //    }
+    //    */
 
-    }
+    //    if (specialSpawnPoints != null && specialSpawnPoints.Length > 0)
+    //    {
+    //        for (int i = 0; i < specialSpawnPoints.Length; i++)
+    //        {
+    //            if (specialSpawnsSelected_Drainer != null && specialSpawnsSelected_Charger != null)
+    //            {
+    //                if (specialSpawnsSelected_Drainer.Contains<int>(i) || specialSpawnsSelected_Charger.Contains<int>(i))
+    //                {
+    //                    Gizmos.color = Color.red;
+    //                    Gizmos.DrawWireSphere(specialSpawnPoints[i].position, 5f);
+    //                }
+    //            }
+    //            else
+    //            {
+    //                Gizmos.color = Color.magenta;
+    //                Gizmos.DrawWireSphere(specialSpawnPoints[i].position, 3f);
+    //            }
+
+    //        }
+    //    }
+
+    //}
 
     //*/
 }

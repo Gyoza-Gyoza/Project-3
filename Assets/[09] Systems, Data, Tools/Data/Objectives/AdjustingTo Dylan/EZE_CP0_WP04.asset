@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: EZE_CP0_WP04
   m_EditorClassIdentifier: 
   isCheckpoint: 1
-  durationBetweenSpawns: 30
+  durationBetweenSpawns: 5
   enemyPerGroup: 3
   playerEnemyPerGroup: 0
   spawnMarkers:
   - {x: 24.31, y: 27.7, z: 273.7}
   spawnCooldown: 0
-  maxEnemies: 20
+  maxEnemies: 100
   resumeThreshold: 5
   minSpawnDistance: 0
   maxSpawnDistance: 0
@@ -33,4 +33,4 @@ MonoBehaviour:
   drainerEnemyLocation: 00000000
   respawn: {x: 18.4, y: 33, z: 294.3}
   escortPosition: {x: 52.5, y: 14.9, z: 293.1}
-  payloadSpeed: 6
+  payloadSpeed: 8

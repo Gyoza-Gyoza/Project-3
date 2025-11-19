@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EZE_CP0_WP02
   m_EditorClassIdentifier: 
   isCheckpoint: 1
-  durationBetweenSpawns: 12
+  durationBetweenSpawns: 5
   enemyPerGroup: 3
   playerEnemyPerGroup: 2
   spawnMarkers:
@@ -34,4 +34,4 @@ MonoBehaviour:
   drainerEnemyLocation: 
   respawn: {x: 0, y: 25.9, z: 204.5}
   escortPosition: {x: 0, y: 13.66, z: 229}
-  payloadSpeed: 6
+  payloadSpeed: 8
