@@ -18,6 +18,12 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
     [SerializeField] private LineRenderer line;
     [SerializeField] private Transform lineStart; 
     public float payloadTargetOffsetY = 1.5f;
+
+    [SerializeField] private float dmgPerSecond;
+    private bool isDraining = false;
+    public void StopDraining()
+    {    isDraining = false;}
+
     public Transform LineStart
     { get { return lineStart; } }
     public LineRenderer Line
@@ -84,7 +90,34 @@ public class DrainerEnemyBehaviour : EnemyBehaviour
         /* //=== EZE'S GAS REMOVE EDIT ===
         PayloadBehaviour.instance.RemoveGas(burnAdjAmount * Time.deltaTime);
         */
+        //PayloadBehaviour.instance.TakeDamage(burnAdjAmount * Time.deltaTime);
+
+        StartCoroutine(Drain());
     }
+
+    
+    IEnumerator Drain()
+    {
+        float count = 0f;
+        isDraining = true;
+        float countToHit = 1f / dmgPerSecond;
+
+        while(isDraining)
+        {
+            count += Time.deltaTime;
+
+            if (count >= countToHit)
+            {
+                count -= countToHit;
+                PayloadBehaviour.instance.TakeDamage(1);
+            }
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        yield break;
+    }
+
+
     public void SetShieldActive(bool active)
     {
         StopCoroutine("SetShieldActiveCoroutine");

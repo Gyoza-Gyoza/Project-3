@@ -535,7 +535,7 @@ public class LevelDirector : Singleton<LevelDirector>
 
         ClearDeadSpawners();
 
-
+        timer = 0f;
 
         stageEnemyCount = 0;
 
@@ -627,8 +627,8 @@ public class LevelDirector : Singleton<LevelDirector>
             just.StartSpawning();
         }
 
-        SpawnEnemies();
-        SpawnSpecialEnemies();
+        //SpawnEnemies();
+        //SpawnSpecialEnemies();
     }
     #endregion
 

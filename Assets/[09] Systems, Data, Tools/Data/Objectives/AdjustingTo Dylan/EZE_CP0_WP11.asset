@@ -15,11 +15,11 @@ MonoBehaviour:
   isCheckpoint: 1
   durationBetweenSpawns: 5
   enemyPerGroup: 10
-  playerEnemyPerGroup: 0
+  playerEnemyPerGroup: 5
   spawnMarkers:
-  - {x: 341.8, y: 37.1, z: 223.5}
-  - {x: 409.9, y: 38.8, z: 305.2}
-  - {x: 410.8, y: 38.8, z: 370.8}
+  - {x: 390.6, y: 47.5, z: 170.2}
+  - {x: 351.4, y: 36.3, z: 222.5}
+  - {x: 390.6, y: 47.5, z: 278.7}
   spawnCooldown: 0
   maxEnemies: 200
   resumeThreshold: 5
