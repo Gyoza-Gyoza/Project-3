@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemySpawn : EnemyBehaviour
 {
     public bool isSpawning { get; private set; } = false;
+    public GameObject DamagedFX;
     public GameObject flicker;
     public Material flickerMat;
     public float flickerStay = 1f;
@@ -69,6 +70,7 @@ public class EnemySpawn : EnemyBehaviour
 
     protected override void OnDamaged(GameObject source)
     {
+        /*
         if (_flickering)
         {
             _count = 0f;
@@ -77,7 +79,16 @@ public class EnemySpawn : EnemyBehaviour
         {
             StartCoroutine(Damaged());
         }
+        */
 
+        if (DamagedFX.activeSelf)
+        {
+            DamagedFX.SetActive(false);
+
+            DamagedFX.SetActive(true);
+        }
+        else
+        {   DamagedFX.SetActive(true);}
 
         Debug.Log("Spawn is taking damage");
         //throw new System.NotImplementedException();

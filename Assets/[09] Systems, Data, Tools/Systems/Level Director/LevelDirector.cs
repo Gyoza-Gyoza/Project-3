@@ -421,7 +421,7 @@ public class LevelDirector : Singleton<LevelDirector>
         }
         if (timer <= levels[currentLevelCounter].stages[currentStageCounter].DurationBetweenSpawns) // Checks if the timer has reached the spawn frequency
         {
-            Debug.Log("Waiting for spawn timer");
+            //Debug.Log("Waiting for spawn timer");
             return false;
         }
         timer = 0f;
