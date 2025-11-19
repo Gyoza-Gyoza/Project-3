@@ -17,7 +17,8 @@ MonoBehaviour:
   enemyPerGroup: 3
   playerEnemyPerGroup: 0
   spawnMarkers:
-  - {x: 42.9, y: 32.8, z: 365.1}
+  - {x: 24.31, y: 27.7, z: 273.7}
+  - {x: 9.09, y: 22.5, z: 319.9}
   spawnCooldown: 0
   maxEnemies: 20
   resumeThreshold: 5
@@ -28,9 +29,9 @@ MonoBehaviour:
   chargerEnemyWaves: 0
   chargerEnemyLocation: 
   drainerEnemyInterval: 0
-  drainerEnemyCount: 1
-  drainerEnemyWaves: 1
+  drainerEnemyCount: 0
+  drainerEnemyWaves: 0
   drainerEnemyLocation: 
-  respawn: {x: 0, y: 34.2, z: 108.7}
+  respawn: {x: 18.4, y: 33, z: 294.3}
   escortPosition: {x: 84.6, y: 14.9, z: 289.6}
   payloadSpeed: 6

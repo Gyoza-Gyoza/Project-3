@@ -100,6 +100,7 @@ public class DrainerEnemyDefendState : DrainerEnemyState
     {
         enemy.defense = enemy.DefendingDefense;
         enemy.SetShieldActive(true);
+        enemy.StopDraining();
     }
 }
 public class DrainerEnemyDeathState : DrainerEnemyState
