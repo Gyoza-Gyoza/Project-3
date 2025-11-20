@@ -115,7 +115,7 @@ public class UltimateAnimationEventForwarder : MonoBehaviour
     }
     public void SetImpactFrameActive(bool state)
     {
-        renderFeatureMat.SetInteger("_Enabled", state ? 1 : 0);
+        renderFeatureMat.SetFloat("_Enabled", state ? 1 : 0);
     }
     /// <summary>
     /// Sets the chromatic aberration values
