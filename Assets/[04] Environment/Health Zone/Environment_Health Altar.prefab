@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7725342868094106153}
   - component: {fileID: 862952675240588040}
   - component: {fileID: 1563525292554856597}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 865958281520152016}
   - component: {fileID: 2391780968523390288}
   - component: {fileID: 5282465372973751488}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 2888210442261454833}
   - component: {fileID: 8780756829362092089}
   - component: {fileID: 6218832523014576340}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3651338267807318788}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Gas Zone Large (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 1892521190553469631}
   - component: {fileID: 7792753879324773386}
   - component: {fileID: 709832027397962953}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -522,7 +522,7 @@ GameObject:
   - component: {fileID: 2353009751210911329}
   - component: {fileID: 1475505240696710648}
   - component: {fileID: 8881362628107425446}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -643,7 +643,7 @@ GameObject:
   - component: {fileID: 7737704968413898152}
   - component: {fileID: 2588079554763690729}
   - component: {fileID: 8497472228580496968}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Environment_Health Altar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -658,7 +658,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4183558246931871093}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -19.32, y: 4.06, z: 189.5}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 1
@@ -753,7 +753,7 @@ GameObject:
   - component: {fileID: 601214035890311398}
   - component: {fileID: 3143140113226141185}
   - component: {fileID: 2290058281375229793}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -873,7 +873,7 @@ GameObject:
   - component: {fileID: 919888532722923888}
   - component: {fileID: 7251525465427083586}
   - component: {fileID: 4242104783473142209}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cylinder.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -959,7 +959,7 @@ GameObject:
   - component: {fileID: 7600655220254759278}
   - component: {fileID: 8086867486012125153}
   - component: {fileID: 6738869458267949797}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Gas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1178,7 +1178,7 @@ GameObject:
   - component: {fileID: 2267771890965263664}
   - component: {fileID: 5828536180851943890}
   - component: {fileID: 6262011495539948958}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1300,7 +1300,7 @@ GameObject:
   - component: {fileID: 4906517415294020952}
   - component: {fileID: 6756602623242186190}
   - component: {fileID: 5847634157639154649}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1422,7 +1422,7 @@ GameObject:
   - component: {fileID: 8108545261255013840}
   - component: {fileID: 8949468913762136926}
   - component: {fileID: 5137381196827389814}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sphere (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

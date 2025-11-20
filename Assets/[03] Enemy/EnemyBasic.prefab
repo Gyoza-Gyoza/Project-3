@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 80
-  initialDamage: 5
+  initialDamage: 10
   initialMovementSpeed: 10
   animator: {fileID: 5169975208432417997}
   burnAdjAmount: 0
@@ -250,7 +250,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 6400
+    m_Bits: 7424
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1

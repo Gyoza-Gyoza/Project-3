@@ -66,10 +66,12 @@ public class EnemySpawn : EnemyBehaviour
         Debug.Log("Spawn died");
         StopSpawning();
         this.gameObject.SetActive(false);
+        AudioManager.instance.PlaySFX("Spawn_Break");
     }
 
     protected override void OnDamaged(GameObject source)
     {
+        AudioManager.instance.PlaySFX("Spawn_Hit");
         /*
         if (_flickering)
         {

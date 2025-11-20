@@ -1346,6 +1346,7 @@ void Awake()
         Debug.LogWarning("teleport called");
         if ( !_teleportCoolingDown)
         {
+            AudioManager.instance.PlaySFX("Teleport");
             ignoreMovementThisFrame = true;
 
             this.ForceWarp(PayloadBehaviour.instance.TeleportPoint.position);
