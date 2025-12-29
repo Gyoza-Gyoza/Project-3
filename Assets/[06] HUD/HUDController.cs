@@ -13,7 +13,6 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private Slider healthCatchUp;
     [SerializeField] private float healthCatchUpTiming;
     private float healthOrigin;
-    private float healthTemp;
     private float healthTarget;
     private bool updatingHealth = false;
 
@@ -79,6 +78,15 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private Sprite teleportInactive;
     [SerializeField] private Image  teleportAbility;
 
+    [Header("Meter")]
+    [SerializeField] private Slider meter;
+    [SerializeField] private Slider meterCatchUp;
+    [SerializeField] private float meterCatchUpTiming;
+    private float meterOrigin;
+    private float meterTemp;
+    private float meterTarget;
+    private bool updatingMeter = false;
+
     [Header("Ultimate")]
     [SerializeField] private Slider ultimateSlider;
     [SerializeField] private GameObject ultimateReady;
@@ -88,6 +96,7 @@ public class HUDController : Singleton<HUDController>
     [SerializeField] private TextMeshProUGUI enemyCount;
     [SerializeField] private TextMeshProUGUI enemiesStopped;
     [SerializeField] private TextMeshProUGUI timepassed;
+
 
     public CanvasGroup hideableUIs;
 
@@ -454,6 +463,52 @@ public class HUDController : Singleton<HUDController>
         else
         { teleportAbility.sprite = teleportInactive; }
     }
+    #endregion
+
+    #region Meter
+
+    public void SetMeter(float input)
+    {
+
+        if (updatingMeter == false)
+        {
+            meterOrigin = meter.value;
+            meterTarget = Mathf.Clamp(input, 0f, 1f);
+            meter.value = meterTarget;
+            StartCoroutine(UpdateMeterSequence());
+        }
+        else
+        {
+            meterTarget = Mathf.Clamp(input, 0f, 1f);
+            meter.value = meterTarget;
+        }
+    }
+
+    IEnumerator UpdateMeterSequence()
+    {
+        updatingMeter = true;
+        //health.value = healthTarget;
+
+        float catchupCount = 0f;
+
+        while (updatingMeter)
+        {
+            if (catchupCount < meterCatchUpTiming)
+            {
+                catchupCount += Time.deltaTime;
+
+                healthCatchUp.value = Mathf.SmoothStep(meterOrigin, meterTarget, (float)(catchupCount / meterCatchUpTiming));
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            else
+            {
+                updatingMeter= false;
+                meterCatchUp.value = meterTarget;
+            }
+        }
+        yield break;
+    }
+
     #endregion
 
     #region Ultimate

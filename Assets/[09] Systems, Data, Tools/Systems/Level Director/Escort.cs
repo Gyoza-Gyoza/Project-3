@@ -38,12 +38,16 @@ public class Escort : Stage
                 return PayloadBehaviour.instance.Agent.remainingDistance;
             }
 
-            else
+            else if (PayloadBehaviour.instance.Agent.isOnNavMesh)
             {
                 //Debug.Log($"Position is incorrect, {escortDistance}, {PayloadBehaviour.instance.Agent.remainingDistance}");
 
                 return (escortDistance - PayloadBehaviour.instance.Agent.remainingDistance) / escortDistance; 
 
+            }
+            else
+            {
+                return 0f;
             }
         } 
     }

@@ -159,7 +159,7 @@ public class PlayerController3P : Entity
     [SerializeField] private float tauntCooldown = 1f;
     bool _tauntThrown = false;
 
-    // ------------------ TAUNT DEVICE ------------------------------------------------------------------------------------------
+    // ------------------ TELEPORT DEVICE ------------------------------------------------------------------------------------------
     [SerializeField] private float teleportCooldown = 10f;
     bool _teleportCoolingDown = false;
 
@@ -1389,7 +1389,6 @@ void Awake()
     #endregion
 
     // -------------------- Ultimate ------
-
     #region Ultimate
 
 
@@ -1436,6 +1435,44 @@ void Awake()
 
         yield break;
 
+    }
+
+    #endregion
+
+    // -------------------- Meter -----------
+    #region Meter
+
+
+    private int maxMeter = 100;
+    private int currentMeter = 0;
+
+    public void AddMeter(int toAdd)
+    {
+        //Add to meter
+        currentMeter += toAdd;
+
+        if (currentMeter > maxMeter)
+        {
+            currentMeter = maxMeter;
+        }
+
+        // Update HUD
+        HUDController.Instance.SetMeter(currentMeter / maxMeter);
+    }
+
+    public bool RemoveMeter(int toRemove)
+    {
+        if (currentMeter < toRemove)
+        {
+            return false;
+        }
+
+        currentMeter -= toRemove;
+
+        // Update HUD
+        HUDController.Instance.SetMeter(currentMeter / maxMeter);
+
+        return true;
     }
 
     #endregion
